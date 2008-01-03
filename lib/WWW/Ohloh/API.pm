@@ -11,6 +11,8 @@ use LWP::UserAgent;
 use Readonly;
 use XML::Simple;
 use WWW::Ohloh::API::Account;
+use WWW::Ohloh::API::Analysis;
+use WWW::Ohloh::API::Project;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.1';
@@ -25,6 +27,8 @@ my @api_version_of :Field :Default(1);   # for now, there's only v1
 my @user_agent_of :Field;
 
 my @debugging :Field :Arg(debug) :Default(0) :Std(debug);
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub get_account {
     my $self = shift;
@@ -43,6 +47,46 @@ sub get_account {
         xml => $xml->{account},
     );
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_project {
+    my $self = shift;
+    my $id = shift;
+
+    my( $url, $xml ) = $self->_query_server( "projects/$id.xml" );
+
+    return WWW::Ohloh::API::Project->new(
+        request_url => $url,
+        xml => $xml->{project},
+    );
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_analysis {
+    my $self = shift;
+    my $project = shift;
+
+    $_[0] ||= 'latest';
+
+    my ( $url, $xml ) = $self->_query_server(
+            "projects/$project/analyses/$_[0].xml" );
+
+    my $analysis = WWW::Ohloh::API::Analysis->new(
+        request_url => $url,
+        xml => $xml->{analysis}
+    );
+
+    unless ( $analysis->project_id == $project ) {
+        croak "analysis $_[0] doesn't apply to project $project";
+    }
+
+    return $analysis;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub _ua {
     my $self = shift;

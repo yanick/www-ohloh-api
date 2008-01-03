@@ -3,7 +3,13 @@ Changes
 MANIFEST
 README
 lib/WWW/Ohloh/API.pm
+lib/WWW/Ohloh/API/Account.pm
+lib/WWW/Ohloh/API/KudoScore.pm
 t/00.load.t
 t/perlcritic.t
 t/pod-coverage.t
 t/pod.t
+t/01general.t
+t/02-account.t
+t/50-online-account.t
+examples/account_sample.pl

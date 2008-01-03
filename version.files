@@ -1,0 +1,10 @@
+(
+    'lib/WWW/Ohloh/API.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/Account.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/KudoScore.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'README' => qr/WWW-Ohloh-API version (\S+)/,
+);
+

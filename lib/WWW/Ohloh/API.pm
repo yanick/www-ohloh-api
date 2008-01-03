@@ -121,12 +121,16 @@ or set via the L<set_api_key> method.
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $your_key );
 
-=head2 get_account( id => $account_id )
+=head2 get_account( [ id | email ] => $account_id )
 
-Return the account associated with the id, as a L<WWW::Ohloh::API::Account>
+Return the account associated with the $account_id as a 
+L<WWW::Ohloh::API::Account>
 object. If no such account exists, an error is thrown.
+The $accound_id can either be specified as the Ohloh id number, 
+or the email address associated with the account.
 
     my $account = $ohloh->get_account( id => 12933 );
+    my $other_accound = $ohloh->get_account( email => 'foo@bar.com' );
 
 =head1 SEE ALSO
 

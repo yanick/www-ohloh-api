@@ -1,3 +1,7 @@
 *.swp
 Build
 _build
+META.yml
+Makefile.PL
+WWW-Ohloh-API-*.tar.gz
+blib

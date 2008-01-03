@@ -7,7 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::Simple;
 
-our $VERSION = '0.01.0';
+our $VERSION = '0.0.1';
 
 my @xml_of :Field :Arg(xml);
 

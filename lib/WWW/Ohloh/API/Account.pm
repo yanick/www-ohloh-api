@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::Simple;
 use WWW::Ohloh::API::KudoScore;
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.0.1';
 
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @xml_of  :Field :Arg(xml);   

@@ -3,3 +3,4 @@ MANIFEST.SKIP
 .*\.swp
 _build
 Build
+version.files

@@ -13,3 +13,5 @@ t/01general.t
 t/02-account.t
 t/50-online-account.t
 examples/account_sample.pl
+Makefile.PL
+META.yml

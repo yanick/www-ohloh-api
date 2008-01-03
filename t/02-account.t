@@ -38,6 +38,8 @@ END_XML
 my $ohloh = WWW::Ohloh::API->new;
 my $account = $ohloh->get_account( id => 12933 );
 
+like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx, 'as_xml()';
+
 is $account->request_url =>
     'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
     'request url';
@@ -60,10 +62,12 @@ ok $kudo, "kudo score";
 
 is $kudo->created_at     => '2008-01-03T05:16:25Z', 'kudo created at';
 is $kudo->kudo_rank      => '7',                    'kudo rank';
+is $kudo->rank           => '7',                    'kudo rank (short)';
 is $kudo->position       => '8684',                 'kudo position';
 is $kudo->max_position   => '84400',                'kudo max_position';
 is $kudo->position_delta => '-56',                  'kudo position_delta';
 
+like $kudo->as_xml => qr# ^ \s* <kudo_score> .* </kudo_score> \s* $ #sx, 'kudo as_xml()';
 
 ### utility functions ######################################
 

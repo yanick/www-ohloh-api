@@ -13,7 +13,8 @@ our $VERSION = '0.1.0';
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @xml_of  :Field :Arg(xml);   
 
-sub as_xml { my $self = shift; return $xml_of[ $$self ]; }
+sub as_xml { my $self = shift; return XMLout( $xml_of[ $$self ], 
+            RootName => 'account', NoAttr => 1 ); }
 
 sub kudoScore {
     my $self = shift;
@@ -23,8 +24,8 @@ sub kudoScore {
     return WWW::Ohloh::API::KudoScore->new( xml => $kudo );
 }
 
-sub kudo       { my $self = shift; return $self->kudoScore( @_ ); }
-sub kudo_score { my $self = shift; return $self->kudoScore( @_ ); }
+# aliases
+*kudo = *kudo_score = *kudoScore;
 
 for my $attr ( qw/ id name created_at updated_at homepage_url
                     avatar_url posts_count location country_code
@@ -115,7 +116,16 @@ available.
 
 Return a L<WWW::Ohloh::API::KudoScore> object holding the account's 
 kudo information, or I<undef> if the account doesn't have a kudo score
-yet.
+yet. All three methods are equivalent.
+
+=head2 Other Methods
+
+=head3 as_xml
+
+Return the account information (including the kudo score if it applies)
+as an XML string.  Note that this is not the exact xml document as returned
+by the Ohloh server: due to the current XML parsing module used
+by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
 
 =head1 SEE ALSO
 
@@ -143,6 +153,9 @@ This document describes WWW::Ohloh::API version 0.0.1
 
 WWW::Ohloh::API is very extremely alpha quality. It'll improve,
 but till then: I<Caveat emptor>.
+
+The C<as_xml()> method returns a re-encoding of the account data, which
+can differ of the original xml document sent by the Ohloh server.
 
 Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at

@@ -11,6 +11,9 @@ our $VERSION = '0.01.0';
 
 my @xml_of :Field :Arg(xml);
 
+sub as_xml { my $self = shift; return XMLout( $xml_of[ $$self ], 
+            RootName => 'kudo_score', NoAttr => 1 ); }
+
 for my $attr ( qw/ created_at kudo_rank position max_position 
                     position_delta / ) {
     eval <<"END_SUB";
@@ -20,6 +23,8 @@ for my $attr ( qw/ created_at kudo_rank position max_position
         }
 END_SUB
 }
+
+*rank = *kudo_rank;
 
 'end of WWW::Ohloh::API::KudoScore';
 __END__
@@ -37,7 +42,7 @@ WWW::Ohloh::API::KudoScore - an Ohloh kudo score
     my $account $ohloh->get_account( id => 12933 );
     my $kudo = $account->kudo_score;
 
-    print $kudo->kudo_rank;
+    print $kudo->rank;
 
 =head1 DESCRIPTION
 
@@ -54,7 +59,7 @@ the C<kudo_score> method of a L<WWW::Ohloh::API::Account> object.
 
 Return the time at which this KudoScore was calculated.
 
-=head3 kudo_rank
+=head3 rank, kudo_rank
 
 Return the KudoRank, which is an integer from 1 to 10.
 
@@ -71,6 +76,15 @@ Return the total number of partcipants in the most recent KudoScore calculations
 =head3 position_delta
 
 Return the change in this person's position since the previous kudo score calculations. Here, a negative number represents an improvement, since lower positions are better.
+
+=head2 Other Methods
+
+=head3 as_xml
+
+Return the kudo information 
+as an XML string.  Note that this is not the exact xml document as returned
+by the Ohloh server: due to the current XML parsing module used
+by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
 
 =head1 SEE ALSO
 
@@ -98,6 +112,9 @@ This document describes WWW::Ohloh::API version 0.0.1
 
 WWW::Ohloh::API is very extremely alpha quality. It'll improve,
 but till then: I<Caveat emptor>.
+
+The C<as_xml()> method returns a re-encoding of the account data, which
+can differ of the original xml document sent by the Ohloh server.
 
 Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at

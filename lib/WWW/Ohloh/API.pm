@@ -11,6 +11,7 @@ use LWP::UserAgent;
 use Readonly;
 use XML::Simple;
 use WWW::Ohloh::API::Account;
+use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.1';
 
@@ -28,18 +29,19 @@ my @debugging :Field :Arg(debug) :Default(0) :Std(debug);
 sub get_account {
     my $self = shift;
 
-    my( $type, $key ) = @_;
+    my( $type, $id ) = @_;
 
-    my $account;
-    if ( $type eq 'id' ) {
-        $account = $self->_get_account_by_id( $key );
-    }
-    elsif( $type eq 'email' ) {
-        croak "not implemented yet";
-    }
-    else {
-        croak "first argument must be 'id' or 'email'";
-    }
+    $type eq 'id' or $type eq 'email' 
+        or croak "first argument must be 'id' or 'email'";
+
+    $id = md5_hex( $id ) if $type eq 'email';
+
+    my( $url, $xml ) = $self->_query_server( "accounts/$id.xml" );
+
+    return WWW::Ohloh::API::Account->new( 
+        request_url => $url,
+        xml => $xml->{account},
+    );
 }
 
 sub _ua {
@@ -87,24 +89,6 @@ sub _query_server {
 
     return $url, $xml->{result};
 }
-
-sub _get_account_by_id {
-    my $self = shift;
-    my $account_id = shift;
-
-    # TODO: check that id is not nul
-
-    my( $url, $xml ) = $self->_query_server( "accounts/$account_id.xml" );
-
-    my $account = WWW::Ohloh::API::Account->new( 
-        request_url => $url,
-        xml => $xml->{account},
-    );
-
-    return $account;
-}
-
-
 
 1; # Magic true value required at end of module
 __END__

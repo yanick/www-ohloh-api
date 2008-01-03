@@ -14,6 +14,7 @@ my $builder = Module::Build->new(
         'Readonly' => 0,
         'XML::Simple' => 0,
         'Object::InsideOut' => 0,
+        'Digest::MD5' => 0,
     },
     add_to_cleanup      => [ 'WWW-Ohloh-API-*' ],
     create_makefile_pl => 'passthrough',

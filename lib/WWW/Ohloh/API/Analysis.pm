@@ -43,8 +43,26 @@ sub _init :Init {
     return;
 }
 
-sub as_xml { my $self = shift; return XMLout( $xml_of[ $$self ], 
-            RootName => 'analysis', NoAttr => 1 ); }
+sub as_xml { 
+    my $self = shift; 
+    my $xml;
+    my $w = XML::Writer->new( OUTPUT => \$xml );
+
+    $w->startTag( 'analysis' );
+    for my $attr ( qw/ id project_id
+                        updated_at logged_at min_month
+                        max_month twelve_month_contributor_count
+                        total_code_lines
+                        main_language_name
+                        main_language_id
+                        / ) {
+        $w->dataElement( $attr, $self->$attr );
+    }
+
+    $w->endTag;
+
+    return $xml;
+}
 
 *language = *main_language = *main_language_name;
 

@@ -52,8 +52,24 @@ sub _init :Init {
     return;
 }
 
-sub as_xml { my $self = shift; return XMLout( $xml_of[ $$self ], 
-            RootName => 'project', NoAttr => 1 ); }
+sub as_xml { 
+    my $self = shift;
+    my $xml;
+    my $w = XML::Writer->new( OUTPUT => \$xml );
+
+    $w->startTag( 'project' );
+    for my $attr ( qw/ id name created_at updated_at 
+                        description homepage_url
+                        download_url irc_url stack_count
+                        average_rating rating_count
+                        analysis_id / ) {
+        $w->dataElement( $attr, $self->$attr );
+    }
+    $xml .= $self->analysis->as_xml if $self->analysis;
+    $w->endTag;
+
+    return $xml;
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -42,6 +42,8 @@ my $ohloh = WWW::Ohloh::API->new;
 
 my $p = $ohloh->get_project( 10716 );
 
+like $p->as_xml => qr#<project>.*</project>#s, 'as_xml';
+
 is $p->id   => 10716, 'id';
 is $p->name => 'WWW::Ohloh::API', 'name';
 is $p->created_at => '2008-01-03T20:55:40Z', 'created_at';

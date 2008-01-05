@@ -10,6 +10,8 @@ use WWW::Ohloh::API::KudoScore;
 
 our $VERSION = '0.0.1';
 
+use overload '""' => sub { $_[0]->name };
+
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @xml_of  :Field :Arg(xml);   
 
@@ -173,6 +175,13 @@ Return the account information (including the kudo score if it applies)
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server: due to the current XML parsing module used
 by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
+
+=head1 OVERLOADING
+
+When the object is called in a string context, it'll be replaced by
+the name associated with the account. E.g.,
+
+    print $account;  # equivalent to 'print $account->name'
 
 =head1 SEE ALSO
 

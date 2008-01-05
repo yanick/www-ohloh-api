@@ -38,6 +38,8 @@ END_XML
 my $ohloh = WWW::Ohloh::API->new;
 my $account = $ohloh->get_account( id => 12933 );
 
+is $account => 'Yanick', 'overloading';
+
 like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx, 'as_xml()';
 
 is $account->request_url =>

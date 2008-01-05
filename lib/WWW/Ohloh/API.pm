@@ -10,6 +10,7 @@ use LWP::Simple;
 use LWP::UserAgent;
 use Readonly;
 use XML::Simple;
+use XML::LibXML;
 use WWW::Ohloh::API::Account;
 use WWW::Ohloh::API::Analysis;
 use WWW::Ohloh::API::Project;
@@ -28,6 +29,8 @@ my @user_agent_of :Field;
 
 my @debugging :Field :Arg(debug) :Default(0) :Std(debug);
 
+my @parser_of :Field;
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub get_account {
@@ -44,7 +47,7 @@ sub get_account {
 
     return WWW::Ohloh::API::Account->new( 
         request_url => $url,
-        xml => $xml->{account},
+        xml => $xml->findnodes( 'account[1]' ),
     );
 }
 
@@ -98,6 +101,11 @@ sub _ua {
     return $ua;
 }
 
+sub _parser {
+    my $self = shift;
+    return $parser_of[ $$self ] ||= XML::LibXML->new;
+}
+
 sub _query_server {
     my $self = shift;
     my $url = shift;
@@ -125,13 +133,15 @@ sub _query_server {
 
     my $result = $response->content;
 
-    my $xml = XMLin( $result, SuppressEmpty => undef );
+    my $dom = eval { $self->_parser->parse_string( $result ) }
+        or croak "server didn't feed back valid xml: $@";
 
-    if ( $xml->{status} ne 'success' ) {
-        croak "query to Ohloh server failed: ", $xml->{status};
+    if ( $dom->findvalue( '/response/status/text()' ) ne 'success' ) {
+        croak "query to Ohloh server failed: ", 
+                $dom->findvalue( '/response/status/text()' );
     }
 
-    return $url, $xml->{result};
+    return $url, $dom->findnodes( '/response/result[1]' );
 }
 
 1; # Magic true value required at end of module

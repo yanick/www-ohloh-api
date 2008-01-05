@@ -78,23 +78,23 @@ __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Account - an Ohloh account
+WWW::Ohloh::API::Project - an Ohloh project
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $account $ohloh->get_account( id => 12933 );
+    my $project = $ohloh->get_project( id => 1001 );
 
-    print $account->name;
+    print $project->homepage_url;
 
 =head1 DESCRIPTION
 
-W::O::A::Account contains the information associated with an Ohloh 
-account as defined at http://www.ohloh.net/api/reference/account. 
+W::O::A::Project contains the information associated with an Ohloh 
+project as defined at http://www.ohloh.net/api/reference/project. 
 To be properly populated, it must be created via
-the C<get_account> method of a L<WWW::Ohloh::API> object.
+the C<get_project> method of a L<WWW::Ohloh::API> object.
 
 =head1 METHODS 
 
@@ -102,56 +102,61 @@ the C<get_account> method of a L<WWW::Ohloh::API> object.
 
 =head3 id
 
-Return the account's id.
+Return the project's id.
 
 =head3 name
 
-Return the public name of the account.
+Return the  name of the project.
 
 =head3 created_at
 
-Return the time at which the account was created.
+Return the time at which the project was initially 
+added to Ohloh.
 
 =head3 updated_at
 
-Return the last time at which the account was modified.
+Return the time of the most recent modification of the project's
+record.
+
+=head3 description
+
+Return a description of the project.
 
 =head3 homepage_url
 
-Return the URL to a member's home page, such as a blog, or I<undef> if not
-configured.
+Return the URL of the project's homepage.
 
-=head3 avatar_url
+=head3 download_url
 
-Return the URL to the profile image displayed on Ohloh pages, or I<undef> if
-not configured.
+Return an url to a project download.
 
-=head3 posts_count
+=head3 irc_url
 
-Return the number of posts made to the Ohloh forums by this account.
+Return a URL to an IRC channel associated to the project.
 
-=head3 location
+=head3 stack_count
 
-Return a text description of this account holder's claimed location, or
-I<undef> if not
-available. 
+Return the number of stacks currently using the project.
 
-=head3 country_code
+=head3 average_rating
 
-Return a string representing the account holder's country, or I<undef> is
-unavailable. 
+Return a number ranging from 1.0 to 5.0, representing the average 
+value of all user ratings for this project, where 1 is the worst possible rating,
+and 5 the best.
 
-=head3 latitude, longitude
+=head3 rating_count
 
-Return floating-point values representing the account's latitude and longitude, 
-suitable for use with the Google Maps API, or I<undef> is they are not
-available.
+Return the number of users having rated this project.
 
-=head3 kudoScore, kudo_score, kudo
+=head3 analysis_id
 
-Return a L<WWW::Ohloh::API::KudoScore> object holding the account's 
-kudo information, or I<undef> if the account doesn't have a kudo score
-yet. All three methods are equivalent.
+Return the id of the analysis obtained with the project. It'll be the latest 
+analysis if the project has been retrieved via C<get_project>, and 
+will be null if retrieved via C<get_projects>.
+
+=head3 analysis
+
+Return the current analysis of the project, if available.
 
 =head2 Other Methods
 
@@ -159,8 +164,7 @@ yet. All three methods are equivalent.
 
 Return the account information (including the kudo score if it applies)
 as an XML string.  Note that this is not the exact xml document as returned
-by the Ohloh server: due to the current XML parsing module used
-by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
+by the Ohloh server.
 
 =head1 SEE ALSO
 
@@ -168,7 +172,11 @@ by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
 
 =item * 
 
-L<WWW::Ohloh::API>, L<WWW::Ohloh::API::KudoScore>.
+L<WWW::Ohloh::API>, 
+L<WWW::Ohloh::API::KudoScore>, 
+L<WWW::Ohloh::API::Analysis>, 
+L<WWW::Ohloh::API::Account>.
+
 
 =item *
 
@@ -176,7 +184,7 @@ Ohloh API reference: http://www.ohloh.net/api/getting_started
 
 =item * 
 
-Ohloh Account API reference: http://www.ohloh.net/api/reference/account
+Ohloh Account API reference: http://www.ohloh.net/api/reference/project
 
 =back
 

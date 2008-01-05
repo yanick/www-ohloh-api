@@ -13,39 +13,50 @@ our $VERSION = '0.0.1';
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @xml_of  :Field :Arg(xml);   
 
+my @id_of :Field :Get(id) :Set(_set_id) ;
+my @name_of :Field :Get(name) :Set(_set_name) ;
+my @created_at_of :Field :Get(created_at) :Set(_set_created_at) ;
+my @updated_at_of :Field :Get(updated_at) :Set(_set_updated_at) ;
+my @description_of :Field :Get(description) :Set(_set_description);
+my @homepage_url_of :Field :Get(homepage_url) :Set(_set_homepage_url);
+my @download_url_of :Field :Get(download_url) :Set(_set_download_url);
+my @irc_url_of :Field :Get(irc_url) :Set(_set_irc_url);
+my @stack_count_of :Field :Get(stack_count) :Set(_set_stack_count);
+my @average_rating_of :Field :Get(average_rating) :Set(_set_average_rating);
+my @rating_count_of :Field :Get(rating_count) :Set(_set_rating_count);
+my @analysis_id_of :Field :Get(analysis_id) :Set(_set_analysis_id);
+my @analysis_of :Field :Get(analysis);
+
+sub _init :Init {
+    my $self = shift;
+
+    my $dom = $xml_of[ $$self ] or return;
+
+    $self->_set_id( $dom->findvalue( 'id/text()' ) ); 
+    $self->_set_name( $dom->findvalue( 'name/text()' ) ); 
+    $self->_set_created_at( $dom->findvalue( 'created_at/text()' ) ); 
+    $self->_set_updated_at( $dom->findvalue( 'updated_at/text()' ) ); 
+    $self->_set_description( $dom->findvalue( 'description/text()' ) );
+    $self->_set_homepage_url( $dom->findvalue( 'homepage_url/text()' ) );
+    $self->_set_download_url( $dom->findvalue( 'download_url/text()' ) );
+    $self->_set_irc_url( $dom->findvalue( 'irc_url/text()' ) );
+    $self->_set_stack_count( $dom->findvalue( 'stack_count/text()' ) );
+    $self->_set_average_rating( $dom->findvalue( 'average_rating/text()' ) );
+    $self->_set_rating_count( $dom->findvalue( 'rating_count/text()' ) );
+    $self->_set_analysis_id( $dom->findvalue( 'analysis_id/text()' ) );
+
+    if ( my( $n ) = $dom->findnodes( 'analysis[1]' ) ) {
+        $analysis_of[ $$self ] = WWW::Ohloh::API::Analysis->new( xml => $n );
+    }
+
+    return;
+}
+
 sub as_xml { my $self = shift; return XMLout( $xml_of[ $$self ], 
             RootName => 'project', NoAttr => 1 ); }
 
-for my $attr ( qw/ id name created_at updated_at description
-                    homepage_url
-                    download_url
-                    irc_url
-                    stack_count
-                    average_rating
-                    rating_count
-                    analysis_id
-                    / ) {
-    eval <<"END_SUB";
-        sub $attr {
-            my \$self = shift;
-            return \$xml_of[ \$\$self ]->{$attr};
-        }
-END_SUB
-}
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub analysis {
-    my $self = shift;
-
-    if ( my $a = $xml_of[ $$self ]->{analysis} ) {
-        return WWW::Ohloh::API::Analysis->new( 
-            xml => $a,
-        );
-    }
-
-    croak "cases for when analysis is not provided are yet to be implemented";
-}
 'end of WWW::Ohloh::API::Project';
 __END__
 

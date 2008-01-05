@@ -61,7 +61,7 @@ sub get_project {
 
     return WWW::Ohloh::API::Project->new(
         request_url => $url,
-        xml => $xml->{project},
+        xml => $xml->findnodes( 'project[1]' ),
     );
 }
 

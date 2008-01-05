@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More qw/ no_plan /;        # last test to print
 use WWW::Ohloh::API;
-use XML::Simple;
+use XML::LibXML;
 
 masquerade_server_query(
     'http://www.ohloh.net/projects/10706.xml?v=1&api_key=myapikey',
@@ -51,7 +51,7 @@ is $p->homepage_url =>
 'http://search.cpan.org/search%3fmodule=WWW::Ohloh::API', 'homepage';
 is $p->download_url =>
 'http://search.cpan.org/search%3fmodule=WWW::Ohloh::API', 'download';
-is $p->irc_url => undef, 'irc';
+is $p->irc_url => '', 'irc';
 is $p->stack_count => 1, 'stack count';
 is $p->average_rating + 0 => 0, 'average rating';
 is $p->rating_count => 0, 'rating count';
@@ -78,9 +78,11 @@ is $a->language => 'Perl', 'analysis lang';
 sub masquerade_server_query {
     my ( $url, $xml ) = @_;
     no warnings;    # it's naughty stuff, but for a good cause
+    my $parser = XML::LibXML->new;
+    my $dom = $parser->parse_string( $xml );
     eval {
         sub WWW::Ohloh::API::_query_server {
-            return $url, XMLin( $xml, SuppressEmpty => undef );
+            return $url, $dom->findnodes( '//result[1]' );
         }
     };
 }

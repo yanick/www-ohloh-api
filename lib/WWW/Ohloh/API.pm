@@ -11,9 +11,11 @@ use LWP::UserAgent;
 use Readonly;
 use XML::Simple;
 use XML::LibXML;
+use Params::Validate qw(:all);
 use WWW::Ohloh::API::Account;
 use WWW::Ohloh::API::Analysis;
 use WWW::Ohloh::API::Project;
+use WWW::Ohloh::API::Projects;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.1';
@@ -65,6 +67,20 @@ sub get_project {
     );
 }
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_projects {
+    my $self = shift;
+    my %arg = validate( @_, { query => 0, sort => 0, max => 0 } );
+
+    return WWW::Ohloh::API::Projects->new(
+        ohloh => $self,
+        query => $arg{query},
+        sort => $arg{sort},
+        max => $arg{max},
+    );
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -186,12 +202,57 @@ or the email address associated with the account.
     my $account = $ohloh->get_account( id => 12933 );
     my $other_accound = $ohloh->get_account( email => 'foo@bar.com' );
 
+
+=head2 get_project( $id )
+
+Return the project having the Ohloh id I<$id> as a
+L<WWW::Ohloh::API::Project>.  If no such project exists, 
+an error is thrown.
+
+    my $project = $ohloh->get_project( 1234) ;
+    print $project->name;
+
+=head2 get_projects( query => $query, sort => $sorting_order, max => $nbr )
+
+Return a set of projects as a L<WWW::Ohloh::API::Projects> object. 
+
+=head3 Parameters
+
+=over
+
+=item query
+
+If provided, only the projects matching the query string are returned.
+A project matches the query string is any of its name, description
+or tags does.
+
+=item sort
+
+If provided, the projects will be returned according to the specified 
+sorting order.  Valid values are 
+'created_at', 'description', 'id', 'name', 'stack_count',
+'updated_at', 'created_at_reverse',
+'description_reverse', 'id_reverse', 'name_reverse',
+'stack_count_reverse' or 'updated_at_reverse'.  If no sorting order
+is explicitly given, 'id' is the default.
+
+=item max
+
+If given, the project set will returns at most I<$nbr> projects.
+
+    # get top ten stacked projects
+    my @top = $ohloh->get_projects( max => 10, sort => 'stack_count' )->all;
+
+=back
+
 =head1 SEE ALSO
 
 =over
 
 =item *
 
+L<WWW::Ohloh::API::Project>, 
+L<WWW::Ohloh::API::Projects>, 
 L<WWW::Ohloh::API::Account>, 
 L<WWW::Ohloh::API::KudoScore>.
 

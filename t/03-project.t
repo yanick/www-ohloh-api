@@ -74,7 +74,6 @@ is $a->main_language_name => 'Perl', 'analysis main lang name';
 is $a->main_language => 'Perl', 'analysis main lang';
 is $a->language => 'Perl', 'analysis lang';
 
-
 ### utility functions ######################################
 
 sub masquerade_server_query {

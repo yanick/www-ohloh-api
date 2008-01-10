@@ -60,4 +60,3 @@ SKIP: {
     like $kudo->position_delta => qr/^-?\d+$/, 'kudo position_delta';
 
 }
-

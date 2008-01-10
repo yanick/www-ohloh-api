@@ -5,7 +5,7 @@ use warnings;
 
 use Carp;
 use Object::InsideOut;
-use XML::Simple;
+use XML::LibXML;
 use WWW::Ohloh::API::Analysis;
 
 our $VERSION = '0.0.1';

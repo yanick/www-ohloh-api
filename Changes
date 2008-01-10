@@ -4,6 +4,7 @@ Revision history for WWW-Ohloh-API
     * Added W:O:A::Project, W:O:A::Projects and W:O:A::Analysis.
     * Internal: switched XML engine from XML::Simple to XML::LibXML.
     * Added script to generate manual (via Pod::Manual).
+    * pod-coverage is no longer run by everyone.
 
 0.0.1   Wed Jan  2 16:24:48 2008
        Initial release.

@@ -13,7 +13,7 @@ eval {
 ok( Exception::Class->caught( 'OIO::Args' ), "wrong sort type throws exception" );
 
 SKIP: {
-    skip <<'END_REASON', 1 unless $ENV{OHLOH_KEY};
+    skip <<'END_REASON', 6 unless $ENV{OHLOH_KEY};
 set the environment variable OHLOH_KEY to your api key to enable these tests
 END_REASON
 

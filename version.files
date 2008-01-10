@@ -5,6 +5,12 @@
                              qr/This document describes \S+ version (\S*)/ ],
     'lib/WWW/Ohloh/API/KudoScore.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
                              qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/Analysis.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/Project.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/Projects.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
     'README' => qr/WWW-Ohloh-API version (\S+)/,
 );
 

@@ -206,6 +206,18 @@ Example:
     # get the rest
     @most_stacked = $projects->all;
 
+=head1 OVERLOADING
+
+=head2 Iteration
+
+If called on a W:O:A:Projects object, the iteration operator (<>) acts
+as a call to '$projects->next'.
+
+E.g.,
+
+    while( my $p = <$projects> ) { 
+        ### do stuff with $p
+    }
 
 =head1 SEE ALSO
 

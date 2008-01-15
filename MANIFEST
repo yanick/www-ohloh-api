@@ -22,5 +22,6 @@ t/04-projects.t
 t/51-online-general.t
 t/52-online-language.t
 examples/account_sample.pl
+docs/manual.pl
 Makefile.PL
 META.yml

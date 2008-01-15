@@ -19,7 +19,7 @@ use WWW::Ohloh::API::Projects;
 use WWW::Ohloh::API::Languages;
 use Digest::MD5 qw/ md5_hex /;
 
-our $VERSION = '0.0.2';
+our $VERSION = '0.0.3';
 
 our $OHLOH_URL;  # Perl 5.6 doesn't seem to like Readonly our $foo ...
 Readonly $OHLOH_URL => 'http://www.ohloh.net/';
@@ -311,7 +311,7 @@ How to obtain an Ohloh API key: http://www.ohloh.net/api_keys/new
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.2
+This document describes WWW::Ohloh::API version 0.0.3
 
 =head1 BUGS AND LIMITATIONS
 

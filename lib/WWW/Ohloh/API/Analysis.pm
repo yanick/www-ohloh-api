@@ -7,7 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::Simple;
 
-our $VERSION = '0.0.2';
+our $VERSION = '0.0.3';
 
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @xml_of  :Field :Arg(xml);   
@@ -175,7 +175,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.2
+This document describes WWW::Ohloh::API version 0.0.3
 
 =head1 BUGS AND LIMITATIONS
 

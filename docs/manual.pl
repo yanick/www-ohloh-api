@@ -9,6 +9,8 @@ my $manual = Pod::Manual->new;
 
 $manual->add_chapters(qw/ 
     WWW::Ohloh::API 
+    WWW::Ohloh::API::Languages
+    WWW::Ohloh::API::Language
     WWW::Ohloh::API::Project
     WWW::Ohloh::API::Projects
     WWW::Ohloh::API::Analysis

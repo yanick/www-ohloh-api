@@ -1,0 +1,17 @@
+my @api_fields = qw/
+    id
+    name
+    nice_name
+    category
+    code
+    comments
+    blanks
+    comment_ratio
+    projects
+    contributors
+    commits
+/;
+
+for ( @api_fields ) {
+    print "\t", '$self->_set_', $_, '( $dom->findvalue( "', $_, '/text()" ) );', "\n";
+}

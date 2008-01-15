@@ -101,6 +101,8 @@ sub _gather_more {
     my $first_item = $xml->findvalue( 
           '/response/first_item_position/text()' );
 
+      $all_read[ $$self ] = 1 unless $total_entries_of[ $$self ];
+
     if ( $first_item + @new_batch - 1 >= $total_entries_of[ $$self ] ) {
         $all_read[ $$self ] = 1;
     }

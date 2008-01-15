@@ -5,7 +5,6 @@ use warnings;
 
 use Carp;
 use Object::InsideOut;
-use XML::Simple;
 
 our $VERSION = '0.0.3';
 

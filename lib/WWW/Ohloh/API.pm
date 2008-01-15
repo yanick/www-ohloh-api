@@ -6,10 +6,8 @@ use Carp;
 
 use Object::InsideOut;
 
-use LWP::Simple;
 use LWP::UserAgent;
 use Readonly;
-use XML::Simple;
 use XML::LibXML;
 use Params::Validate qw(:all);
 use WWW::Ohloh::API::Account;

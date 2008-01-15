@@ -1,5 +1,13 @@
 Revision history for WWW-Ohloh-API
 
+0.0.3   Mon Jan 14 23:04:10 EST 2008
+    * Added Pod::Manual script in docs/manual.pl to generate pdf
+        manual.
+    * Added W:O:A:Language and W:O:A:Languages.
+    * Changed how Readonly is used in an attempt to please
+        Perl 5.6.
+    * Added missing dependencies.
+
 0.0.2   Wed Jan  9 21:30:59 EST 2008
     * Added W:O:A::Project, W:O:A::Projects and W:O:A::Analysis.
     * Internal: switched XML engine from XML::Simple to XML::LibXML.
@@ -7,5 +15,5 @@ Revision history for WWW-Ohloh-API
     * pod-coverage is no longer run by everyone.
 
 0.0.1   Wed Jan  2 16:24:48 2008
-       Initial release.
+    * Initial release.
 

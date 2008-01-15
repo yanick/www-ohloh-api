@@ -1,0 +1,4 @@
+* remove depedencies to XML::Simple
+* Take care of that darn Readonly issue
+* Query escaping uuencode
+

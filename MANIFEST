@@ -8,6 +8,8 @@ lib/WWW/Ohloh/API/KudoScore.pm
 lib/WWW/Ohloh/API/Analysis.pm
 lib/WWW/Ohloh/API/Project.pm
 lib/WWW/Ohloh/API/Projects.pm
+lib/WWW/Ohloh/API/Language.pm
+lib/WWW/Ohloh/API/Languages.pm
 t/00.load.t
 t/perlcritic.t
 t/pod-coverage.t
@@ -18,6 +20,7 @@ t/50-online-account.t
 t/03-project.t
 t/04-projects.t
 t/51-online-general.t
+t/52-online-language.t
 examples/account_sample.pl
 Makefile.PL
 META.yml

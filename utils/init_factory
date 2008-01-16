@@ -1,16 +1,19 @@
 my @api_fields = qw/
-    id
-    name
-    nice_name
-    category
-    code
-    comments
-    blanks
-    comment_ratio
-    projects
-    contributors
+    month
+    code_added
+    code_removed
+    comments_added
+    comments_removed
+    blanks_added
+    blanks_removed
     commits
+    contributors
 /;
+
+for ( @api_fields ) {
+    print 'my @', $_, '_of  :Field  :Set(_', $_, 
+          ') :Get(', $_, ');', "\n";
+}
 
 for ( @api_fields ) {
     print "\t", '$self->_set_', $_, '( $dom->findvalue( "', $_, '/text()" ) );', "\n";

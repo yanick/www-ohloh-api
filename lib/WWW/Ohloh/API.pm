@@ -15,6 +15,7 @@ use WWW::Ohloh::API::Analysis;
 use WWW::Ohloh::API::Project;
 use WWW::Ohloh::API::Projects;
 use WWW::Ohloh::API::Languages;
+use WWW::Ohloh::API::ActivityFacts;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.3';
@@ -131,6 +132,23 @@ sub get_language {
     );
     
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_activity_facts {
+    my $self = shift;
+    my ( $project, $analysis ) = validate_pos( @_, 
+        1,
+        { default => 'latest' },
+    );
+
+    return WWW::Ohloh::API::ActivityFacts->new(
+        ohloh => $self,
+        project => $project,
+        analysis => $analysis,
+    );
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub _ua {

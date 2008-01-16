@@ -19,6 +19,7 @@ my $builder = Module::Build->new(
         'URI'               => 0,
         'HTML::HeadParser'  => 0,
         'Params::Validate'  => 0,
+        'List::MoreUtils'   => 0,
     },
     add_to_cleanup      => [ 'WWW-Ohloh-API-*' ],
     create_makefile_pl => 'passthrough',

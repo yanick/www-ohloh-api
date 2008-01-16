@@ -19,8 +19,7 @@ use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.3';
 
-our $OHLOH_URL;  # Perl 5.6 doesn't seem to like Readonly our $foo ...
-Readonly $OHLOH_URL => 'http://www.ohloh.net/';
+Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
 
 our $useragent_signature = "WWW-Ohloh-API/$VERSION";
 

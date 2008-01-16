@@ -8,6 +8,7 @@ my $builder = Module::Build->new(
     dist_author         => 'Yanick Champoux <yanick@cpan.org>',
     dist_version_from   => 'lib/WWW/Ohloh/API.pm',
     requires => {
+        perl                => '5.8.0',
         'Test::More'        => 0,
         'version'           => 0,
         'LWP::UserAgent'    => 0,

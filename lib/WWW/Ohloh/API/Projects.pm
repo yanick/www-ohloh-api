@@ -22,16 +22,10 @@ my @query_of :Field  :Arg(query);
 my @sort_order_of :Field :Arg(sort) :Type(\&WWW::Ohloh::API::Projects::is_allowed_sort);
 my @max_entries_of :Field :Arg(max) :Get(max);
 
-my @ALLOWED_SORTING;
-Readonly @ALLOWED_SORTING 
-    => map { $_, $_.'_reverse'  } qw/
-            created_at
-            description
-            id
-            name
-            stack_count
-            updated_at
-            /;
+Readonly our @ALLOWED_SORTING => map { $_, $_ . '_reverse' }
+  qw/ created_at description id name stack_count updated_at /;
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub is_allowed_sort {
     my $s = shift;

@@ -99,8 +99,8 @@ WWW::Ohloh::API::ActivityFact - collection of statistics about an Ohloh project
 
 W::O::A::ActivityFact contains monthly statistics about an Ohloh-registered
 project. 
-To be properly populated, it must be created via
-the C<get_activity_facts> of a L<WWW::Ohloh::API> object.
+To be properly populated, it must be retrieved via
+a L<WWW::Ohloh::API::ActivityFacts> object.
 
 =head1 METHODS 
 

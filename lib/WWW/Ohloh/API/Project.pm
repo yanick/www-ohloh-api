@@ -11,6 +11,7 @@ use WWW::Ohloh::API::Analysis;
 our $VERSION = '0.0.3';
 
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
+my @ohloh_of :Field  :Arg(ohloh) :Get( _ohloh );
 my @xml_of  :Field :Arg(xml);   
 
 my @id_of :Field :Get(id) :Set(_set_id) ;
@@ -25,7 +26,8 @@ my @stack_count_of :Field :Get(stack_count) :Set(_set_stack_count);
 my @average_rating_of :Field :Get(average_rating) :Set(_set_average_rating);
 my @rating_count_of :Field :Get(rating_count) :Set(_set_rating_count);
 my @analysis_id_of :Field :Get(analysis_id) :Set(_set_analysis_id);
-my @analysis_of :Field :Get(analysis);
+my @analysis_of :Field;
+my @facts_of    :Field;
 
 sub _init :Init {
     my $self = shift;
@@ -52,6 +54,39 @@ sub _init :Init {
     return;
 }
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub analysis {
+    my $self = shift;
+    my $id = shift;
+
+    if ( $id or not $analysis_of[ $$self ] ) {
+        $analysis_of[ $$self ] = 
+            $ohloh_of[ $$self ]->get_analysis( $self->id, $id );
+        $analysis_id_of[ $$self ] = $analysis_of[ $$self ]->id;
+    }
+
+    return $analysis_of[ $$self ]
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub activity_facts {
+    my $self = shift;
+    my $id = shift;
+
+    if ( $id or not $facts_of[ $$self ] ) {
+        $facts_of[ $$self ] = $ohloh_of[ $$self ]->get_activity_facts( 
+            $self->id, 
+            $id || $self->analysis_id || 'latest'
+        );
+    }
+
+    return $facts_of[ $$self ];
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 sub as_xml { 
     my $self = shift;
     my $xml;
@@ -65,7 +100,7 @@ sub as_xml {
                         analysis_id / ) {
         $w->dataElement( $attr, $self->$attr );
     }
-    $xml .= $self->analysis->as_xml if $self->analysis;
+    $xml .= $self->analysis->as_xml if $analysis_of[ $$self ];
     $w->endTag;
 
     return $xml;
@@ -150,13 +185,36 @@ Return the number of users having rated this project.
 
 =head3 analysis_id
 
-Return the id of the analysis obtained with the project. It'll be the latest 
+Return the id of the current analysis associated with the project. 
+It'll be the latest 
 analysis if the project has been retrieved via C<get_project>, and 
 will be null if retrieved via C<get_projects>.
 
-=head3 analysis
+=head3 analysis( $id )
 
-Return the current analysis of the project, if available.
+Return the Ohloh analysis I<$id> (which can also be the 
+keyword 'latest') as an L<WWW::Ohloh::API::Analysis>
+object. If I<$id> is omitted, return the previously requested
+analysis for this project or, if none has been requested yet, 
+the latest analysis available for the project.
+
+=head3 activity_facts( $analysis_id )
+
+Return activity facts related to the project as a
+L<WWW::Ohloh::API::ActivityFacts> object. The activity facts
+are taken from the analysis specified by I<$analysis_id>.
+If C<$analysis_id> is not given, the previously called
+analysis will be used and, if no analysis has been explicitly
+called, the latest one will be used.
+
+    $project = $ohloh->get_project( 12345);       # retrieve the project
+
+    $latest = $project->activity_facts;           # get the latest facts
+
+    $specific = $project->activity_facts( 789 );  # get facts from analysis 789
+
+    $project->analysis( 789 );  
+    $specific = $project->activity_facts;      # equivalent to previous example
 
 =head2 Other Methods
 

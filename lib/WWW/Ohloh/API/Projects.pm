@@ -83,7 +83,10 @@ sub _gather_more {
             page => ++$page_of[ $$self ]  } );
 
     my @new_batch = 
-         map { WWW::Ohloh::API::Project->new( xml => $_ ) } 
+         map { WWW::Ohloh::API::Project->new( 
+                    ohloh => $ohloh_of[ $$self ],
+                    xml => $_,
+                ) } 
          $xml->findnodes( 'project' );
 
 

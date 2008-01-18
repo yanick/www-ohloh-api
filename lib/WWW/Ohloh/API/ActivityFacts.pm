@@ -85,7 +85,8 @@ WWW::Ohloh::API::ActivityFacts - an Ohloh project's set of activity facts
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $facts =  $ohloh->get_activity_facts( $project_id, $analysis);
+    my $project = $ohloh->get_project( $project_id );
+    my $facts =  $ohloh->activity_facts;
 
     print "number of facts for the project: ", $facts->total;
 
@@ -93,8 +94,10 @@ WWW::Ohloh::API::ActivityFacts - an Ohloh project's set of activity facts
 
 W::O::A::ActivityFacts gathers all the activity facts known 
 about a project. 
-To be properly populated, it must be created via
-the C<get_activity_facts> method of a L<WWW::Ohloh::API> object.
+To be properly populated, it must be retrieved via
+the C<get_activity_facts> method of a L<WWW::Ohloh::API> object,
+or the C<activity_facts()> method of a L<WWW::Ohloh::API::Project>
+object.
 
 =head1 METHODS 
 

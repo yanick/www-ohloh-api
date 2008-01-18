@@ -62,6 +62,7 @@ sub get_project {
     my( $url, $xml ) = $self->_query_server( "projects/$id.xml" );
 
     return WWW::Ohloh::API::Project->new(
+        ohloh       => $self,
         request_url => $url,
         xml => $xml->findnodes( 'project[1]' ),
     );
@@ -95,7 +96,7 @@ sub get_analysis {
 
     my $analysis = WWW::Ohloh::API::Analysis->new(
         request_url => $url,
-        xml => $xml->{analysis}
+        xml => $xml->findnodes( 'analysis[1]' ),
     );
 
     unless ( $analysis->project_id == $project ) {

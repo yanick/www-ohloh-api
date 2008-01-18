@@ -64,7 +64,7 @@ sub as_xml {
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag('language');
+    $w->startTag('activity_fact');
 
     for my $e (@api_fields) {
         $w->dataElement( $e => $self->$e );
@@ -73,14 +73,6 @@ sub as_xml {
     $w->endTag;
 
     return $xml;
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub is_code {
-    my $self = shift;
-
-    return $self->category eq 'code';
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

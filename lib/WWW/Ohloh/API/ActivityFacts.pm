@@ -41,7 +41,9 @@ sub as_xml {
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'languages' );
+    $w->startTag( 'activity_facts' );
+
+    $xml .= $_->as_xml for @{ $facts_of[ $$self ] };
    
     $w->endTag;
 
@@ -54,6 +56,21 @@ sub all {
     my $self = shift;
 
     return @{ $facts_of[ $$self ] };
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub latest {
+    my $self = shift;
+    return $facts_of[ $$self ][ -1 ];
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub total {
+    my $self = shift;
+    return scalar @{ $facts_of[ $$self ] };
 }
 
 'end of WWW::Ohloh::API::ActivityFacts';

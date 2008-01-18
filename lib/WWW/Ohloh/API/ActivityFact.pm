@@ -83,96 +83,53 @@ __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Language - a programming language information on Ohloh
+WWW::Ohloh::API::ActivityFact - collection of statistics about an Ohloh project
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $languages =  $ohloh->get_languages;
+    my $facts =  $ohloh->get_activity_facts( $project_id, $analysis);
+    my $fact = $facts->latest;
 
-    my ( $perl  ) = grep { $_->nice_name eq 'Perl' } $languages->all;
-
-    print $perl->projects, " projects use Perl";
+    print $fact->month, ": ", $fact->contributors;
 
 =head1 DESCRIPTION
 
-W::O::A::Language contains the information associated with a programming
-language recognized by Ohloh as defined at http://www.ohloh.net/api/reference/language. 
+W::O::A::ActivityFact contains monthly statistics about an Ohloh-registered
+project. 
 To be properly populated, it must be created via
-the C<get_languages> or C<get_language> method of a L<WWW::Ohloh::API> object.
+the C<get_activity_facts> of a L<WWW::Ohloh::API> object.
 
 =head1 METHODS 
 
 =head2 API Data Accessors
 
-=head3 id
+=head3 month
 
-Return the language's unique id.
+Return the month covered by this activity fact.
 
-=head3 name
+=head3 code_added, code_removed, comments_added, comments_removed,
+        blanks_added, blanks_removed
 
-Return the short name of the language.
-
-=head3 nice_name
-
-Return the human-friendly name of the language.
-
-=head3 category
-
-Return the type of language, which can be either C<code> or
-C<markup>.
-
-=head3 is_markup
-
-Return true if the language is a markup language, false if it's a
-code language.
-
-=head3 is_code 
-
-Return true if the language is a code language, false if it's a
-markup language.
-
-
-=head3 code
-
-Return the total number of lines of code, excluding comments and blank lines, written
-in the language across all projects.
-
-=head3 comments
-
-Return the total number of comment lines,  written
-in the language across all projects.
-
-=head3 blanks
-
-Return the total number of blanks lines,  written
-in the language across all projects.
-
-=head3 comment_ratio
-
-Return the ratio of comment lines over the total number of lines for all projects using
-the language.
-
-=head3 projects
-
-Return the number of projects using this language.
-
-=head3 contributors
-
-Return the number of contributors who have written at least one line of code
-using this language.
+Return the number of lines of code/comments/blanks added/removed during this
+month.
 
 =head3 commits
 
-Return the number of commits which include at least one line in this language.
+Return the number of commits made during that month.
+
+=head3 contributors
+
+Return the number of contributors having made at least one commit during
+this month.
 
 =head2 Other Methods
 
 =head3 as_xml
 
-Return the language information 
+Return the activity fact information 
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server. 
 
@@ -183,6 +140,7 @@ by the Ohloh server.
 =item * 
 
 L<WWW::Ohloh::API>, 
+L<WWW::Ohloh::ActivitieFacts>,
 L<WWW::Ohloh::API::KudoScore>.
 
 =item *
@@ -191,7 +149,7 @@ Ohloh API reference: http://www.ohloh.net/api/getting_started
 
 =item * 
 
-Ohloh Account API reference: http://www.ohloh.net/api/reference/language
+Ohloh Account API reference: http://www.ohloh.net/api/reference/activity_fact
 
 =back
 
@@ -204,7 +162,7 @@ This document describes WWW::Ohloh::API version 0.0.3
 WWW::Ohloh::API is very extremely alpha quality. It'll improve,
 but till then: I<Caveat emptor>.
 
-The C<as_xml()> method returns a re-encoding of the account data, which
+The C<as_xml()> method returns a re-encoding of the activity fact data, which
 can differ of the original xml document sent by the Ohloh server.
 
 Please report any bugs or feature requests to

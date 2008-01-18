@@ -78,35 +78,42 @@ __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Languages - a set of languages as known by Ohloh
+WWW::Ohloh::API::ActivityFacts - an Ohloh project's set of activity facts
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $languages = $ohloh->get_languages( sort => 'code' );
+    my $facts =  $ohloh->get_activity_facts( $project_id, $analysis);
 
-    for my $l ( $languages->all ) {
-        print $l->nice_name;
-    }
+    print "number of facts for the project: ", $facts->total;
 
 =head1 DESCRIPTION
 
-W::O::A::Languages returns the list of languages known to Ohloh.
+W::O::A::ActivityFacts gathers all the activity facts known 
+about a project. 
 To be properly populated, it must be created via
-the C<get_languages> method of a L<WWW::Ohloh::API> object.
+the C<get_activity_facts> method of a L<WWW::Ohloh::API> object.
 
 =head1 METHODS 
 
 =head2 all
 
-Return the retrieved languages' information as
+Return the retrieved activity facts as a list of
 L<WWW::Ohloh::API::Language> objects.
+
+Example:
+
+    # sum the overall number of commits for the project
+    my $commits;
+    for my $fact ( $facts->all ) {
+        $commits += $fact->commits;
+    }
 
 =head3 as_xml
 
-Return the languages' information 
+Return the activity facts 
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server. 
 
@@ -117,6 +124,7 @@ by the Ohloh server.
 =item * 
 
 L<WWW::Ohloh::API>, 
+L<WWW::Ohloh::API::ActivityFact>, 
 L<WWW::Ohloh::API::Language>, 
 L<WWW::Ohloh::API::Project>,
 L<WWW::Ohloh::API::Analysis>, 
@@ -129,7 +137,7 @@ Ohloh API reference: http://www.ohloh.net/api/getting_started
 
 =item * 
 
-Ohloh Account API reference: http://www.ohloh.net/api/reference/language
+Ohloh Account API reference: http://www.ohloh.net/api/reference/activity_fact
 
 =back
 

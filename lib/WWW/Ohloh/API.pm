@@ -301,6 +301,15 @@ C<total>, C<code>, C<projects>, C<comment_ratio>,
 C<contributors>, C<commits> and C<name>. If I<sort> is not explicitly called,
 projects are returned in alphabetical order of C<name>s.
 
+=head2 get_activity_facts( $project_id, $analysis )
+
+Return a set of activity facts computed out of the project associated
+with the I<$project_id> as a L<WWW::Ohloh::API::ActivityFacts> object. 
+
+The optional argument I<$analysis> can be either an Ohloh analysis id 
+(which must be an analysis associated to the project) or the keyword
+'latest'. By default the latest analysis will be queried.
+
 =head1 SEE ALSO
 
 =over

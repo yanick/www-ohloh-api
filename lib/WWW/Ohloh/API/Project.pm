@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::Analysis;
 
-our $VERSION = '0.0.4';
+our $VERSION = '0.0.5';
 
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
 my @ohloh_of :Field  :Arg(ohloh) :Get( _ohloh );
@@ -248,7 +248,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/project
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.4
+This document describes WWW::Ohloh::API version 0.0.5
 
 =head1 BUGS AND LIMITATIONS
 

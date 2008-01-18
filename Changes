@@ -1,5 +1,12 @@
 Revision history for WWW-Ohloh-API
 
+0.0.4 Thu Jan 17 22:49:05 EST 2008
+    * Added W:O:A:ActivityFacts and W:O:A:ActivityFact.
+    * Dropped support for Perl 5.6.0.
+    * Added Build.PL dependency List::MoreUtils and Params::Validate, 
+        removed XML::Simple.
+    * Added dependency test for TEST_AUTHOR.
+
 0.0.3   Mon Jan 14 23:04:10 EST 2008
     * Added Pod::Manual script in docs/manual.pl to generate pdf
         manual.

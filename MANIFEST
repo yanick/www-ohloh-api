@@ -29,4 +29,3 @@ examples/account_sample.pl
 docs/manual.pl
 Makefile.PL
 META.yml
-t/91-dependencies.t

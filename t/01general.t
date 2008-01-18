@@ -4,7 +4,6 @@ use warnings;
 use Test::More tests => 4;                      # last test to print
 
 use WWW::Ohloh::API;
-use XML::Simple;
 
 my $ohloh = WWW::Ohloh::API->new;
 

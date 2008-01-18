@@ -104,7 +104,7 @@ object.
 =head2 all
 
 Return the retrieved activity facts as a list of
-L<WWW::Ohloh::API::Language> objects.
+L<WWW::Ohloh::API::ActivityFact> objects.
 
 Example:
 

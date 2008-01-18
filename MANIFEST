@@ -10,6 +10,8 @@ lib/WWW/Ohloh/API/Project.pm
 lib/WWW/Ohloh/API/Projects.pm
 lib/WWW/Ohloh/API/Language.pm
 lib/WWW/Ohloh/API/Languages.pm
+lib/WWW/Ohloh/API/ActivityFact.pm
+lib/WWW/Ohloh/API/ActivityFacts.pm
 t/00.load.t
 t/perlcritic.t
 t/pod-coverage.t
@@ -19,8 +21,10 @@ t/02-account.t
 t/50-online-account.t
 t/03-project.t
 t/04-projects.t
+t/06-activityFact.t
 t/51-online-general.t
 t/52-online-language.t
+t/FakeOhloh.pm
 examples/account_sample.pl
 docs/manual.pl
 Makefile.PL

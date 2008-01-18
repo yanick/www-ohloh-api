@@ -4,4 +4,6 @@ _build
 META.yml
 Makefile.PL
 WWW-Ohloh-API-*.tar.gz
+WWW-Ohloh-API-*
 blib
+cover_db

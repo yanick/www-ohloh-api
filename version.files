@@ -15,6 +15,9 @@
                              qr/This document describes \S+ version (\S*)/ ],
     'lib/WWW/Ohloh/API/Languages.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
                              qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/ActivityFacts.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ],
+    'lib/WWW/Ohloh/API/ActivityFact.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
     'README' => qr/WWW-Ohloh-API version (\S+)/,
 );
 

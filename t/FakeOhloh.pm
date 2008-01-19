@@ -25,10 +25,16 @@ sub parser {
 
 sub stash {
     my $self = shift;
+    my ( $url, $xml ) = @_;
+    
+    my $dom = -f 't/samples/'.$xml 
+                ? $self->parser->parse_file( 't/samples/'.$xml )
+                : $self->parser->parse_string( $xml )
+                ;
 
     push @{ $results_of[ $$self ] }, [ 
-        shift,
-        $self->parser->parse_string( shift )->findnodes( '//result[1]' )
+        $url,
+        $dom->findnodes( '//result[1]' )
     ];
 
     return $self;

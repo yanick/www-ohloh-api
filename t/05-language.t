@@ -9,7 +9,7 @@ use Exception::Class;
 ### online stuff ###########################################
 
 SKIP: {
-    skip <<'END_REASON', 6 unless $ENV{OHLOH_KEY};
+    skip <<'END_REASON', 1 unless $ENV{OHLOH_KEY};
 set the environment variable OHLOH_KEY to your api key to enable these tests
 END_REASON
 

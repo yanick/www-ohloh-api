@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;    # last test to print
+use Test::More tests => 22;    # last test to print
 
 use List::MoreUtils qw/ all /;
 require 't/FakeOhloh.pm';
@@ -58,7 +58,7 @@ like $k->as_xml, qr#^<(kudo)>.*</\1>$#, 'kudo->as_xml';
 $ohloh->stash( undef => 'account.xml' );
 my $account = $ohloh->get_account( id => 10 );
 
-my $kudos = $account->kudos;
+$kudos = $account->kudos;
 
 isa_ok $kudos, 'WWW::Ohloh::API::Kudos';
 

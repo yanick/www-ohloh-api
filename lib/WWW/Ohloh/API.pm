@@ -16,6 +16,7 @@ use WWW::Ohloh::API::Project;
 use WWW::Ohloh::API::Projects;
 use WWW::Ohloh::API::Languages;
 use WWW::Ohloh::API::ActivityFacts;
+use WWW::Ohloh::API::Kudos;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.5';
@@ -48,8 +49,28 @@ sub get_account {
     my( $url, $xml ) = $self->_query_server( "accounts/$id.xml" );
 
     return WWW::Ohloh::API::Account->new( 
+        ohloh       => $self,
         request_url => $url,
         xml => $xml->findnodes( 'account[1]' ),
+    );
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_kudos {
+    my $self = shift;
+    my ( $type, $id ) = @_;
+
+    $type eq 'id'
+      or $type eq 'email'
+      or croak "first argument must be 'id' or 'email'";
+
+    $id = md5_hex($id) if $type eq 'email';
+
+    return WWW::Ohloh::API::Kudos->new(
+        ohloh => $self,
+        id    => $id,
     );
 }
 

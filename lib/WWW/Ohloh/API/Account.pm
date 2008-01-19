@@ -12,8 +12,9 @@ our $VERSION = '0.0.5';
 
 use overload '""' => sub { $_[0]->name };
 
+my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
 my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of  :Field :Arg(xml);   
+my @xml_of          :Field  :Arg(xml);   
 
 my @id_of :Field :Set(_set_id) :Get(id);
 my @name_of :Field :Set(_set_name) :Get(name);
@@ -26,7 +27,9 @@ my @location_of :Field :Set(_set_location) :Get(location);
 my @latitude_of :Field :Set(_set_latitude) :Get(latitude);
 my @longitude_of :Field :Set(_set_longitude) :Get(longitude);
 my @country_code_of :Field :Set(_set_country_code) :Get(country_code);
-my @kudo_of :Field Set(_set_kudo) :Get(kudo_score);
+my @kudo_of :Field :Set(_set_kudo) :Get(kudo_score);
+
+my @kudos_of :Field :Arg(kudos); 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -86,6 +89,39 @@ sub kudoScore {
 
 # aliases
 *kudo = *kudoScore;
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub sent_kudos {
+    my $self = shift;
+
+    $kudos_of[ $$self ] ||= $self->_ohloh->get_kudos( id => $self->id );
+
+    return $kudos_of[ $$self ]->sent;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub received_kudos {
+    my $self = shift;
+
+    $kudos_of[ $$self ] ||= $self->_ohloh->get_kudos( id => $self->id );
+
+    return $kudos_of[ $$self ]->received;
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub kudos {
+    my $self = shift;
+
+    return $kudos_of[$$self] ||= $self->_ohloh->get_kudos( id => $self->id );
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 'end of WWW::Ohloh::API::Account';
 __END__

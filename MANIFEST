@@ -12,6 +12,8 @@ lib/WWW/Ohloh/API/Language.pm
 lib/WWW/Ohloh/API/Languages.pm
 lib/WWW/Ohloh/API/ActivityFact.pm
 lib/WWW/Ohloh/API/ActivityFacts.pm
+lib/WWW/Ohloh/API/Kudo.pm
+lib/WWW/Ohloh/API/Kudos.pm
 t/00.load.t
 t/perlcritic.t
 t/pod-coverage.t
@@ -24,7 +26,15 @@ t/04-projects.t
 t/06-activityFact.t
 t/51-online-general.t
 t/52-online-language.t
+t/53-online-activityFact.t
+t/54-online-kudo.t
+t/14-kudo.t
 t/FakeOhloh.pm
+t/samples/account.xml
+t/samples/activity_facts.xml
+t/samples/kudos.xml
+t/samples/kudos_sent.xml
+t/samples/languages.xml
 examples/account_sample.pl
 docs/manual.pl
 Makefile.PL

@@ -1,5 +1,8 @@
 Revision history for WWW-Ohloh-API
 
+0.0.6 Mon Jan 28 22:15:27 EST 2008
+    * Added W:O:A:Kudo and W:O:A:Kudos.
+
 0.0.5 Fri Jan 18 08:35:11 EST 2008
     * Removed XML::Simple mention in tests.
     * Removed test using Perl 5.10 features.

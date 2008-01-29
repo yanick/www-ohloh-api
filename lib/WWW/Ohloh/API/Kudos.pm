@@ -22,8 +22,23 @@ my @received_kudos_of :Field;
 sub as_xml { 
     my $self = shift; 
     my $xml;
+    my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    die "not implemented yet";
+    $w->startTag( 'kudos' );
+
+    if ( my @k = @{ $sent_kudos_of[ $$self] } ) {
+        $w->startTag( 'kudos_sent' );
+        $xml .= $_->as_xml for @k; 
+        $w->endTag;
+    }
+
+    if ( my @k = @{ $received_kudos_of[ $$self] } ) {
+        $w->startTag( 'kudos_received' );
+        $xml .= $_->as_xml for @k; 
+        $w->endTag;
+    }
+
+    $w->endTag;
 
     return $xml; 
 }
@@ -91,36 +106,36 @@ __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Languages - a set of languages as known by Ohloh
+WWW::Ohloh::API::Kudos - Ohloh kudos sent and received by an account
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $languages = $ohloh->get_languages( sort => 'code' );
+    my $kudos = $ohloh->get_kudos( id => $account_id );
 
-    for my $l ( $languages->all ) {
-        print $l->nice_name;
-    }
+    my @received = $kudos->received;
+    my @sent     = $kudos->sent;
 
 =head1 DESCRIPTION
 
-W::O::A::Languages returns the list of languages known to Ohloh.
+W::O::A::Kudos returns the kudos received and given by
+an Ohloh account.
 To be properly populated, it must be created via
-the C<get_languages> method of a L<WWW::Ohloh::API> object.
+the C<get_kudos> method of a L<WWW::Ohloh::API> object. 
 
 =head1 METHODS 
 
 =head2 all
 
 Return the retrieved languages' information as
-L<WWW::Ohloh::API::Language> objects.
+L<WWW::Ohloh::API::Kudos> objects.
 
 =head3 as_xml
 
-Return the languages' information 
-as an XML string.  Note that this is not the exact xml document as returned
+Return the kudos  as an XML string.  
+Note that this is not the same xml document as returned
 by the Ohloh server. 
 
 =head1 SEE ALSO
@@ -130,6 +145,7 @@ by the Ohloh server.
 =item * 
 
 L<WWW::Ohloh::API>, 
+L<WWW::Ohloh::API::Kudo>, 
 L<WWW::Ohloh::API::Language>, 
 L<WWW::Ohloh::API::Project>,
 L<WWW::Ohloh::API::Analysis>, 
@@ -142,7 +158,7 @@ Ohloh API reference: http://www.ohloh.net/api/getting_started
 
 =item * 
 
-Ohloh Account API reference: http://www.ohloh.net/api/reference/language
+Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo
 
 =back
 

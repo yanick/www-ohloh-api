@@ -1,7 +1,8 @@
+
 use strict;
 use warnings;
 
-use Test::More tests => 22;    # last test to print
+use Test::More tests => 23;    # last test to print
 
 use List::MoreUtils qw/ all /;
 require 't/FakeOhloh.pm';
@@ -52,6 +53,8 @@ isa_ok $rx,     'WWW::Ohloh::API::Account', 'receiver()';
 is $sender->name, 'Yanick', 'sender name';
 
 like $k->as_xml, qr#^<(kudo)>.*</\1>$#, 'kudo->as_xml';
+
+like $kudos->as_xml, qr# ^ <(kudos)> .* </\1> $ #x, 'kudos->as_xml';
 
 # via an Account
 

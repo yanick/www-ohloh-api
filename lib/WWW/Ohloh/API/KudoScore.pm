@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::LibXML;
 use XML::Writer;
 
-our $VERSION = '0.0.5';
+our $VERSION = '0.0.6';
 
 my @xml_of :Field :Arg(xml);
 
@@ -129,7 +129,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo_score
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.5
+This document describes WWW::Ohloh::API version 0.0.6
 
 =head1 BUGS AND LIMITATIONS
 

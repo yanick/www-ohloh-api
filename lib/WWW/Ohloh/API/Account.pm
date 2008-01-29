@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
-our $VERSION = '0.0.5';
+our $VERSION = '0.0.6';
 
 use overload '""' => sub { $_[0]->name };
 
@@ -239,7 +239,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.5
+This document describes WWW::Ohloh::API version 0.0.6
 
 =head1 BUGS AND LIMITATIONS
 

@@ -18,6 +18,7 @@ use WWW::Ohloh::API::Languages;
 use WWW::Ohloh::API::ActivityFact;
 use WWW::Ohloh::API::Kudos;
 use WWW::Ohloh::API::ContributorLanguageFact;
+use WWW::Ohloh::API::Enlistment;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.6';
@@ -56,6 +57,26 @@ sub get_account {
     );
 }
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_enlistments {
+    my $self = shift;
+
+    my %param = validate( @_, { project_id => 1 } );
+
+    my ( $url, $xml ) =
+      $self->_query_server( "projects/$param{project_id}/enlistments.xml" );
+
+    return map {
+        WWW::Ohloh::API::Enlistment->new(
+            ohloh       => $self,
+            request_url => $url,
+            xml         => $_
+          )
+    } $xml->findnodes('//enlistment');
+
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -308,7 +329,6 @@ an error is thrown.
 
 Return a set of projects as a L<WWW::Ohloh::API::Projects> object. 
 
-
 =head3 Parameters
 
 =over
@@ -367,6 +387,13 @@ The optional argument I<$analysis> can be either an Ohloh analysis id
 
 Return the list of contributor language facts associated to the 
 contributor I<$c_id> for the project I<$p_id>.
+
+=head2 get_enlistments( project_id => $id )
+
+    my @enlistments = $ohloh->get_enlistments( project_id => 1234 );
+
+Return the list of L<WWW::Ohloh::API::Enlistment> objects pertaining to the
+given project.
 
 =head1 SEE ALSO
 

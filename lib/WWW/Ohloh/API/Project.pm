@@ -7,6 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::Analysis;
+use WWW::Ohloh::API::ContributorFact;
 
 our $VERSION = '0.0.6';
 
@@ -28,6 +29,8 @@ my @rating_count_of :Field :Get(rating_count) :Set(_set_rating_count);
 my @analysis_id_of :Field :Get(analysis_id) :Set(_set_analysis_id);
 my @analysis_of :Field;
 my @facts_of    :Field;
+
+my @contributors_of  :Field;
 
 sub _init :Init {
     my $self = shift;
@@ -104,6 +107,28 @@ sub as_xml {
     $w->endTag;
 
     return $xml;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub contributors {
+    my $self = shift;
+
+    unless ( $contributors_of[ $$self ] ) {
+        my ( $url, $xml ) = $self->_ohloh->_query_server( 
+            'projects/' . $self->id . '/contributors.xml'
+        );
+
+        $contributors_of[ $$self ] = [
+            map { WWW::Ohloh::API::ContributorFact->new( 
+                        request_url => $url,
+                        xml => $_, 
+                        ohloh => $self->_ohloh ) } 
+                $xml->findnodes( '//contributor_fact' )
+        ];
+    }
+
+    return @{ $contributors_of[ $$self ] } ;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

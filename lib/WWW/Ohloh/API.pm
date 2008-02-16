@@ -15,8 +15,9 @@ use WWW::Ohloh::API::Analysis;
 use WWW::Ohloh::API::Project;
 use WWW::Ohloh::API::Projects;
 use WWW::Ohloh::API::Languages;
-use WWW::Ohloh::API::ActivityFacts;
+use WWW::Ohloh::API::ActivityFact;
 use WWW::Ohloh::API::Kudos;
+use WWW::Ohloh::API::ContributorLanguageFact;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.6';
@@ -55,6 +56,31 @@ sub get_account {
     );
 }
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_contributor_language_facts {
+    my $self = shift;
+
+    my %param = validate(
+        @_,
+        {   project_id     => 1,
+            contributor_id => 1,
+        } );
+
+    my ( $url, $xml ) = $self->_query_server(
+        "projects/$param{project_id}/contributors/$param{contributor_id}.xml"
+    );
+
+    return map {
+        WWW::Ohloh::API::ContributorLanguageFact->new(
+            ohloh       => $self,
+            request_url => $url,
+            xml         => $_
+          )
+    } $xml->findnodes('//contributor_language_fact');
+
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -331,6 +357,16 @@ with the I<$project_id> as a L<WWW::Ohloh::API::ActivityFacts> object.
 The optional argument I<$analysis> can be either an Ohloh analysis id 
 (which must be an analysis associated to the project) or the keyword
 'latest'. By default the latest analysis will be queried.
+
+=head2 get_contributor_language_facts( project_id => $p_id,  contributor_id => $c_id )
+
+    my @facts = $ohloh->get_contributor_language_facts(
+        project_id     => 1234,
+        contributor_id => 5678
+    );
+
+Return the list of contributor language facts associated to the 
+contributor I<$c_id> for the project I<$p_id>.
 
 =head1 SEE ALSO
 

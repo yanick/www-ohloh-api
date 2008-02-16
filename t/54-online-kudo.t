@@ -7,7 +7,7 @@ use Test::More;
 use WWW::Ohloh::API;
 
 plan skip_all => <<'END_MSG', 1 unless $ENV{OHLOH_KEY};
-set the OHLOH_KEY to your api key to enable these tests
+set OHLOH_KEY to your api key to enable these tests
 END_MSG
 
 unless ( $ENV{TEST_OHLOH_ACCOUNT} =~ /(id|email):(.+)/ ) {

@@ -9,100 +9,111 @@ use XML::LibXML;
 
 our $VERSION = '0.0.6';
 
-my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of          :Field  :Arg(xml);   
+my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    analysis_id
-    contributor_id
-    contributor_name
-    account_id
-    account_name
-    primary_language_id
-    primary_language_nice_name
-    comment_ratio
-    first_commit_time
-    last_commit_time
-    man_months
-    commits
-    median_commits
-    contributor_language_facts
-/;
+  analysis_id
+  contributor_id
+  contributor_name
+  account_id
+  account_name
+  primary_language_id
+  primary_language_nice_name
+  comment_ratio
+  first_commit_time
+  last_commit_time
+  man_months
+  commits
+  median_commits
+  contributor_language_facts
+  /;
 
-my @analysis_id_of  :Field  :Set(_set_analysis_id) :Get(analysis_id);
-my @contributor_id_of  :Field  :Set(_set_contributor_id) :Get(contributor_id);
-my @contributor_name_of  :Field  :Set(_set_contributor_name) :Get(contributor_name);
-my @account_id_of  :Field  :Set(_set_account_id) :Get(account_id);
-my @account_name_of  :Field  :Set(_set_account_name) :Get(account_name);
-my @primary_language_id_of  :Field  :Set(_set_primary_language_id) :Get(primary_language_id);
-my @primary_language_nice_name_of  :Field  :Set(_set_primary_language_nice_name) :Get(primary_language_nice_name);
-my @comment_ratio_of  :Field  :Set(_set_comment_ratio) :Get(comment_ratio);
-my @first_commit_time_of  :Field  :Set(_set_first_commit_time) :Get(first_commit_time);
-my @last_commit_time_of  :Field  :Set(_set_last_commit_time) :Get(last_commit_time);
-my @man_months_of  :Field  :Set(_set_man_months) :Get(man_months);
-my @commits_of  :Field  :Set(_set_commits) :Get(commits);
-my @median_commits_of  :Field  :Set(_set_median_commits) :Get(median_commits);
-my @contributor_language_facts_of  :Field  :Set(_set_contributor_language_facts) :Get(contributor_language_facts);
+my @analysis_id_of : Field : Set(_set_analysis_id) : Get(analysis_id);
+my @contributor_id_of : Field : Set(_set_contributor_id) :
+  Get(contributor_id);
+my @contributor_name_of : Field : Set(_set_contributor_name) :
+  Get(contributor_name);
+my @account_id_of : Field : Set(_set_account_id) : Get(account_id);
+my @account_name_of : Field : Set(_set_account_name) : Get(account_name);
+my @primary_language_id_of : Field : Set(_set_primary_language_id) :
+  Get(primary_language_id);
+my @primary_language_nice_name_of : Field :
+  Set(_set_primary_language_nice_name) : Get(primary_language_nice_name);
+my @comment_ratio_of : Field : Set(_set_comment_ratio) : Get(comment_ratio);
+my @first_commit_time_of : Field : Set(_set_first_commit_time) :
+  Get(first_commit_time);
+my @last_commit_time_of : Field : Set(_set_last_commit_time) :
+  Get(last_commit_time);
+my @man_months_of : Field : Set(_set_man_months) : Get(man_months);
+my @commits_of : Field : Set(_set_commits) : Get(commits);
+my @median_commits_of : Field : Set(_set_median_commits) :
+  Get(median_commits);
+my @contributor_language_facts_of : Field :
+  Set(_set_contributor_language_facts) : Get(contributor_language_facts);
 
-my @account_of :Field;
-
+my @account_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_analysis_id( $dom->findvalue( "analysis_id/text()" ) );
-    $self->_set_contributor_id( $dom->findvalue( "contributor_id/text()" ) );
-    $self->_set_contributor_name( $dom->findvalue( "contributor_name/text()" ) );
-    $self->_set_account_id( $dom->findvalue( "account_id/text()" ) );
-    $self->_set_account_name( $dom->findvalue( "account_name/text()" ) );
-    $self->_set_primary_language_id( $dom->findvalue( "primary_language_id/text()" ) );
-    $self->_set_primary_language_nice_name( $dom->findvalue( "primarly_language_nice_name/text()" ) );
-    $self->_set_comment_ratio( $dom->findvalue( "comment_ratio/text()" ) );
-    $self->_set_first_commit_time( $dom->findvalue( "first_commit_time/text()" ) );
-    $self->_set_last_commit_time( $dom->findvalue( "last_commit_time/text()" ) );
-    $self->_set_man_months( $dom->findvalue( "man_months/text()" ) );
-    $self->_set_commits( $dom->findvalue( "commits/text()" ) );
-    $self->_set_median_commits( $dom->findvalue( "median_commits/text()" ) );
-    $self->_set_contributor_language_facts( $dom->findvalue( "contributor_language_facts/text()" ) );
+    $self->_set_analysis_id( $dom->findvalue("analysis_id/text()") );
+    $self->_set_contributor_id( $dom->findvalue("contributor_id/text()") );
+    $self->_set_contributor_name(
+        $dom->findvalue("contributor_name/text()") );
+    $self->_set_account_id( $dom->findvalue("account_id/text()") );
+    $self->_set_account_name( $dom->findvalue("account_name/text()") );
+    $self->_set_primary_language_id(
+        $dom->findvalue("primary_language_id/text()") );
+    $self->_set_primary_language_nice_name(
+        $dom->findvalue("primary_language_nice_name/text()") );
+    $self->_set_comment_ratio( $dom->findvalue("comment_ratio/text()") );
+    $self->_set_first_commit_time(
+        $dom->findvalue("first_commit_time/text()") );
+    $self->_set_last_commit_time(
+        $dom->findvalue("last_commit_time/text()") );
+    $self->_set_man_months( $dom->findvalue("man_months/text()") );
+    $self->_set_commits( $dom->findvalue("commits/text()") );
+    $self->_set_median_commits( $dom->findvalue("median_commits/text()") );
+    $self->_set_contributor_language_facts(
+        $dom->findvalue("contributor_language_facts/text()") );
 
 }
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'contributor_fact' );
+    $w->startTag('contributor_fact');
 
-    for my $attr ( @api_fields ) {
+    for my $attr (@api_fields) {
         $w->dataElement( $attr => $self->$attr );
     }
 
-    if ( my $a = $account_of[ $$self ] ) {
+    if ( my $a = $account_of[$$self] ) {
         $xml .= $a->as_xml;
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 sub account {
     my $self = shift;
 
-    return $account_of[ $$self ] if $account_of[ $$self ];
+    return $account_of[$$self] if $account_of[$$self];
 
     my $id = $self->account_id or return;
-    
-    return $account_of[ $$self ] = 
-        $self->_ohloh->get_account( id => $id );
-}
 
+    return $account_of[$$self] = $self->_ohloh->get_account( id => $id );
+}
 
 'end of WWW::Ohloh::API::ContributorFact';
 

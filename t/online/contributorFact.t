@@ -10,8 +10,7 @@ set OHLOH_KEY to your api key to enable these tests
 END_MSG
 
 unless ( $ENV{TEST_OHLOH_PROJECT} ) {
-    plan skip_all =>
-      "set TEST_OHLOH_PROJECT to enable these tests";
+    plan skip_all => "set TEST_OHLOH_PROJECT to enable these tests";
 }
 
 plan 'no_plan';
@@ -23,4 +22,18 @@ diag "using project $ENV{TEST_OHLOH_PROJECT}";
 my $project = $ohloh->get_project( $ENV{TEST_OHLOH_PROJECT} );
 
 my @contributors = $project->contributors;
+
+ok 1, "got contributors";
+
+verify_contributor($_) for @contributors;
+
+sub verify_contributor {
+    my $c = shift;
+
+    diag "doing new contributor";
+
+    like $c->primary_language_nice_name, qr/\w+/,
+      "primary_language_nice_name";
+
+}
 

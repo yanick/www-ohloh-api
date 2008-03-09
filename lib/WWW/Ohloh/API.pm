@@ -16,6 +16,7 @@ use WWW::Ohloh::API::Project;
 use WWW::Ohloh::API::Projects;
 use WWW::Ohloh::API::Languages;
 use WWW::Ohloh::API::ActivityFact;
+use WWW::Ohloh::API::ActivityFacts;
 use WWW::Ohloh::API::Kudos;
 use WWW::Ohloh::API::ContributorLanguageFact;
 use WWW::Ohloh::API::Enlistment;

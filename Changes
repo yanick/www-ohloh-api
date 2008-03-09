@@ -1,7 +1,7 @@
 Revision history for WWW-Ohloh-API
 
 work
-    * Added W:O:A:Enlistment and W:O:A:Repository
+    * Added W:O:A:Enlistment, W:O:A:Repository and W:O:A:Factoid.
     * Changed W:O:A:ContributorFact to reflect API change
         (see http://www.ohloh.net/forums/3492/topics/835)
 

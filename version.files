@@ -8,6 +8,7 @@ for my $m ( qw# API API/Account API/KudoScore API/Analysis API/Project
                 API/ActivityFact 
                 API/Kudo
                 API/Kudos
+                API/Factoid
                 # ) {
 
    $file{"lib/WWW/Ohloh/$m.pm"} = [ qr/\$VERSION\s*=\s*'(.*?)';/, 

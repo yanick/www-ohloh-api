@@ -56,3 +56,7 @@ t/samples/contributor_language_facts.xml
 t/samples/contributors.xml
 t/samples/enlistments.xml
 t/samples/project.xml
+lib/WWW/Ohloh/API/Factoid.pm
+t/factoids.t
+t/online/factoids.t
+t/samples/factoids.xml

@@ -9,5 +9,5 @@ WWW-Ohloh-API-*
 cover_db
 todo
 utils/init_factory
-MANIFEST.bak
 tags
+.*\.bak

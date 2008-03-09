@@ -71,47 +71,62 @@ __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Factoid - collection of statistics about an Ohloh project
+WWW::Ohloh::API::Factoid - A factoid about an Ohloh project
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $facts =  $ohloh->get_activity_facts( $project_id, $analysis);
-    my $fact = $facts->latest;
+    my @factoids =  $ohloh->get_factoids( $project_id );
 
-    print $fact->month, ": ", $fact->contributors;
+    print join "\n", map { $_->type } @factoids;
 
 =head1 DESCRIPTION
 
-W::O::A::Factoid contains monthly statistics about an Ohloh-registered
-project. 
-To be properly populated, it must be retrieved via
-a L<WWW::Ohloh::API::Factoids> object.
+W::O::A::Factoid is a bit of information about a project.
 
 =head1 METHODS 
 
 =head2 API Data Accessors
 
-=head3 month
+=head3 id
 
-Return the month covered by this activity fact.
+    $id = $factoid->id;
 
-=head3 code_added, code_removed, comments_added, comments_removed,
-        blanks_added, blanks_removed
+Return the id of the factoid.  Note that the ids change
+every time that a project is reanalyzed.
 
-Return the number of lines of code/comments/blanks added/removed during this
-month.
+=head3 analysis_id
 
-=head3 commits
+    $id = $factoid->analysis_id;
 
-Return the number of commits made during that month.
+Return the id of the analysis used to create the factoid.
 
-=head3 contributors
+=head3 type
 
-Return the number of contributors having made at least one commit during
-this month.
+    $type = $factoid->type;
+
+Return the factoid type.
+
+=head3 description
+
+    $desc = $factoid->description;
+
+Return a description of the factoid type.
+
+=head3 severity
+
+    $sev = $factoid->severity;
+
+Return the factoid's severity (ranges between -3 and +3).
+
+=head3 license_id
+
+    $license_id = $factoid->license_id;
+
+If the factoid's type is B<FactoidGplConflict>, 
+return the id of the conflicting license.
 
 =head2 Other Methods
 
@@ -127,9 +142,7 @@ by the Ohloh server.
 
 =item * 
 
-L<WWW::Ohloh::API>, 
-L<WWW::Ohloh::ActivitieFacts>,
-L<WWW::Ohloh::API::KudoScore>.
+L<WWW::Ohloh::API>. 
 
 =item *
 

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 require 't/FakeOhloh.pm';
 
@@ -26,3 +26,5 @@ is $f->license_id, q{}, 'license_id()';
 $f = pop @factoids;
 
 is $f->license_id, 5, 'license_id()';
+
+like $f->as_xml, qr#<factoid>.*</factoid>$#, 'as_xml()';

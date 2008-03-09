@@ -20,6 +20,7 @@ use WWW::Ohloh::API::ActivityFacts;
 use WWW::Ohloh::API::Kudos;
 use WWW::Ohloh::API::ContributorLanguageFact;
 use WWW::Ohloh::API::Enlistment;
+use WWW::Ohloh::API::Factoid;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.6';
@@ -77,6 +78,25 @@ sub get_enlistments {
           )
     } $xml->findnodes('//enlistment');
 
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_factoids {
+    my $self = shift;
+
+    my $project_id = shift;
+
+    my ( $url, $xml ) =
+      $self->_query_server("projects/$project_id/factoids.xml");
+
+    return map {
+        WWW::Ohloh::API::Factoid->new(
+            ohloh       => $self,
+            request_url => $url,
+            xml         => $_
+          )
+    } $xml->findnodes('//factoid');
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

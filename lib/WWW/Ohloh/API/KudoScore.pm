@@ -8,41 +8,42 @@ use Object::InsideOut;
 use XML::LibXML;
 use XML::Writer;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @xml_of :Field :Arg(xml);
+my @xml_of : Field : Arg(xml);
 
-my @creation_time_of :Field  :Get(created_at) :Set(_set_created_at);
-my @kudo_rank_of  :Field :Get(kudo_rank) :Set(_set_kudo_rank);
-my @position_of :Field  :Get(position) :Set(_set_position);
-my @max_position_of :Field  :Get(max_position) :Set(_set_max_position);
-my @position_delta_of :Field  :Get(position_delta) :Set(_set_position_delta);
+my @creation_time_of : Field : Get(created_at) : Set(_set_created_at);
+my @kudo_rank_of : Field : Get(kudo_rank) : Set(_set_kudo_rank);
+my @position_of : Field : Get(position) : Set(_set_position);
+my @max_position_of : Field : Get(max_position) : Set(_set_max_position);
+my @position_delta_of : Field : Get(position_delta) :
+  Set(_set_position_delta);
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_created_at( $dom->findvalue( 'created_at/text()' ) );
-    $self->_set_kudo_rank( $dom->findvalue( 'kudo_rank/text()' ) );
-    $self->_set_position( $dom->findvalue( 'position/text()' ) );
-    $self->_set_max_position( $dom->findvalue( 'max_position/text()' ) );
-    $self->_set_position_delta( $dom->findvalue( 'position_delta/text()' ) );
+    $self->_set_created_at( $dom->findvalue('created_at/text()') );
+    $self->_set_kudo_rank( $dom->findvalue('kudo_rank/text()') );
+    $self->_set_position( $dom->findvalue('position/text()') );
+    $self->_set_max_position( $dom->findvalue('max_position/text()') );
+    $self->_set_position_delta( $dom->findvalue('position_delta/text()') );
 }
 
 # aliases
 *rank = *kudo_rank;
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'kudo_score' );
-    $w->dataElement( 'created_at', $self->created_at );
-    $w->dataElement( 'kudo_rank', $self->kudo_rank );
-    $w->dataElement( 'position', $self->position );
-    $w->dataElement( 'max_position', $self->max_position );
+    $w->startTag('kudo_score');
+    $w->dataElement( 'created_at',     $self->created_at );
+    $w->dataElement( 'kudo_rank',      $self->kudo_rank );
+    $w->dataElement( 'position',       $self->position );
+    $w->dataElement( 'max_position',   $self->max_position );
     $w->dataElement( 'position_delta', $self->position_delta );
     $w->endTag;
 
@@ -129,7 +130,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo_score
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

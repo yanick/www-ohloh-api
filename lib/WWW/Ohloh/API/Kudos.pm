@@ -10,37 +10,37 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Kudo;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @ohloh_of          :Field  :Arg(ohloh);
-my @account_id_of     :Field  :Arg(id) :Get(_id);
-my @sent_kudos_of     :Field;
-my @received_kudos_of :Field;
+my @ohloh_of : Field : Arg(ohloh);
+my @account_id_of : Field : Arg(id) : Get(_id);
+my @sent_kudos_of : Field;
+my @received_kudos_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'kudos' );
+    $w->startTag('kudos');
 
-    if ( my @k = @{ $sent_kudos_of[ $$self] } ) {
-        $w->startTag( 'kudos_sent' );
-        $xml .= $_->as_xml for @k; 
+    if ( my @k = @{ $sent_kudos_of[$$self] } ) {
+        $w->startTag('kudos_sent');
+        $xml .= $_->as_xml for @k;
         $w->endTag;
     }
 
-    if ( my @k = @{ $received_kudos_of[ $$self] } ) {
-        $w->startTag( 'kudos_received' );
-        $xml .= $_->as_xml for @k; 
+    if ( my @k = @{ $received_kudos_of[$$self] } ) {
+        $w->startTag('kudos_received');
+        $xml .= $_->as_xml for @k;
         $w->endTag;
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,8 +50,8 @@ sub all {
 
     my %kudos;
 
-    $kudos{ received } = [ $self->received ];
-    $kudos{ sent }     = [ $self->sent ];
+    $kudos{received} = [ $self->received ];
+    $kudos{sent}     = [ $self->sent ];
 
     return %kudos;
 }
@@ -61,21 +61,19 @@ sub all {
 sub received {
     my $self = shift;
 
-    unless( $received_kudos_of[ $$self ] ) {
-        my ( $url, $xml ) = $ohloh_of[ $$self ]->_query_server( 
-            'accounts/' . $self->_id . '/kudos.xml' 
-        );
+    unless ( $received_kudos_of[$$self] ) {
+        my ( $url, $xml ) =
+          $ohloh_of[$$self]
+          ->_query_server( 'accounts/' . $self->_id . '/kudos.xml' );
 
         my @kudos;
-        for my $n ( $xml->findnodes( 'kudo' ) ) {
-            push @kudos, WWW::Ohloh::API::Kudo->new( 
-                xml => $n,
-            );
+        for my $n ( $xml->findnodes('kudo') ) {
+            push @kudos, WWW::Ohloh::API::Kudo->new( xml => $n, );
         }
-        $received_kudos_of[ $$self ] = \@kudos;
+        $received_kudos_of[$$self] = \@kudos;
     }
 
-    return @{ $received_kudos_of[ $$self ] };
+    return @{ $received_kudos_of[$$self] };
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,22 +81,23 @@ sub received {
 sub sent {
     my $self = shift;
 
-    unless( $sent_kudos_of[ $$self ] ) {
-        my ( $url, $xml ) = $ohloh_of[ $$self ]->_query_server( 
-            'accounts/' . $self->_id . '/kudos/sent.xml' 
-        );
+    unless ( $sent_kudos_of[$$self] ) {
+        my ( $url, $xml ) =
+          $ohloh_of[$$self]
+          ->_query_server( 'accounts/' . $self->_id . '/kudos/sent.xml' );
 
         my @kudos;
-        for my $n ( $xml->findnodes( 'kudo' ) ) {
-            push @kudos, WWW::Ohloh::API::Kudo->new( 
-                ohloh => $ohloh_of[ $$self ],
+        for my $n ( $xml->findnodes('kudo') ) {
+            push @kudos,
+              WWW::Ohloh::API::Kudo->new(
+                ohloh => $ohloh_of[$$self],
                 xml   => $n,
-            );
+              );
         }
-        $sent_kudos_of[ $$self ] = \@kudos;
+        $sent_kudos_of[$$self] = \@kudos;
     }
 
-    return @{ $sent_kudos_of[ $$self ] };
+    return @{ $sent_kudos_of[$$self] };
 }
 
 'end of WWW::Ohloh::API::Kudos';
@@ -164,7 +163,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

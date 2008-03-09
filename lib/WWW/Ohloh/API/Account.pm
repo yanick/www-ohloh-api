@@ -8,98 +8,95 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
 use overload '""' => sub { $_[0]->name };
 
-my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of          :Field  :Arg(xml);   
+my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
-my @id_of :Field :Set(_set_id) :Get(id);
-my @name_of :Field :Set(_set_name) :Get(name);
-my @creation_date_of :Field :Set(_set_created_at) :Get(created_at);
-my @update_date_of :Field :Set(_set_updated_at) :Get(updated_at);
-my @homepage_url_of :Field :Set(_set_homepage_url) :Get(homepage_url);
-my @avatar_url_of :Field :Set(_set_avatar_url) :Get(avatar_url);
-my @posts_count_of :Field :Set(_set_posts_count) :Get(posts_count);
-my @location_of :Field :Set(_set_location) :Get(location);
-my @latitude_of :Field :Set(_set_latitude) :Get(latitude);
-my @longitude_of :Field :Set(_set_longitude) :Get(longitude);
-my @country_code_of :Field :Set(_set_country_code) :Get(country_code);
-my @kudo_of :Field :Set(_set_kudo) :Get(kudo_score);
+my @id_of : Field : Set(_set_id) : Get(id);
+my @name_of : Field : Set(_set_name) : Get(name);
+my @creation_date_of : Field : Set(_set_created_at) : Get(created_at);
+my @update_date_of : Field : Set(_set_updated_at) : Get(updated_at);
+my @homepage_url_of : Field : Set(_set_homepage_url) : Get(homepage_url);
+my @avatar_url_of : Field : Set(_set_avatar_url) : Get(avatar_url);
+my @posts_count_of : Field : Set(_set_posts_count) : Get(posts_count);
+my @location_of : Field : Set(_set_location) : Get(location);
+my @latitude_of : Field : Set(_set_latitude) : Get(latitude);
+my @longitude_of : Field : Set(_set_longitude) : Get(longitude);
+my @country_code_of : Field : Set(_set_country_code) : Get(country_code);
+my @kudo_of : Field : Set(_set_kudo) : Get(kudo_score);
 
-my @kudos_of :Field :Arg(kudos); 
+my @kudos_of : Field : Arg(kudos);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_id( $dom->findvalue( 'id/text()' ) );
-    $self->_set_name( $dom->findvalue( 'name/text()' ) );
-    $self->_set_created_at( $dom->findvalue( 'created_at/text()' ) );
-    $self->_set_updated_at( $dom->findvalue( 'updated_at/text()' ) );
-    $self->_set_homepage_url( $dom->findvalue( 'homepage_url/text()' ) );
-    $self->_set_avatar_url( $dom->findvalue( 'avatar_url/text()' ) );
-    $self->_set_posts_count( $dom->findvalue( 'posts_count/text()' ) );
-    $self->_set_location( $dom->findvalue( 'location/text()' ) );
-    $self->_set_country_code( $dom->findvalue( 'country_code/text()' ) );
-    $self->_set_latitude( $dom->findvalue( 'latitude/text()' ) );
-    $self->_set_longitude( $dom->findvalue( 'longitude/text()' ) );
+    $self->_set_id( $dom->findvalue('id/text()') );
+    $self->_set_name( $dom->findvalue('name/text()') );
+    $self->_set_created_at( $dom->findvalue('created_at/text()') );
+    $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
+    $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
+    $self->_set_avatar_url( $dom->findvalue('avatar_url/text()') );
+    $self->_set_posts_count( $dom->findvalue('posts_count/text()') );
+    $self->_set_location( $dom->findvalue('location/text()') );
+    $self->_set_country_code( $dom->findvalue('country_code/text()') );
+    $self->_set_latitude( $dom->findvalue('latitude/text()') );
+    $self->_set_longitude( $dom->findvalue('longitude/text()') );
 
-    if( my( $node ) = $dom->findnodes( 'kudo_score[1]' ) ) {
-        $kudo_of[ $$self ] 
-            = WWW::Ohloh::API::KudoScore->new( xml => $node );
+    if ( my ($node) = $dom->findnodes('kudo_score[1]') ) {
+        $kudo_of[$$self] = WWW::Ohloh::API::KudoScore->new( xml => $node );
     }
 }
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'account' );
-    
-    $w->dataElement( id => $self->id );
-    $w->dataElement( name => $self->name );
-    $w->dataElement( created_at => $self->created_at );
-    $w->dataElement( updated_at => $self->updated_at );
+    $w->startTag('account');
+
+    $w->dataElement( id           => $self->id );
+    $w->dataElement( name         => $self->name );
+    $w->dataElement( created_at   => $self->created_at );
+    $w->dataElement( updated_at   => $self->updated_at );
     $w->dataElement( homepage_url => $self->homepage_url );
-    $w->dataElement( avatar_url => $self->avatar_url );
-    $w->dataElement( posts_count => $self->posts_count );
-    $w->dataElement( location => $self->location );
+    $w->dataElement( avatar_url   => $self->avatar_url );
+    $w->dataElement( posts_count  => $self->posts_count );
+    $w->dataElement( location     => $self->location );
     $w->dataElement( country_code => $self->country_code );
-    $w->dataElement( latitude => $self->latitude );
-    $w->dataElement( longitude => $self->longitude );
+    $w->dataElement( latitude     => $self->latitude );
+    $w->dataElement( longitude    => $self->longitude );
 
     $xml .= $self->kudo->as_xml if $self->kudo;
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 sub kudoScore {
     my $self = shift;
-    return $kudo_of[ $$self ];
+    return $kudo_of[$$self];
 }
 
 # aliases
 *kudo = *kudoScore;
-
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub sent_kudos {
     my $self = shift;
 
-    $kudos_of[ $$self ] ||= $self->_ohloh->get_kudos( id => $self->id );
+    $kudos_of[$$self] ||= $self->_ohloh->get_kudos( id => $self->id );
 
-    return $kudos_of[ $$self ]->sent;
+    return $kudos_of[$$self]->sent;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,11 +104,10 @@ sub sent_kudos {
 sub received_kudos {
     my $self = shift;
 
-    $kudos_of[ $$self ] ||= $self->_ohloh->get_kudos( id => $self->id );
+    $kudos_of[$$self] ||= $self->_ohloh->get_kudos( id => $self->id );
 
-    return $kudos_of[ $$self ]->received;
+    return $kudos_of[$$self]->received;
 }
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -239,7 +235,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

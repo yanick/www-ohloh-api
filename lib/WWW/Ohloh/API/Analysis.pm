@@ -6,55 +6,65 @@ use warnings;
 use Carp;
 use Object::InsideOut;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of  :Field :Arg(xml);   
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
-my @id_of :Field :Get(id) :Set(_set_id);
-my @project_id_of :Field :Get(project_id) :Set(_set_project_id);
-my @updated_at_of :Field :Get(updated_at) :Set(_set_updated_at);
-my @logged_at_of :Field :Get(logged_at) :Set(_set_logged_at);
-my @min_month_of :Field :Get(min_month) :Set(_set_min_month);
-my @max_month_of :Field :Get(max_month) :Set(_set_max_month);
-my @twelve_month_contributor_count_of :Field :Get(twelve_month_contributor_count) :Set(_set_twelve_month_contributor_count);
-my @total_code_lines_of :Field :Get(total_code_lines) :Set(_set_total_code_lines);
-my @main_language_id_of :Field :Get(main_language_id) :Set(_set_main_language_id);
-my @main_language_name_of :Field :Get(main_language_name) :Set(_set_main_language_name);
+my @id_of : Field : Get(id) : Set(_set_id);
+my @project_id_of : Field : Get(project_id) : Set(_set_project_id);
+my @updated_at_of : Field : Get(updated_at) : Set(_set_updated_at);
+my @logged_at_of : Field : Get(logged_at) : Set(_set_logged_at);
+my @min_month_of : Field : Get(min_month) : Set(_set_min_month);
+my @max_month_of : Field : Get(max_month) : Set(_set_max_month);
+my @twelve_month_contributor_count_of : Field :
+  Get(twelve_month_contributor_count) :
+  Set(_set_twelve_month_contributor_count);
+my @total_code_lines_of : Field : Get(total_code_lines) :
+  Set(_set_total_code_lines);
+my @main_language_id_of : Field : Get(main_language_id) :
+  Set(_set_main_language_id);
+my @main_language_name_of : Field : Get(main_language_name) :
+  Set(_set_main_language_name);
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_id( $dom->findvalue( 'id/text()' ) ); 
-    $self->_set_project_id( $dom->findvalue( 'project_id/text()' ) ); 
-    $self->_set_updated_at( $dom->findvalue( 'updated_at/text()' ) ); 
-    $self->_set_logged_at( $dom->findvalue( 'logged_at/text()' ) ); 
-    $self->_set_min_month( $dom->findvalue( 'min_month/text()' ) ); 
-    $self->_set_max_month( $dom->findvalue( 'max_month/text()' ) ); 
-    $self->_set_twelve_month_contributor_count( 
-            $dom->findvalue( 'twelve_month_contributor_count/text()' ) ); 
-    $self->_set_total_code_lines( $dom->findvalue( 'total_code_lines/text()' ) ); 
-    $self->_set_main_language_id( $dom->findvalue( 'main_language_id/text()' ) ); 
-    $self->_set_main_language_name( $dom->findvalue( 'main_language_name/text()' ) ); 
+    $self->_set_id( $dom->findvalue('id/text()') );
+    $self->_set_project_id( $dom->findvalue('project_id/text()') );
+    $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
+    $self->_set_logged_at( $dom->findvalue('logged_at/text()') );
+    $self->_set_min_month( $dom->findvalue('min_month/text()') );
+    $self->_set_max_month( $dom->findvalue('max_month/text()') );
+    $self->_set_twelve_month_contributor_count(
+        $dom->findvalue('twelve_month_contributor_count/text()') );
+    $self->_set_total_code_lines(
+        $dom->findvalue('total_code_lines/text()') );
+    $self->_set_main_language_id(
+        $dom->findvalue('main_language_id/text()') );
+    $self->_set_main_language_name(
+        $dom->findvalue('main_language_name/text()') );
 
     return;
 }
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'analysis' );
-    for my $attr ( qw/ id project_id
-                        updated_at logged_at min_month
-                        max_month twelve_month_contributor_count
-                        total_code_lines
-                        main_language_name
-                        main_language_id
-                        / ) {
+    $w->startTag('analysis');
+    for my $attr (
+        qw/ id project_id
+        updated_at logged_at min_month
+        max_month twelve_month_contributor_count
+        total_code_lines
+        main_language_name
+        main_language_id
+        /
+      ) {
         $w->dataElement( $attr, $self->$attr );
     }
 
@@ -174,7 +184,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

@@ -9,18 +9,19 @@ use XML::LibXML;
 use Readonly;
 use List::MoreUtils qw/ none any /;
 
-use overload  '<>' => \&next;
+use overload '<>' => \&next;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @all_read         :Field :Default(0);
-my @cache_of         :Field;
-my @total_entries_of :Field  :Default(-1);
-my @ohloh_of :Field  :Arg(ohloh);
-my @page_of :Field   :Default(0);
-my @query_of :Field  :Arg(query);
-my @sort_order_of :Field :Arg(sort) :Type(\&WWW::Ohloh::API::Projects::is_allowed_sort);
-my @max_entries_of :Field :Arg(max) :Get(max);
+my @all_read : Field : Default(0);
+my @cache_of : Field;
+my @total_entries_of : Field : Default(-1);
+my @ohloh_of : Field : Arg(ohloh);
+my @page_of : Field : Default(0);
+my @query_of : Field : Arg(query);
+my @sort_order_of : Field : Arg(sort) :
+  Type(\&WWW::Ohloh::API::Projects::is_allowed_sort);
+my @max_entries_of : Field : Arg(max) : Get(max);
 
 Readonly our @ALLOWED_SORTING => map { $_, $_ . '_reverse' }
   qw/ created_at description id name stack_count updated_at /;
@@ -32,19 +33,18 @@ sub is_allowed_sort {
     return any { $s eq $_ } @ALLOWED_SORTING;
 }
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    $cache_of[ $$self ] = [ ];  # initialize to empty array
+    $cache_of[$$self] = [];    # initialize to empty array
 
-    if ( my $s = $sort_order_of[ $$self ] ) {
+    if ( my $s = $sort_order_of[$$self] ) {
         if ( none { $s eq $_ } @ALLOWED_SORTING ) {
-            croak "sorting order given: $s, must be one of the following: ".
-                    join ', ' => @ALLOWED_SORTING;
+            croak "sorting order given: $s, must be one of the following: "
+              . join ', ' => @ALLOWED_SORTING;
         }
     }
 }
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -52,21 +52,21 @@ sub next {
     my $self = shift;
     my $nbr_requested = shift || 1;
 
-    while ( @{ $cache_of[ $$self ] } < $nbr_requested 
-            and not $all_read[ $$self ] ) {
+    while ( @{ $cache_of[$$self] } < $nbr_requested
+        and not $all_read[$$self] ) {
         $self->_gather_more;
     }
 
-    my @bunch = splice @{ $cache_of[ $$self ] }, 0, $nbr_requested;
+    my @bunch = splice @{ $cache_of[$$self] }, 0, $nbr_requested;
 
-    if ( @bunch ) {
-        return wantarray ? @bunch : $bunch[0] ;
+    if (@bunch) {
+        return wantarray ? @bunch : $bunch[0];
     }
 
     # we've nothing else to return
-    
-    $page_of[ $$self ] = 0;
-    $all_read[ $$self ] = 0;
+
+    $page_of[$$self]  = 0;
+    $all_read[$$self] = 0;
 
     return;
 }
@@ -76,47 +76,44 @@ sub next {
 sub _gather_more {
     my $self = shift;
 
-    my ( $url, $xml ) = $ohloh_of[ $$self ]->_query_server( 
-        'projects.xml', {
-            ( query => $query_of[ $$self ] ) x !!$query_of[ $$self ],
-            ( sort => $sort_order_of[ $$self ] ) x !!$sort_order_of[ $$self ],
-            page => ++$page_of[ $$self ]  } );
+    my ( $url, $xml ) = $ohloh_of[$$self]->_query_server(
+        'projects.xml',
+        {   ( query => $query_of[$$self] ) x !!$query_of[$$self],
+            ( sort => $sort_order_of[$$self] ) x !!$sort_order_of[$$self],
+            page => ++$page_of[$$self] } );
 
-    my @new_batch = 
-         map { WWW::Ohloh::API::Project->new( 
-                    ohloh => $ohloh_of[ $$self ],
-                    xml => $_,
-                ) } 
-         $xml->findnodes( 'project' );
-
+    my @new_batch =
+      map {
+        WWW::Ohloh::API::Project->new(
+            ohloh => $ohloh_of[$$self],
+            xml   => $_,
+          )
+      } $xml->findnodes('project');
 
     # get total projects + where we are
 
-    $total_entries_of[ $$self ] = $xml->findvalue( 
-        '/response/items_available/text()' );
+    $total_entries_of[$$self] =
+      $xml->findvalue('/response/items_available/text()');
 
-    my $first_item = $xml->findvalue( 
-          '/response/first_item_position/text()' );
+    my $first_item = $xml->findvalue('/response/first_item_position/text()');
 
-      $all_read[ $$self ] = 1 unless $total_entries_of[ $$self ];
+    $all_read[$$self] = 1 unless $total_entries_of[$$self];
 
-    if ( $first_item + @new_batch - 1 >= $total_entries_of[ $$self ] ) {
-        $all_read[ $$self ] = 1;
+    if ( $first_item + @new_batch - 1 >= $total_entries_of[$$self] ) {
+        $all_read[$$self] = 1;
     }
 
     if ( my $max = $self->max ) {
         if ( $first_item + @new_batch - 1 >= $max ) {
-            @new_batch = splice @new_batch, 0, $max - $first_item;    
-            $all_read[ $$self ] = 1;
+            @new_batch = splice @new_batch, 0, $max - $first_item;
+            $all_read[$$self] = 1;
         }
     }
 
-    push @{ $cache_of[ $$self ] }, @new_batch;
+    push @{ $cache_of[$$self] }, @new_batch;
 
     return;
 }
-
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -129,11 +126,11 @@ sub all {
 
     $self->_gather_more until ( $all_read[$$self] );
 
-    my @bunch = @{ $cache_of[ $$self ] };
-    $cache_of[ $$self ] = [];
+    my @bunch = @{ $cache_of[$$self] };
+    $cache_of[$$self] = [];
 
-    $page_of[ $$self ] = 0;
-    $all_read[ $$self ] = 0;
+    $page_of[$$self]  = 0;
+    $all_read[$$self] = 0;
 
     return @bunch;
 }
@@ -242,7 +239,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/project
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

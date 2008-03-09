@@ -10,44 +10,44 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::ActivityFact;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @ohloh_of      :Field  :Arg(ohloh);
-my @project_of    :Field  :Arg(project);
-my @analysis_of   :Field  :Arg(analysis);
-my @facts_of      :Field;
+my @ohloh_of : Field : Arg(ohloh);
+my @project_of : Field : Arg(project);
+my @analysis_of : Field : Arg(analysis);
+my @facts_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my( $url, $xml ) = $ohloh_of[ $$self ]->_query_server( 
-         "projects/$project_of[ $$self ]/analyses/"
-        ."$analysis_of[ $$self ]/activity_facts.xml"
-    );
+    my ( $url, $xml ) =
+      $ohloh_of[$$self]
+      ->_query_server( "projects/$project_of[ $$self ]/analyses/"
+          . "$analysis_of[ $$self ]/activity_facts.xml" );
 
-    $facts_of[ $$self ] = [ map { WWW::Ohloh::API::ActivityFact->new( xml => $_ ) }
-                                 $xml->findnodes( 'activity_fact' ) ];
+    $facts_of[$$self] =
+      [ map { WWW::Ohloh::API::ActivityFact->new( xml => $_ ) }
+          $xml->findnodes('activity_fact') ];
 
     return;
 }
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'activity_facts' );
+    $w->startTag('activity_facts');
 
-    $xml .= $_->as_xml for @{ $facts_of[ $$self ] };
-   
+    $xml .= $_->as_xml for @{ $facts_of[$$self] };
+
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,22 +55,21 @@ sub as_xml {
 sub all {
     my $self = shift;
 
-    return @{ $facts_of[ $$self ] };
+    return @{ $facts_of[$$self] };
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub latest {
     my $self = shift;
-    return $facts_of[ $$self ][ -1 ];
+    return $facts_of[$$self][-1];
 }
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub total {
     my $self = shift;
-    return scalar @{ $facts_of[ $$self ] };
+    return scalar @{ $facts_of[$$self] };
 }
 
 'end of WWW::Ohloh::API::ActivityFacts';
@@ -146,7 +145,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/activity_fact
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

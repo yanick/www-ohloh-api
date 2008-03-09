@@ -7,45 +7,45 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
 use overload '""' => sub { $_[0]->nice_name };
 
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of  :Field :Arg(xml);   
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    id
-    name
-    nice_name
-    category
-    code
-    comments
-    blanks
-    comment_ratio
-    projects
-    contributors
-    commits
-/;
+  id
+  name
+  nice_name
+  category
+  code
+  comments
+  blanks
+  comment_ratio
+  projects
+  contributors
+  commits
+  /;
 
-my @id_of               :Field :Set(_set_id)        :Get(id);
-my @name_of             :Field :Set(_set_name)      :Get(name);
-my @nice_name_of        :Field :Set(_set_nice_name) :Get(nice_name);
-my @category_of         :Field :Set(_set_category)  :Get(category);
-my @lines_of_code_of    :Field :Set(_set_code)      :Get(code);
-my @comments_of         :Field :Set(_set_comments)  :Get(comments);
-my @comment_ratio_of    :Field :Set(_set_comment_ratio) :Get(comment_ratio);
-my @blanks_of           :Field :Set(_set_blanks)    :Get(blanks);
-my @projects_of         :Field :Set(_set_projects)  :Get(projects);
-my @contributors_of     :Field :Set(_set_contributors) :Get(contributors);
-my @commits_of          :Field :Set(_set_commits)   :Get(commits);
+my @id_of : Field : Set(_set_id) : Get(id);
+my @name_of : Field : Set(_set_name) : Get(name);
+my @nice_name_of : Field : Set(_set_nice_name) : Get(nice_name);
+my @category_of : Field : Set(_set_category) : Get(category);
+my @lines_of_code_of : Field : Set(_set_code) : Get(code);
+my @comments_of : Field : Set(_set_comments) : Get(comments);
+my @comment_ratio_of : Field : Set(_set_comment_ratio) : Get(comment_ratio);
+my @blanks_of : Field : Set(_set_blanks) : Get(blanks);
+my @projects_of : Field : Set(_set_projects) : Get(projects);
+my @contributors_of : Field : Set(_set_contributors) : Get(contributors);
+my @commits_of : Field : Set(_set_commits) : Get(commits);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
     $self->_set_id( $dom->findvalue("id/text()") );
     $self->_set_name( $dom->findvalue("name/text()") );
@@ -62,20 +62,20 @@ sub _init :Init {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'language' );
-   
-    for my $e ( @api_fields ) {
+    $w->startTag('language');
+
+    for my $e (@api_fields) {
         $w->dataElement( $e => $self->$e );
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +214,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/language
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

@@ -10,14 +10,16 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Language;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
-my @ohloh_of      :Field  :Arg(ohloh);
-my @sort_order_of :Field  :Arg(sort)    :Type(\&WWW::Ohloh::API::Languages::is_allowed_sort);
-my @projects_of   :Field;
+my @ohloh_of : Field : Arg(ohloh);
+my @sort_order_of : Field : Arg(sort) :
+  Type(\&WWW::Ohloh::API::Languages::is_allowed_sort);
+my @projects_of : Field;
 
 my @ALLOWED_SORTING;
-Readonly @ALLOWED_SORTING => qw/ total code projects comment_ratio contributors commits name /;
+Readonly @ALLOWED_SORTING =>
+  qw/ total code projects comment_ratio contributors commits name /;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -28,35 +30,36 @@ sub is_allowed_sort {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my ( $url, $xml ) = $ohloh_of[ $$self ]->_query_server( 
-        'languages.xml', { ( sort => $sort_order_of[ $$self ] ) x !!$sort_order_of[ $$self ], } );
+    my ( $url, $xml ) =
+      $ohloh_of[$$self]->_query_server( 'languages.xml',
+        { ( sort => $sort_order_of[$$self] ) x !!$sort_order_of[$$self], } );
 
-    $projects_of[ $$self ] = [ map { WWW::Ohloh::API::Language->new( xml => $_ ) }
-                                 $xml->findnodes( 'language' ) ];
+    $projects_of[$$self] =
+      [ map { WWW::Ohloh::API::Language->new( xml => $_ ) }
+          $xml->findnodes('language') ];
 
     return;
 }
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'languages' );
-   
-    for my $l ( @{ $projects_of[ $$self ] } ) {
+    $w->startTag('languages');
+
+    for my $l ( @{ $projects_of[$$self] } ) {
         $xml .= $l->as_xml;
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +67,7 @@ sub as_xml {
 sub all {
     my $self = shift;
 
-    return @{ $projects_of[ $$self ] };
+    return @{ $projects_of[$$self] };
 }
 
 'end of WWW::Ohloh::API::Languages';
@@ -129,7 +132,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/language
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.6
+This document describes WWW::Ohloh::API version 0.0.7
 
 =head1 BUGS AND LIMITATIONS
 

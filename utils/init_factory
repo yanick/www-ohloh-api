@@ -1,17 +1,15 @@
+
 my @api_fields = qw/
-    month
-    code_added
-    code_removed
-    comments_added
-    comments_removed
-    blanks_added
-    blanks_removed
-    commits
-    contributors
-/;
+id
+analysis_id
+type
+description
+severity
+license_id
+  /;
 
 for ( @api_fields ) {
-    print 'my @', $_, '_of  :Field  :Set(_', $_, 
+    print 'my @', $_, '_of  :Field  :Set(_set_', $_, 
           ') :Get(', $_, ');', "\n";
 }
 

@@ -1,5 +1,9 @@
 Revision history for WWW-Ohloh-API
 
+work
+    * Changed W:O:A:ContributorFact to reflect API change
+        (see http://www.ohloh.net/forums/3492/topics/835)
+
 0.0.6 Mon Jan 28 22:15:27 EST 2008
     * Added W:O:A:Kudo and W:O:A:Kudos.
 

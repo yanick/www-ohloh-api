@@ -1,28 +1,18 @@
-(
-    'lib/WWW/Ohloh/API.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Account.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/KudoScore.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Analysis.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Project.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Projects.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Language.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Languages.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/ActivityFacts.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/ActivityFact.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Kudos.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'lib/WWW/Ohloh/API/Kudo.pm' => [ qr/\$VERSION\s*=\s*'(.*?)';/, 
-                             qr/This document describes \S+ version (\S*)/ ],
-    'README' => qr/WWW-Ohloh-API version (\S+)/,
-);
+my %file;
 
+$file{README} = qr/WWW-Ohloh-API version (\S+)/;
+
+for my $m ( qw# API API/Account API/KudoScore API/Analysis API/Project
+                API/Projects API/Language API/Languages 
+                API/ActivityFacts
+                API/ActivityFact 
+                API/Kudo
+                API/Kudos
+                # ) {
+
+   $file{"lib/WWW/Ohloh/$m.pm"} = [ qr/\$VERSION\s*=\s*'(.*?)';/, 
+                             qr/This document describes \S+ version (\S*)/ ];
+                }
+
+
+%file;

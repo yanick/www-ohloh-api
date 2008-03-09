@@ -11,48 +11,49 @@ use WWW::Ohloh::API::ContributorFact;
 
 our $VERSION = '0.0.6';
 
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @ohloh_of :Field  :Arg(ohloh) :Get( _ohloh );
-my @xml_of  :Field :Arg(xml);   
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @ohloh_of : Field : Arg(ohloh) : Get( _ohloh );
+my @xml_of : Field : Arg(xml);
 
-my @id_of :Field :Get(id) :Set(_set_id) ;
-my @name_of :Field :Get(name) :Set(_set_name) ;
-my @created_at_of :Field :Get(created_at) :Set(_set_created_at) ;
-my @updated_at_of :Field :Get(updated_at) :Set(_set_updated_at) ;
-my @description_of :Field :Get(description) :Set(_set_description);
-my @homepage_url_of :Field :Get(homepage_url) :Set(_set_homepage_url);
-my @download_url_of :Field :Get(download_url) :Set(_set_download_url);
-my @irc_url_of :Field :Get(irc_url) :Set(_set_irc_url);
-my @stack_count_of :Field :Get(stack_count) :Set(_set_stack_count);
-my @average_rating_of :Field :Get(average_rating) :Set(_set_average_rating);
-my @rating_count_of :Field :Get(rating_count) :Set(_set_rating_count);
-my @analysis_id_of :Field :Get(analysis_id) :Set(_set_analysis_id);
-my @analysis_of :Field;
-my @facts_of    :Field;
-my @factoids_of :Field;
+my @id_of : Field : Get(id) : Set(_set_id);
+my @name_of : Field : Get(name) : Set(_set_name);
+my @created_at_of : Field : Get(created_at) : Set(_set_created_at);
+my @updated_at_of : Field : Get(updated_at) : Set(_set_updated_at);
+my @description_of : Field : Get(description) : Set(_set_description);
+my @homepage_url_of : Field : Get(homepage_url) : Set(_set_homepage_url);
+my @download_url_of : Field : Get(download_url) : Set(_set_download_url);
+my @irc_url_of : Field : Get(irc_url) : Set(_set_irc_url);
+my @stack_count_of : Field : Get(stack_count) : Set(_set_stack_count);
+my @average_rating_of : Field : Get(average_rating) :
+  Set(_set_average_rating);
+my @rating_count_of : Field : Get(rating_count) : Set(_set_rating_count);
+my @analysis_id_of : Field : Get(analysis_id) : Set(_set_analysis_id);
+my @analysis_of : Field;
+my @facts_of : Field;
+my @factoids_of : Field;
 
-my @contributors_of  :Field;
+my @contributors_of : Field;
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_id( $dom->findvalue( 'id/text()' ) ); 
-    $self->_set_name( $dom->findvalue( 'name/text()' ) ); 
-    $self->_set_created_at( $dom->findvalue( 'created_at/text()' ) ); 
-    $self->_set_updated_at( $dom->findvalue( 'updated_at/text()' ) ); 
-    $self->_set_description( $dom->findvalue( 'description/text()' ) );
-    $self->_set_homepage_url( $dom->findvalue( 'homepage_url/text()' ) );
-    $self->_set_download_url( $dom->findvalue( 'download_url/text()' ) );
-    $self->_set_irc_url( $dom->findvalue( 'irc_url/text()' ) );
-    $self->_set_stack_count( $dom->findvalue( 'stack_count/text()' ) );
-    $self->_set_average_rating( $dom->findvalue( 'average_rating/text()' ) );
-    $self->_set_rating_count( $dom->findvalue( 'rating_count/text()' ) );
-    $self->_set_analysis_id( $dom->findvalue( 'analysis_id/text()' ) );
+    $self->_set_id( $dom->findvalue('id/text()') );
+    $self->_set_name( $dom->findvalue('name/text()') );
+    $self->_set_created_at( $dom->findvalue('created_at/text()') );
+    $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
+    $self->_set_description( $dom->findvalue('description/text()') );
+    $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
+    $self->_set_download_url( $dom->findvalue('download_url/text()') );
+    $self->_set_irc_url( $dom->findvalue('irc_url/text()') );
+    $self->_set_stack_count( $dom->findvalue('stack_count/text()') );
+    $self->_set_average_rating( $dom->findvalue('average_rating/text()') );
+    $self->_set_rating_count( $dom->findvalue('rating_count/text()') );
+    $self->_set_analysis_id( $dom->findvalue('analysis_id/text()') );
 
-    if ( my( $n ) = $dom->findnodes( 'analysis[1]' ) ) {
-        $analysis_of[ $$self ] = WWW::Ohloh::API::Analysis->new( xml => $n );
+    if ( my ($n) = $dom->findnodes('analysis[1]') ) {
+        $analysis_of[$$self] = WWW::Ohloh::API::Analysis->new( xml => $n );
     }
 
     return;
@@ -62,49 +63,57 @@ sub _init :Init {
 
 sub analysis {
     my $self = shift;
-    my $id = shift;
+    my $id   = shift;
 
-    if ( $id or not $analysis_of[ $$self ] ) {
-        $analysis_of[ $$self ] = 
-            $ohloh_of[ $$self ]->get_analysis( $self->id, $id );
-        $analysis_id_of[ $$self ] = $analysis_of[ $$self ]->id;
+    if ( $id or not $analysis_of[$$self] ) {
+        $analysis_of[$$self] =
+          $ohloh_of[$$self]->get_analysis( $self->id, $id );
+        $analysis_id_of[$$self] = $analysis_of[$$self]->id;
     }
 
-    return $analysis_of[ $$self ]
+    return $analysis_of[$$self];
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub activity_facts {
     my $self = shift;
-    my $id = shift;
+    my $id   = shift;
 
-    if ( $id or not $facts_of[ $$self ] ) {
-        $facts_of[ $$self ] = $ohloh_of[ $$self ]->get_activity_facts( 
-            $self->id, 
-            $id || $self->analysis_id || 'latest'
-        );
+    if ( $id or not $facts_of[$$self] ) {
+        $facts_of[$$self] =
+          $ohloh_of[$$self]->get_activity_facts( $self->id,
+            $id || $self->analysis_id || 'latest' );
     }
 
-    return $facts_of[ $$self ];
+    return $facts_of[$$self];
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
+sub as_xml {
     my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'project' );
-    for my $attr ( qw/ id name created_at updated_at 
-                        description homepage_url
-                        download_url irc_url stack_count
-                        average_rating rating_count
-                        analysis_id / ) {
+    $w->startTag('project');
+    for my $attr (
+        qw/ id name created_at updated_at
+        description homepage_url
+        download_url irc_url stack_count
+        average_rating rating_count
+        analysis_id /
+      ) {
         $w->dataElement( $attr, $self->$attr );
     }
-    $xml .= $self->analysis->as_xml if $analysis_of[ $$self ];
+    $xml .= $self->analysis->as_xml if $analysis_of[$$self];
+
+    if ( my $factoids = $factoids_of[$$self] ) {
+        $xml .= '<factoids>';
+        $xml .= $_->as_xml for @$factoids;
+        $xml .= '</factoids>';
+    }
+
     $w->endTag;
 
     return $xml;
@@ -115,35 +124,34 @@ sub as_xml {
 sub contributors {
     my $self = shift;
 
-    unless ( $contributors_of[ $$self ] ) {
-        my ( $url, $xml ) = $self->_ohloh->_query_server( 
-            'projects/' . $self->id . '/contributors.xml'
-        );
+    unless ( $contributors_of[$$self] ) {
+        my ( $url, $xml ) = $self->_ohloh->_query_server(
+            'projects/' . $self->id . '/contributors.xml' );
 
-        $contributors_of[ $$self ] = [
-            map { WWW::Ohloh::API::ContributorFact->new( 
-                        request_url => $url,
-                        xml => $_, 
-                        ohloh => $self->_ohloh ) } 
-                $xml->findnodes( '//contributor_fact' )
-        ];
+        $contributors_of[$$self] = [
+            map {
+                WWW::Ohloh::API::ContributorFact->new(
+                    request_url => $url,
+                    xml         => $_,
+                    ohloh       => $self->_ohloh
+                  )
+              } $xml->findnodes('//contributor_fact') ];
     }
 
-    return @{ $contributors_of[ $$self ] } ;
+    return @{ $contributors_of[$$self] };
 }
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub factoids {
     my $self = shift;
 
-    unless( defined $factoids_of[ $$self ] ) {
-        $factoids_of[ $$self ] = 
-            [ $ohloh_of[ $$self ]->get_factoids( $self->id ) ];
+    unless ( defined $factoids_of[$$self] ) {
+        $factoids_of[$$self] =
+          [ $ohloh_of[$$self]->get_factoids( $self->id ) ];
     }
 
-    return @{ $factoids_of[ $$self ] };
+    return @{ $factoids_of[$$self] };
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -271,6 +279,10 @@ as L<WWW::Ohloh::API::Factoid> objects.
 Return the account information (including the kudo score if it applies)
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server.
+
+Factoids will be included in the xml output if
+they have been queried prior to the call to I<as_xml>.
+
 
 =head1 SEE ALSO
 

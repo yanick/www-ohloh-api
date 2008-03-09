@@ -9,8 +9,8 @@ plan skip_all => <<'END_MSG', 1 unless $ENV{OHLOH_KEY};
 set OHLOH_KEY to your api key to enable these tests
 END_MSG
 
-my $p_id = $ENV{TEST_OHLOH_PROJECT} 
-    or plan skip_all => "set TEST_OHLOH_PROJECT to enable these tests";
+my $p_id = $ENV{TEST_OHLOH_PROJECT}
+  or plan skip_all => "set TEST_OHLOH_PROJECT to enable these tests";
 
 plan 'no_plan';
 
@@ -19,9 +19,9 @@ my $ohloh = WWW::Ohloh::API->new( debug => 1, api_key => $ENV{OHLOH_KEY} );
 diag "using project $p_id";
 
 my @enlistments = $ohloh->get_enlistments( project_id => $p_id )
-    or diag "no enlistments found";
+  or diag "no enlistments found";
 
-validate_enlistment( $_ ) for @enlistments;
+validate_enlistment($_) for @enlistments;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -30,8 +30,8 @@ sub validate_enlistment {
 
     diag "enlistment";
 
-    like $e->id, qr/^\d+$/, 'id()';
-    like $e->project_id, qr/^\d+$/, 'project_id()';
+    like $e->id,            qr/^\d+$/, 'id()';
+    like $e->project_id,    qr/^\d+$/, 'project_id()';
     like $e->repository_id, qr/^\d+$/, 'repository_id()';
 
     validate_repository( $e->repository );
@@ -50,7 +50,7 @@ sub validate_repository {
     $r->module_name;
     $r->username;
     $r->password;
-    like $r->logged_at => qr/20\d\d/, 'logged_at';
-    like $r->commits => qr/^\d+$/, 'commits()';
+    like $r->logged_at        => qr/20\d\d/,             'logged_at';
+    like $r->commits          => qr/^\d+$/,              'commits()';
     like $r->ohloh_job_status => qr/^(success|failed)$/, 'ohloh_job_status';
 }

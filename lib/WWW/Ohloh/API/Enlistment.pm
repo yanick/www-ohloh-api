@@ -11,60 +11,57 @@ use WWW::Ohloh::API::Repository;
 
 our $VERSION = '0.0.6';
 
-my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of          :Field  :Arg(xml);   
+my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    id
-    project_id
-    repository_id
-/;
+  id
+  project_id
+  repository_id
+  /;
 
-my @id_of  :Field  :Set(_set_id) :Get(id);
-my @project_id_of  :Field  :Set(_set_project_id) :Get(project_id);
-my @repository_id_of  :Field  :Set(_set_repository_id) :Get(repository_id);
+my @id_of : Field : Set(_set_id) : Get(id);
+my @project_id_of : Field : Set(_set_project_id) : Get(project_id);
+my @repository_id_of : Field : Set(_set_repository_id) : Get(repository_id);
 
-my @repository_of :Field;
-
+my @repository_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_id( $dom->findvalue( "id/text()" ) );
-    $self->_set_project_id( $dom->findvalue( "project_id/text()" ) );
-    $self->_set_repository_id( $dom->findvalue( "repository_id/text()" ) );
+    $self->_set_id( $dom->findvalue("id/text()") );
+    $self->_set_project_id( $dom->findvalue("project_id/text()") );
+    $self->_set_repository_id( $dom->findvalue("repository_id/text()") );
 
-    $repository_of[ $$self ] = WWW::Ohloh::API::Repository->new(
-        xml => $dom->findnodes( 'repository[1]' ),
+    $repository_of[$$self] = WWW::Ohloh::API::Repository->new(
+        xml   => $dom->findnodes('repository[1]'),
         ohloh => $self->_ohloh,
     );
 }
-
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub repository {
     my $self = shift;
 
-    return $repository_of[ $$self ];
+    return $repository_of[$$self];
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'enlistment' );
+    $w->startTag('enlistment');
 
-    for my $attr ( @api_fields ) {
+    for my $attr (@api_fields) {
         $w->dataElement( $attr => $self->$attr );
     }
 
@@ -72,7 +69,7 @@ sub as_xml {
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 'end of WWW::Ohloh::API::Enlistment';

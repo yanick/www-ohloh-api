@@ -9,62 +9,63 @@ use XML::LibXML;
 
 our $VERSION = '0.0.6';
 
-my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of          :Field  :Arg(xml);   
+my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    id
-    type
-    url
-    module_name
-    username
-    password
-    logged_at
-    commits
-    ohloh_job_status
-/;
+  id
+  type
+  url
+  module_name
+  username
+  password
+  logged_at
+  commits
+  ohloh_job_status
+  /;
 
-my @id_of  :Field  :Set(_set_id) :Get(id);
-my @type_of  :Field  :Set(_set_type) :Get(type);
-my @url_of  :Field  :Set(_set_url) :Get(url);
-my @module_name_of  :Field  :Set(_set_module_name) :Get(module_name);
-my @username_of  :Field  :Set(_set_username) :Get(username);
-my @password_of  :Field  :Set(_set_password) :Get(password);
-my @logged_at_of  :Field  :Set(_set_logged_at) :Get(logged_at);
-my @commits_of  :Field  :Set(_set_commits) :Get(commits);
-my @ohloh_job_status_of  :Field  :Set(_set_ohloh_job_status) :Get(ohloh_job_status);
+my @id_of : Field : Set(_set_id) : Get(id);
+my @type_of : Field : Set(_set_type) : Get(type);
+my @url_of : Field : Set(_set_url) : Get(url);
+my @module_name_of : Field : Set(_set_module_name) : Get(module_name);
+my @username_of : Field : Set(_set_username) : Get(username);
+my @password_of : Field : Set(_set_password) : Get(password);
+my @logged_at_of : Field : Set(_set_logged_at) : Get(logged_at);
+my @commits_of : Field : Set(_set_commits) : Get(commits);
+my @ohloh_job_status_of : Field : Set(_set_ohloh_job_status) :
+  Get(ohloh_job_status);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    for my $f ( @api_fields ) {
+    for my $f (@api_fields) {
         my $m = "_set_$f";
 
-        $self->$m( $dom->findvalue( "$f/text()" ) );
+        $self->$m( $dom->findvalue("$f/text()") );
     }
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'repository' );
+    $w->startTag('repository');
 
-    for my $attr ( @api_fields ) {
+    for my $attr (@api_fields) {
         $w->dataElement( $attr => $self->$attr );
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 'end of WWW::Ohloh::API::Repository';

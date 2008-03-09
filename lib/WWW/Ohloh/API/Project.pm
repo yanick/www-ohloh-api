@@ -29,6 +29,7 @@ my @rating_count_of :Field :Get(rating_count) :Set(_set_rating_count);
 my @analysis_id_of :Field :Get(analysis_id) :Set(_set_analysis_id);
 my @analysis_of :Field;
 my @facts_of    :Field;
+my @factoids_of :Field;
 
 my @contributors_of  :Field;
 
@@ -129,6 +130,20 @@ sub contributors {
     }
 
     return @{ $contributors_of[ $$self ] } ;
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub factoids {
+    my $self = shift;
+
+    unless( defined $factoids_of[ $$self ] ) {
+        $factoids_of[ $$self ] = 
+            [ $ohloh_of[ $$self ]->get_factoids( $self->id ) ];
+    }
+
+    return @{ $factoids_of[ $$self ] };
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,6 +256,14 @@ called, the latest one will be used.
     $project->analysis( 789 );  
     $specific = $project->activity_facts;      # equivalent to previous example
 
+
+=head3 factoids
+
+    @factoids = $project->factoids;
+
+Return the factoids associated with the project
+as L<WWW::Ohloh::API::Factoid> objects.
+
 =head2 Other Methods
 
 =head3 as_xml
@@ -257,6 +280,7 @@ by the Ohloh server.
 
 L<WWW::Ohloh::API>, 
 L<WWW::Ohloh::API::KudoScore>, 
+L<WWW::Ohloh::API::Factoid>, 
 L<WWW::Ohloh::API::Analysis>, 
 L<WWW::Ohloh::API::Account>.
 

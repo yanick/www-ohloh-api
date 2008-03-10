@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+no warnings qw/ uninitialized /;
 
 use Test::More;
 
@@ -11,57 +12,60 @@ plan skip_all =>
 
 plan skip_all => 'test requires Perl 5.10 (or greater)' unless $] >= 5.010;
 
-plan tests => 1;
+eval {    # because of 5.10 feature
 
-my @ignore = qw/ /;
+    plan tests => 1;
 
-ok dependency_check_of('META');
+    my @ignore = qw/ /;
 
-sub dependency_check_of {
-    my @to_verify = @_;
+    ok dependency_check_of('META');
 
-    if ( 'META' ~~ @to_verify ) {
-        @to_verify = grep { $_ ne 'META' } @to_verify;
-        open my $meta_fh, '<', 'META.yml' or die;
-        while (<$meta_fh>) {
-            next unless /file: (?<filename>\S+)/;
-            my $f = $+{filename};
-            $f =~ s#^lib/##;
-            $f =~ s#/#::#g if $f =~ s#\.pm$##;
-            push @to_verify, $f;
+    sub dependency_check_of {
+        my @to_verify = @_;
+
+        if ( 'META' ~~ @to_verify ) {
+            @to_verify = grep { $_ ne 'META' } @to_verify;
+            open my $meta_fh, '<', 'META.yml' or die;
+            while (<$meta_fh>) {
+                next unless /file: (?<filename>\S+)/;
+                my $f = $+{filename};
+                $f =~ s#^lib/##;
+                $f =~ s#/#::#g if $f =~ s#\.pm$##;
+                push @to_verify, $f;
+            }
         }
+
+        push @ignore, @to_verify;    # can't depend on yourself... (sic)
+
+        # load the declared dependencies
+        open my $build_fh, '<', 'Build.PL' or die;
+        $/ = undef;
+        <$build_fh> =~ /requires \s+ => \s+ { (?<modules>.*?) } /sx or die;
+
+        my %depends = eval $+{modules};
+
+        eval "use $_" for keys %depends;
+
+        my $success = 1;
+
+        unshift @INC, sub {
+            my $f = $_[1];
+            $f =~ s#/#::#g;
+            $f =~ s#\.pm$##;
+
+            return if $f ~~ @ignore;
+
+            print "\tneed to include $f?\n";
+
+            $success = 0;
+        };
+
+        for (@to_verify) {
+            eval "use $_";
+            warn "couldn't use '$_': $@\n" if $@;
+        }
+
+        return $success;
     }
 
-    push @ignore, @to_verify;    # can't depend on yourself... (sic)
-
-    # load the declared dependencies
-    open my $build_fh, '<', 'Build.PL' or die;
-    $/ = undef;
-    <$build_fh> =~ /requires \s+ => \s+ { (?<modules>.*?) } /sx or die;
-
-    my %depends = eval $+{modules};
-
-    eval "use $_" for keys %depends;
-
-    my $success = 1;
-
-    unshift @INC, sub {
-        my $f = $_[1];
-        $f =~ s#/#::#g;
-        $f =~ s#\.pm$##;
-
-        return if $f ~~ @ignore;
-
-        print "\tneed to include $f?\n";
-
-        $success = 0;
-    };
-
-    for (@to_verify) {
-        eval "use $_";
-        warn "couldn't use '$_': $@\n" if $@;
-    }
-
-    return $success;
-}
-
+};

@@ -1,5 +1,9 @@
 Revision history for WWW-Ohloh-API
 
+0.0.8 Tue Mar 11 09:07:53 EDT 2008
+    * Wrapped Perl 5.10-specific test in eval{} so early Perls don't 
+        fail the test.
+
 0.0.7 Sun Mar  9 18:36:32 EDT 2008
     * Added W:O:A:Enlistment, W:O:A:Repository and W:O:A:Factoid.
     * Changed W:O:A:ContributorFact to reflect API change

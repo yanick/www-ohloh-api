@@ -10,7 +10,7 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::ActivityFact;
 
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @project_of : Field : Arg(project);
@@ -145,7 +145,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/activity_fact
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.7
+This document describes WWW::Ohloh::API version 0.0.8
 
 =head1 BUGS AND LIMITATIONS
 

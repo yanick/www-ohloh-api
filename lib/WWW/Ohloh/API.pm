@@ -23,7 +23,7 @@ use WWW::Ohloh::API::Enlistment;
 use WWW::Ohloh::API::Factoid;
 use Digest::MD5 qw/ md5_hex /;
 
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
 
@@ -436,7 +436,7 @@ How to obtain an Ohloh API key: http://www.ohloh.net/api_keys/new
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.7
+This document describes WWW::Ohloh::API version 0.0.8
 
 =head1 BUGS AND LIMITATIONS
 

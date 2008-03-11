@@ -10,7 +10,7 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Language;
 
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @sort_order_of : Field : Arg(sort) :
@@ -132,7 +132,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/language
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.7
+This document describes WWW::Ohloh::API version 0.0.8
 
 =head1 BUGS AND LIMITATIONS
 

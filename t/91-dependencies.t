@@ -12,7 +12,7 @@ plan skip_all =>
 
 plan skip_all => 'test requires Perl 5.10 (or greater)' unless $] >= 5.010;
 
-eval {    # because of 5.10 feature
+eval <<'END_TEST';    # because of 5.10 feature
 
     plan tests => 1;
 
@@ -69,3 +69,4 @@ eval {    # because of 5.10 feature
     }
 
 };
+END_TEST

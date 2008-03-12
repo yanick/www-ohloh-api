@@ -28,6 +28,8 @@ my @description_of : Field : Set(_set_description) : Get(description);
 my @severity_of : Field : Set(_set_severity) : Get(severity);
 my @license_id_of : Field : Set(_set_license_id) : Get(license_id);
 
+my @ohloh_of : Field : Arg(ohloh);
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub _init : Init {

@@ -1,5 +1,11 @@
 Revision history for WWW-Ohloh-API
 
+0.0.9 
+    * Fixed bug in W:O:A:Factoid.
+    * Changed the wrapping of 5.10-tests to be eval "", not eval {}.
+    * Put online and author tests in their own directories.
+    
+
 0.0.8 Tue Mar 11 09:07:53 EDT 2008
     * Wrapped Perl 5.10-specific test in eval{} so early Perls don't 
         fail the test.

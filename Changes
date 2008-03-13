@@ -1,6 +1,6 @@
 Revision history for WWW-Ohloh-API
 
-0.0.9 
+0.0.9 Wed Mar 12 21:10:09 EDT 2008
     * Fixed bug in W:O:A:Factoid.
     * Changed the wrapping of 5.10-tests to be eval "", not eval {}.
     * Put online and author tests in their own directories.

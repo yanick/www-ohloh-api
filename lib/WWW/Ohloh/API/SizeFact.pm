@@ -15,13 +15,13 @@ my @request_url_of : Field : Arg(request_url) : Get( request_url );
 my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    month
-    code
-    comments
-    blanks
-    comment_ratio
-    commits
-    man_months
+  month
+  code
+  comments
+  blanks
+  comment_ratio
+  commits
+  man_months
   /;
 
 my @month_of : Field : Set(_set_month) : Get(month);
@@ -37,8 +37,8 @@ my @man_months_of : Field : Set(_set_man_months) : Get(man_months);
 sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[$$self] or return; 
-    
+    my $dom = $xml_of[$$self] or return;
+
     for my $f (@api_fields) {
         my $m = "_set_$f";
 

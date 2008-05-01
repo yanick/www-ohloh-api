@@ -44,12 +44,11 @@ my @parser_of : Field;
 sub get_size_facts {
     my $self = shift;
 
-    my( $project_id, $analysis_id ) =
+    my ( $project_id, $analysis_id ) =
       validate_pos( @_, 1, { default => 'latest' }, );
 
-    my ( $url, $xml ) =
-      $self->_query_server(
-        "projects/$project_id/analyses/$analysis_id/size_facts.xml" );
+    my ( $url, $xml ) = $self->_query_server(
+        "projects/$project_id/analyses/$analysis_id/size_facts.xml");
 
     return map {
         WWW::Ohloh::API::SizeFact->new(

@@ -21,6 +21,7 @@ use WWW::Ohloh::API::Kudos;
 use WWW::Ohloh::API::ContributorLanguageFact;
 use WWW::Ohloh::API::Enlistment;
 use WWW::Ohloh::API::Factoid;
+use WWW::Ohloh::API::SizeFact;
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.9';
@@ -37,6 +38,28 @@ my @user_agent_of : Field;
 my @debugging : Field : Arg(debug) : Default(0) : Std(debug);
 
 my @parser_of : Field;
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_size_facts {
+    my $self = shift;
+
+    my( $project_id, $analysis_id ) =
+      validate_pos( @_, 1, { default => 'latest' }, );
+
+    my ( $url, $xml ) =
+      $self->_query_server(
+        "projects/$project_id/analyses/$analysis_id/size_facts.xml" );
+
+    return map {
+        WWW::Ohloh::API::SizeFact->new(
+            ohloh       => $self,
+            request_url => $url,
+            xml         => $_
+          )
+    } $xml->findnodes('//size_fact');
+
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -410,6 +433,13 @@ contributor I<$c_id> for the project I<$p_id>.
 
 Return the list of L<WWW::Ohloh::API::Enlistment> objects pertaining to the
 given project.
+
+=head2 get_size_facts( $project_id, $analysis_id )
+
+Return the list of L<WWW::Ohloh::API::SizeFact> objects pertaining to the
+given project and analysis. If I<$analysis_id> is not provided, it defaults
+to the latest analysis done on the project.
+
 
 =head1 SEE ALSO
 

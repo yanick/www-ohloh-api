@@ -8,6 +8,8 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
+use overload '@{}' => \&_overload_array_ref;
+
 our $VERSION = '0.0.9';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
@@ -46,6 +48,32 @@ sub _init : Init {
     }
 
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub _overload_array_ref {
+    my $self = shift;
+
+    return [ $self->stats ];
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub stats {
+    my $self = shift;
+
+    return map { $self->$_ } qw/
+      month
+      commits
+      code
+      blanks
+      comments
+      comment_ratio
+      man_months
+      /;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub as_xml {
     my $self = shift;
@@ -116,6 +144,13 @@ The fraction of net lines which are comments as of the end of this month.
 
 The cumulative total months of effort expended by all contributors on this project, including this month.
 
+=head3 stats
+
+ ( $month, $commits, $code, $blanks, $comments, $comment_ratio, $man_month )
+    = $size_fact->stats;
+
+Return the facts as an array.
+
 =head2 Other Methods
 
 =head3 as_xml
@@ -123,6 +158,16 @@ The cumulative total months of effort expended by all contributors on this proje
 Return the size fact
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server.
+
+=head2 Overloading
+
+=head3 Array reference
+
+    @stats = @$size_fact;   # equivalent to 
+                            # @stats = $size_fact->stats
+    
+Using the object as an array reference can be used as a 
+shortcut for the method I<stats>.
 
 =head1 SEE ALSO
 

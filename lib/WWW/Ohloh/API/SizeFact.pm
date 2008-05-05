@@ -8,8 +8,6 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
-use overload '@{}' => \&_overload_array_ref;
-
 our $VERSION = '0.0.9';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
@@ -51,7 +49,7 @@ sub _init : Init {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _overload_array_ref {
+sub _overload_array_ref : Arrayify {
     my $self = shift;
 
     return [ $self->stats ];

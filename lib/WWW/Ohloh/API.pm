@@ -10,6 +10,7 @@ use LWP::UserAgent;
 use Readonly;
 use XML::LibXML;
 use Params::Validate qw(:all);
+
 use WWW::Ohloh::API::Account;
 use WWW::Ohloh::API::Analysis;
 use WWW::Ohloh::API::Project;
@@ -22,6 +23,8 @@ use WWW::Ohloh::API::ContributorLanguageFact;
 use WWW::Ohloh::API::Enlistment;
 use WWW::Ohloh::API::Factoid;
 use WWW::Ohloh::API::SizeFact;
+use WWW::Ohloh::API::Stack;
+
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '0.0.9';
@@ -38,6 +41,43 @@ my @user_agent_of : Field;
 my @debugging : Field : Arg(debug) : Default(0) : Std(debug);
 
 my @parser_of : Field;
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_account_stack {
+    my $self = shift;
+
+    my $id = shift;
+
+    $id = md5_hex($id) if -1 < index $id, '@';    # it's an email
+
+    my ( $url, $xml ) =
+      $self->_query_server("accounts/$id/stacks/default.xml");
+
+    return WWW::Ohloh::API::Stack->new(
+        ohloh       => $self,
+        request_url => $url,
+        xml         => $xml->findnodes('stack[1]'),
+    );
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub get_project_stacks {
+    my $self = shift;
+
+    my $project = shift;
+
+    my ( $url, $xml ) = $self->_query_server("projects/$project/stacks.xml");
+
+    return map {
+        WWW::Ohloh::API::Stack->new(
+            ohloh       => $self,
+            request_url => $url,
+            xml         => $_,
+          )
+    } $xml->findnodes('//result/stack');
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -438,6 +478,17 @@ given project.
 Return the list of L<WWW::Ohloh::API::SizeFact> objects pertaining to the
 given project and analysis. If I<$analysis_id> is not provided, it defaults
 to the latest analysis done on the project.
+
+=head2 get_project_stacks( $project_id ) 
+
+Return the list of stacks containing the project as 
+L<WWW::Ohloh::API::Stack>
+objects.
+
+=head2 get_account_stack( $account_id )
+
+Return the stack associated with the account as an 
+L<WWW::Ohloh::API::Stack> object.
 
 
 =head1 SEE ALSO

@@ -14,6 +14,10 @@ lib/WWW/Ohloh/API/ActivityFact.pm
 lib/WWW/Ohloh/API/ActivityFacts.pm
 lib/WWW/Ohloh/API/Kudo.pm
 lib/WWW/Ohloh/API/Kudos.pm
+lib/WWW/Ohloh/API/SizeFact.pm
+lib/WWW/Ohloh/API/Stack.pm
+lib/WWW/Ohloh/API/StackEntry.pm
+t/Validators.pm
 t/00.load.t
 t/author/perlcritic.t
 t/author/pod-coverage.t
@@ -24,10 +28,14 @@ t/online/account.t
 t/03-project.t
 t/04-projects.t
 t/06-activityFact.t
+t/sizeFact.t
 t/online/general.t
 t/online/language.t
 t/online/activityFact.t
 t/online/kudo.t
+t/online/sizeFacts.t
+t/online/stack.t
+t/project_stacks.t
 t/14-kudo.t
 t/FakeOhloh.pm
 t/samples/account.xml
@@ -35,6 +43,10 @@ t/samples/activity_facts.xml
 t/samples/kudos.xml
 t/samples/kudos_sent.xml
 t/samples/languages.xml
+t/samples/size_facts.xml
+t/samples/stack.xml
+t/samples/stacks.xml
+t/samples/stacks_project.xml
 examples/account_sample.pl
 docs/manual.pl
 Makefile.PL

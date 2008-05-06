@@ -1,6 +1,7 @@
 *.bak
 tags
 *.swp
+*.swo
 Build
 _build
 META.yml

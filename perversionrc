@@ -13,6 +13,8 @@ for my $m ( File::Find::Rule->file->name( '*.pm' )->in( 'lib' ) ) {
 
 %file;
 
+__END__
+
 use YAML qw/ Load Dump /;
 
 sub do_meta {

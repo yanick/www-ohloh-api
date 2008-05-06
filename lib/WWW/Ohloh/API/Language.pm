@@ -7,7 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 
-our $VERSION = '0.0.9';
+our $VERSION = '0.1.0';
 
 use overload '""' => sub { $_[0]->nice_name };
 
@@ -214,7 +214,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/language
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.0.9
+This document describes WWW::Ohloh::API version 0.1.0
 
 =head1 BUGS AND LIMITATIONS
 

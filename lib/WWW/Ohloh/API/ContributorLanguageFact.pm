@@ -7,68 +7,73 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.1.0';
 
-my @ohloh_of        :Field  :Arg(ohloh) :Get(_ohloh);
-my @request_url_of  :Field  :Arg(request_url)  :Get( request_url );
-my @xml_of          :Field  :Arg(xml);   
+my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+my @request_url_of : Field : Arg(request_url) : Get( request_url );
+my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
-    analysis_id
-    contributor_id
-    contributor_name
-    language_id
-    language_nice_name
-    comment_ratio
-    man_months
-    commits
-    median_commits
-/;
+  analysis_id
+  contributor_id
+  contributor_name
+  language_id
+  language_nice_name
+  comment_ratio
+  man_months
+  commits
+  median_commits
+  /;
 
-my @analysis_id_of  :Field  :Set(_set_analysis_id) :Get(analysis_id);
-my @contributor_id_of  :Field  :Set(_set_contributor_id) :Get(contributor_id);
-my @contributor_name_of  :Field  :Set(_set_contributor_name) :Get(contributor_name);
-my @language_id_of  :Field  :Set(_set_language_id) :Get(language_id);
-my @language_nice_name_of  :Field  :Set(_set_language_nice_name) :Get(language_nice_name);
-my @comment_ratio_of  :Field  :Set(_set_comment_ratio) :Get(comment_ratio);
-my @man_months_of  :Field  :Set(_set_man_months) :Get(man_months);
-my @commits_of  :Field  :Set(_set_commits) :Get(commits);
-my @median_commits_of  :Field  :Set(_set_median_commits) :Get(median_commits);
-
+my @analysis_id_of : Field : Set(_set_analysis_id) : Get(analysis_id);
+my @contributor_id_of : Field : Set(_set_contributor_id) :
+  Get(contributor_id);
+my @contributor_name_of : Field : Set(_set_contributor_name) :
+  Get(contributor_name);
+my @language_id_of : Field : Set(_set_language_id) : Get(language_id);
+my @language_nice_name_of : Field : Set(_set_language_nice_name) :
+  Get(language_nice_name);
+my @comment_ratio_of : Field : Set(_set_comment_ratio) : Get(comment_ratio);
+my @man_months_of : Field : Set(_set_man_months) : Get(man_months);
+my @commits_of : Field : Set(_set_commits) : Get(commits);
+my @median_commits_of : Field : Set(_set_median_commits) :
+  Get(median_commits);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init :Init {
+sub _init : Init {
     my $self = shift;
 
-    my $dom = $xml_of[ $$self ] or return;
+    my $dom = $xml_of[$$self] or return;
 
-    $self->_set_analysis_id( $dom->findvalue( "analysis_id/text()" ) );
-    $self->_set_contributor_id( $dom->findvalue( "contributor_id/text()" ) );
-    $self->_set_contributor_name( $dom->findvalue( "contributor_name/text()" ) );
-    $self->_set_language_id( $dom->findvalue( "language_id/text()" ) );
-    $self->_set_language_nice_name( $dom->findvalue( "language_nice_name/text()" ) );
-    $self->_set_comment_ratio( $dom->findvalue( "comment_ratio/text()" ) );
-    $self->_set_man_months( $dom->findvalue( "man_months/text()" ) );
-    $self->_set_commits( $dom->findvalue( "commits/text()" ) );
-    $self->_set_median_commits( $dom->findvalue( "median_commits/text()" ) );
+    $self->_set_analysis_id( $dom->findvalue("analysis_id/text()") );
+    $self->_set_contributor_id( $dom->findvalue("contributor_id/text()") );
+    $self->_set_contributor_name(
+        $dom->findvalue("contributor_name/text()") );
+    $self->_set_language_id( $dom->findvalue("language_id/text()") );
+    $self->_set_language_nice_name(
+        $dom->findvalue("language_nice_name/text()") );
+    $self->_set_comment_ratio( $dom->findvalue("comment_ratio/text()") );
+    $self->_set_man_months( $dom->findvalue("man_months/text()") );
+    $self->_set_commits( $dom->findvalue("commits/text()") );
+    $self->_set_median_commits( $dom->findvalue("median_commits/text()") );
 
 }
 
-sub as_xml { 
-    my $self = shift; 
+sub as_xml {
+    my $self = shift;
     my $xml;
     my $w = XML::Writer->new( OUTPUT => \$xml );
 
-    $w->startTag( 'contributor_language_fact' );
+    $w->startTag('contributor_language_fact');
 
-    for my $attr ( @api_fields ) {
+    for my $attr (@api_fields) {
         $w->dataElement( $attr => $self->$attr );
     }
 
     $w->endTag;
 
-    return $xml; 
+    return $xml;
 }
 
 'end of WWW::Ohloh::API::ContributorLanguageFact';

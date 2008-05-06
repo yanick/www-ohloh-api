@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More;                      
+use Test::More;
 
 use WWW::Ohloh::API;
 
@@ -11,35 +11,40 @@ END_MSG
 
 plan tests => 18;
 
-my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY}, debug => 1 );
 
 my $languages = $ohloh->get_languages( sort => 'code' );
 
-ok $languages->isa( 'WWW::Ohloh::API::Languages' ), 'get_languages return W:O:A:Languages';
+ok $languages->isa('WWW::Ohloh::API::Languages'),
+  'get_languages return W:O:A:Languages';
 
 my @l = $languages->all;
 
-ok scalar( @l ), "all() returns something";
+ok scalar(@l), "all() returns something";
 
-ok !grep( { ! $_->isa( 'WWW::Ohloh::API::Language' ) } @l ), "all() returns W:O:A:Language";
+ok !grep( { !$_->isa('WWW::Ohloh::API::Language') } @l ),
+  "all() returns W:O:A:Language";
 
-my( $perl ) = grep { $_->nice_name eq 'Perl' } @l;
+my ($perl) = grep { $_->nice_name eq 'Perl' } @l;
 
 ok $perl, "we found Perl!";
 
-is $perl->id => 8, 'Perl id number is 8';
-is $perl->name => 'perl', 'name()';
+is $perl->id       => 8,      'Perl id number is 8';
+is $perl->name     => 'perl', 'name()';
 is $perl->category => 'code', 'category()';
-ok $perl->code > 0, 'code()';
+ok $perl->code > 0,     'code()';
 ok $perl->comments > 0, 'comments()';
-ok $perl->blanks > 0, 'blanks()';
-ok( ( $perl->comment_ratio > 0 and $perl->comment_ratio < 1 ), 'comment_ratio()' );
-ok $perl->projects > 0, 'projects()';
+ok $perl->blanks > 0,   'blanks()';
+ok( ( $perl->comment_ratio > 0 and $perl->comment_ratio < 1 ),
+    'comment_ratio()' );
+ok $perl->projects > 0,     'projects()';
 ok $perl->contributors > 0, 'contributors()';
-ok $perl->commits > 0, 'commits()'; 
+ok $perl->commits > 0,      'commits()';
 
 ok $perl->is_code, 'is_code()';
 ok !$perl->is_markup, 'is_markup()';
 
 like $perl->as_xml, qr#<language>.*</language>#, 'language->as_xml';
-like $languages->as_xml, qr#^<languages>(<language>.*?</language>)+</languages>$#, 'languages->as_xml';
+like $languages->as_xml,
+  qr#^<languages>(<language>.*?</language>)+</languages>$#,
+  'languages->as_xml';

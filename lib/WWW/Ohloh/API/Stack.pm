@@ -7,6 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 use Readonly;
+use Scalar::Util qw/ weaken /;
 
 use WWW::Ohloh::API::StackEntry;
 
@@ -110,6 +111,14 @@ sub account {
 
     return $account_of[$$self];
 
+}
+
+sub set_account : Private( WWW::Ohloh::API::Account ) {
+    my $self = shift;
+
+    weaken( $account_of[$$self] = shift );
+
+    return;
 }
 
 'end of WWW::Ohloh::API::Stack';

@@ -68,7 +68,11 @@ sub received {
 
         my @kudos;
         for my $n ( $xml->findnodes('kudo') ) {
-            push @kudos, WWW::Ohloh::API::Kudo->new( xml => $n, );
+            push @kudos,
+              WWW::Ohloh::API::Kudo->new(
+                ohloh => $ohloh_of[$$self],
+                xml   => $n,
+              );
         }
         $received_kudos_of[$$self] = \@kudos;
     }

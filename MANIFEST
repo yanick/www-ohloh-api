@@ -29,6 +29,7 @@ t/03-project.t
 t/04-projects.t
 t/06-activityFact.t
 t/sizeFact.t
+t/languages.t
 t/online/general.t
 t/online/language.t
 t/online/activityFact.t

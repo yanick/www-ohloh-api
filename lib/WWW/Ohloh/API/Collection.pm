@@ -13,11 +13,11 @@ use overload '<>' => \&next;
 my @cache_of : Field;
 my @total_entries_of : Field : Default(-1);
 my @page_of : Field;
-my @max_entries_of : Field : Arg(max) : Get(max) : Default(100);
+my @max_entries_of : Field : Arg(max) : Get(max) : Default(undef);
 my @element_of : Field : Arg(element) : Get(element);
 my @sort_order_of : Field : Arg(sort);
 my @query_of : Field : Arg(query);
-my @ohloh_of : Field : Arg(ohloh);
+my @ohloh_of : Field : Arg( name => 'ohloh', mandatory => 1);
 my @read_so_far : Field : Get(get_read_so_far) : Set(set_read_so_far) :
   Default(0);
 my @all_read : Field;
@@ -27,6 +27,21 @@ sub _init : Init {
 
     $cache_of[$$self] = [];    # initialize to empty array
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub total_entries {
+    my $self = shift;
+
+    # if not initialized, get a first bunch of entries
+    if ( $total_entries_of[$$self] == -1 ) {
+        $self->_gather_more;
+    }
+
+    return $total_entries_of[$$self];
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub next {
     my $self = shift;
@@ -67,7 +82,8 @@ sub _gather_more {
       map { $class->new( ohloh => $ohloh_of[$$self], xml => $_, ) }
       $xml->findnodes( $self->element_name );
 
-    if ( $self->get_read_so_far + @new_batch > $self->max ) {
+    if ( defined( $self->max )
+        and $self->get_read_so_far + @new_batch > $self->max ) {
         @new_batch =
           @new_batch[ 0 .. $self->max - $self->get_read_so_far - 1 ];
         $all_read[$$self] = 1;
@@ -95,10 +111,6 @@ sub _gather_more {
 
 sub all {
     my $self = shift;
-
-    unless ( $self->max ) {
-        croak "call to all only permitted if 'max' is set";
-    }
 
     $self->_gather_more until ( $all_read[$$self] );
 

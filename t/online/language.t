@@ -9,14 +9,16 @@ plan skip_all => <<'END_MSG', 1 unless $ENV{OHLOH_KEY};
 set the environment variable OHLOH_KEY to your api key to enable these tests
 END_MSG
 
-plan tests => 17;
+plan tests => 18;
 
 my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
 my $languages = $ohloh->get_languages( sort => 'code' );
 
 ok $languages->isa('WWW::Ohloh::API::Languages'),
-  'get_languages return W:O:A:Languages';
+  'get_languages returns W:O:A:Languages';
+
+ok $languages->total_entries > 10, 'total_entries() > 10';
 
 my @l = $languages->all;
 

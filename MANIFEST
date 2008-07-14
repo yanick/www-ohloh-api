@@ -17,6 +17,7 @@ lib/WWW/Ohloh/API/Kudos.pm
 lib/WWW/Ohloh/API/SizeFact.pm
 lib/WWW/Ohloh/API/Stack.pm
 lib/WWW/Ohloh/API/StackEntry.pm
+lib/WWW/Ohloh/API/Collection.pm
 t/Validators.pm
 t/00.load.t
 t/author/perlcritic.t

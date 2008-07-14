@@ -13,6 +13,7 @@ use overload '""' => sub { $_[0]->nice_name };
 
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
 my @xml_of : Field : Arg(xml);
+my @ohloh_of : Field : Arg(ohloh);
 
 my @api_fields = qw/
   id

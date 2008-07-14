@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Carp;
-use Object::InsideOut;
+use Object::InsideOut qw/ WWW::Ohloh::API::Collection/ ;
 use XML::LibXML;
 use Readonly;
 use List::MoreUtils qw/ any /;
@@ -12,14 +12,14 @@ use WWW::Ohloh::API::Language;
 
 our $VERSION = '0.1.0';
 
-my @ohloh_of : Field : Arg(ohloh);
-my @sort_order_of : Field : Arg(sort) :
-  Type(\&WWW::Ohloh::API::Languages::is_allowed_sort);
-my @projects_of : Field;
 
 my @ALLOWED_SORTING;
 Readonly @ALLOWED_SORTING =>
   qw/ total code projects comment_ratio contributors commits name /;
+
+sub element { return 'WWW::Ohloh::API::Language' }
+sub element_name { return 'language' }
+sub query_path { return 'languages.xml' }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -33,49 +33,17 @@ sub is_allowed_sort {
 sub _init : Init {
     my $self = shift;
 
-    my ( $url, $xml ) =
-      $ohloh_of[$$self]->_query_server( 'languages.xml',
-        { ( sort => $sort_order_of[$$self] ) x !!$sort_order_of[$$self], } );
-
-    $projects_of[$$self] =
-      [ map { WWW::Ohloh::API::Language->new( xml => $_ ) }
-          $xml->findnodes('language') ];
-
     return;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub as_xml {
-    my $self = shift;
-    my $xml;
-    my $w = XML::Writer->new( OUTPUT => \$xml );
-
-    $w->startTag('languages');
-
-    for my $l ( @{ $projects_of[$$self] } ) {
-        $xml .= $l->as_xml;
-    }
-
-    $w->endTag;
-
-    return $xml;
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub all {
-    my $self = shift;
-
-    return @{ $projects_of[$$self] };
-}
 
 'end of WWW::Ohloh::API::Languages';
 __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Languages - a set of languages as known by Ohloh
+WWW::Ohloh::API::Languages - a set of Ohloh languages
 
 =head1 SYNOPSIS
 
@@ -98,14 +66,16 @@ the C<get_languages> method of a L<WWW::Ohloh::API> object.
 
 =head2 all
 
-Return the retrieved languages' information as
+Returns the retrieved languages' information as
 L<WWW::Ohloh::API::Language> objects.
 
-=head3 as_xml
+=head2 next
 
-Return the languages' information 
-as an XML string.  Note that this is not the exact xml document as returned
-by the Ohloh server. 
+Returns the next language, or I<undef> if there is no more languages
+to retrieve.  On a subsequent call to <next>, the list is reset and
+the first language is returned once more.
+
+
 
 =head1 SEE ALSO
 

@@ -44,6 +44,16 @@ my @parser_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+sub fetch_messages {
+    my $self = shift;
+
+    require WWW::Ohloh::API::Messages;
+
+    return WWW::Ohloh::API::Messages->new( ohloh => $self, @_ );
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 sub get_account_stack {
     my $self = shift;
 

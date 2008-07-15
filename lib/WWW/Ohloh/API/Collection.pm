@@ -104,6 +104,8 @@ sub _gather_more {
 
     push @{ $cache_of[$$self] }, @new_batch;
 
+    $all_read[$$self] = 1 if $self->total_entries == $self->get_read_so_far;
+
     return;
 }
 

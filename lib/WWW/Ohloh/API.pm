@@ -500,6 +500,10 @@ objects.
 Return the stack associated with the account as an 
 L<WWW::Ohloh::API::Stack> object.
 
+=head2 fetch_messages( [ account | project ] => I<$id> )
+
+Returns the messages associated to the given account or project
+as a L<WWW::Ohloh::API::Messages> object.
 
 =head1 SEE ALSO
 

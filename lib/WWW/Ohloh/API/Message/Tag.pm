@@ -3,17 +3,19 @@ package WWW::Ohloh::API::Message::Tag;
 use strict;
 use warnings;
 
+use Object::InsideOut qw/
+  WWW::Ohloh::API::Role::Fetchable
+  WWW::Ohloh::API::Role::LoadXML
+  /;
+
 use Carp;
-use Object::InsideOut;
 use XML::LibXML;
+
+use List::MoreUtils qw/ any /;
 
 our $VERSION = '0.1.0';
 
-my @request_url_of : Field : Arg(request_url) : Get( request_url );
-my @xml_of : Field : Arg(xml);
-my @ohloh_of : Field : Arg(ohloh);
-
-my @type_of : Field : Set(set_type) : Get(id);
+my @type_of : Field : Set(set_type) : Get(type);
 my @uri_of : Field : Set(set_uri) : Get(uri);
 my @content_of : Field : Set(set_content) : Get(content);
 
@@ -56,102 +58,70 @@ sub is_account {
     return $_[0]->type eq 'account';
 }
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 'end of WWW::Ohloh::API::Message::Tag';
 
 __END__
 
 =head1 NAME
 
-WWW::Ohloh::API::Language - a programming language information on Ohloh
+WWW::Ohloh::API::Message::Tag - a tag associated to an Ohloh message 
 
 =head1 SYNOPSIS
 
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $languages =  $ohloh->get_languages;
+    my $messages =  $ohloh->fetch_messages( account => $account );
 
-    my ( $perl  ) = grep { $_->nice_name eq 'Perl' } $languages->all;
-
-    print $perl->projects, " projects use Perl";
+    while ( my $msg = $messages->next ) {
+        print $msg->body, "\n";
+        for my $tag ( $msg->tags ) {
+            print "\t", $tag->content, "\n";
+        }
+    }
 
 =head1 DESCRIPTION
 
-W::O::A::Language contains the information associated with a programming
-language recognized by Ohloh as defined at http://www.ohloh.net/api/reference/language. 
-To be properly populated, it must be created via
-the C<get_languages> or C<get_language> method of a L<WWW::Ohloh::API> object.
+W::O::A::Message::Tag contains the information of a tag associated with a 
+message.
 
 =head1 METHODS 
 
 =head2 API Data Accessors
 
-=head3 id
+=head3 type
 
-Return the language's unique id.
+Returns the tag type, which can be 'account' or 'project'.
 
-=head3 name
+=head3 set_type( $type )
 
-Return the short name of the language.
+Sets the tag type.  Must be either 'account' or 'project'.
 
-=head3 nice_name
+=head3 uri
 
-Return the human-friendly name of the language.
+Returns the tag uri.
 
-=head3 category
+=head3 set_uri( I<$uri> )
 
-Return the type of language, which can be either C<code> or
-C<markup>.
+Sets the tag uri.
 
-=head3 is_markup
+=head3 content
 
-Return true if the language is a markup language, false if it's a
-code language.
+Returns the content of the tag, which will either be the name of the
+tagged project or account.
 
-=head3 is_code 
+=head3 set_content( I<$name> )
 
-Return true if the language is a code language, false if it's a
-markup language.
+Sets the content of the tag to I<$name>.
 
-
-=head3 code
-
-Return the total number of lines of code, excluding comments and blank lines, written
-in the language across all projects.
-
-=head3 comments
-
-Return the total number of comment lines,  written
-in the language across all projects.
-
-=head3 blanks
-
-Return the total number of blanks lines,  written
-in the language across all projects.
-
-=head3 comment_ratio
-
-Return the ratio of comment lines over the total number of lines for all projects using
-the language.
-
-=head3 projects
-
-Return the number of projects using this language.
-
-=head3 contributors
-
-Return the number of contributors who have written at least one line of code
-using this language.
-
-=head3 commits
-
-Return the number of commits which include at least one line in this language.
 
 =head2 Other Methods
 
 =head3 as_xml
 
-Return the language information 
+Returns the tag information 
 as an XML string.  Note that this is not the exact xml document as returned
 by the Ohloh server. 
 
@@ -162,7 +132,7 @@ by the Ohloh server.
 =item * 
 
 L<WWW::Ohloh::API>, 
-L<WWW::Ohloh::API::KudoScore>.
+L<WWW::Ohloh::API::Message>.
 
 =item *
 
@@ -170,7 +140,7 @@ Ohloh API reference: http://www.ohloh.net/api/getting_started
 
 =item * 
 
-Ohloh Account API reference: http://www.ohloh.net/api/reference/language
+Ohloh Account API reference: http://www.ohloh.net/api/reference/message
 
 =back
 

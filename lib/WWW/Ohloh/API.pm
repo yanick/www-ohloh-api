@@ -130,7 +130,7 @@ sub get_enlistments {
 
     return WWW::Ohloh::API::Enlistments->new(
         ohloh      => $self,
-		project_id => $arg{project_id},
+        project_id => $arg{project_id},
         ( sort => $arg{sort} ) x !!$arg{sort},
     );
 }
@@ -461,10 +461,14 @@ contributor I<$c_id> for the project I<$p_id>.
 
 =head2 get_enlistments( project_id => $id )
 
-    my @enlistments = $ohloh->get_enlistments( project_id => 1234 );
+Returns the list of enlistements pertaining to the
+given project as an L<WWW::Ohloh::API::Enlistment> object.
 
-Return the list of L<WWW::Ohloh::API::Enlistment> objects pertaining to the
-given project.
+    my $enlistments = $ohloh->get_enlistments( project_id => 1234 );
+
+    while ( my $enlistment = $enlistments->next ) {
+        # do stuff with $enlistment...
+    }
 
 =head2 get_size_facts( $project_id, $analysis_id )
 

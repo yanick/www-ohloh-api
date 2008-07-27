@@ -16,11 +16,13 @@ our $VERSION = '0.1.0';
 my @ALLOWED_SORTING;
 Readonly @ALLOWED_SORTING => qw/ module_name type url /;
 
-my @project_id_of : Field : Arg(project_id) : Set(_set_project_id) : Get(project_id);
+my @project_id_of : Field : Arg(project_id) : Set(_set_project_id) :
+  Get(project_id);
 
 sub element      { return 'WWW::Ohloh::API::Enlistment' }
 sub element_name { return 'enlistment' }
-sub query_path   {
+
+sub query_path {
     my $self = shift;
     return "projects/$project_id_of[$$self]/enlistments.xml";
 }
@@ -30,14 +32,6 @@ sub query_path   {
 sub is_allowed_sort {
     my $s = shift;
     return any { $s eq $_ } @ALLOWED_SORTING;
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub _init : Init {
-    my $self = shift;
-
-    return;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,6 +153,7 @@ L<http://rt.cpan.org>.
 
 =head1 AUTHOR
 
+Yuval Kogman and
 Yanick Champoux  C<< <yanick@cpan.org> >>
 
 =head1 LICENCE AND COPYRIGHT

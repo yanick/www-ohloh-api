@@ -20,7 +20,7 @@ use WWW::Ohloh::API::ActivityFact;
 use WWW::Ohloh::API::ActivityFacts;
 use WWW::Ohloh::API::Kudos;
 use WWW::Ohloh::API::ContributorLanguageFact;
-use WWW::Ohloh::API::Enlistment;
+use WWW::Ohloh::API::Enlistments;
 use WWW::Ohloh::API::Factoid;
 use WWW::Ohloh::API::SizeFact;
 use WWW::Ohloh::API::Stack;
@@ -126,20 +126,13 @@ sub get_account {
 
 sub get_enlistments {
     my $self = shift;
+    my %arg  = @_;
 
-    my %param = validate( @_, { project_id => 1 } );
-
-    my ( $url, $xml ) =
-      $self->_query_server("projects/$param{project_id}/enlistments.xml");
-
-    return map {
-        WWW::Ohloh::API::Enlistment->new(
-            ohloh       => $self,
-            request_url => $url,
-            xml         => $_
-          )
-    } $xml->findnodes('//enlistment');
-
+    return WWW::Ohloh::API::Enlistments->new(
+        ohloh      => $self,
+		project_id => $arg{project_id},
+        ( sort => $arg{sort} ) x !!$arg{sort},
+    );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

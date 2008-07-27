@@ -9,9 +9,9 @@ my $ohloh = Fake::Ohloh->new;
 
 $ohloh->stash( 'foo', 'enlistments.xml' );
 
-my @enlistments = $ohloh->get_enlistments( project_id => 1 );
+my $enlistments = $ohloh->get_enlistments( project_id => 1 );
 
-my $e = shift @enlistments;
+my $e = $enlistments->next;
 
 my %result = (
     id            => 20381,

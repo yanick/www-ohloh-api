@@ -75,3 +75,10 @@ lib/WWW/Ohloh/API/Factoid.pm
 t/factoids.t
 t/online/factoids.t
 t/samples/factoids.xml
+t/messages.t
+lib/WWW/Ohloh/API/Message.pm
+lib/WWW/Ohloh/API/Messages.pm
+lib/WWW/Ohloh/API/Message/Tag.pm
+t/samples/messages.xml
+lib/WWW/Ohloh/API/Role/Fetchable.pm
+lib/WWW/Ohloh/API/Role/LoadXML.pm

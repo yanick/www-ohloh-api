@@ -1,5 +1,7 @@
 Revision history for WWW-Ohloh-API
 
+2.00 - Sun Jul 27 18:29:27 2008
+
     * Brought in Yuval Kogman's fix to have Enlistments confirm to the
         collection interface.
     * Added W:O:A:Messages, W:O:A:Message and W:O:A:Message::Tag.

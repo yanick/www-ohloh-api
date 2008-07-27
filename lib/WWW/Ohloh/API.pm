@@ -44,6 +44,16 @@ my @parser_of : Field;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+sub fetch_messages {
+    my $self = shift;
+
+    require WWW::Ohloh::API::Messages;
+
+    return WWW::Ohloh::API::Messages->new( ohloh => $self, @_ );
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 sub get_account_stack {
     my $self = shift;
 
@@ -487,6 +497,10 @@ objects.
 Return the stack associated with the account as an 
 L<WWW::Ohloh::API::Stack> object.
 
+=head2 fetch_messages( [ account | project ] => I<$id> )
+
+Returns the messages associated to the given account or project
+as a L<WWW::Ohloh::API::Messages> object.
 
 =head1 SEE ALSO
 

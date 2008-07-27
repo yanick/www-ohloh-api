@@ -11,7 +11,7 @@ use List::MoreUtils qw/ none any /;
 
 use overload '<>' => \&next;
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 my @all_read : Field : Default(0);
 my @cache_of : Field;
@@ -239,7 +239,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/project
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.1.0
+This document describes WWW::Ohloh::API version 0.2.0
 
 =head1 BUGS AND LIMITATIONS
 

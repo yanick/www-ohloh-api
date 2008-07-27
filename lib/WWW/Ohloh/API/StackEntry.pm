@@ -9,7 +9,7 @@ use XML::LibXML;
 use Readonly;
 use List::MoreUtils qw/ any /;
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
@@ -168,7 +168,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/stack_entry
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.1.0
+This document describes WWW::Ohloh::API version 0.2.0
 
 =head1 BUGS AND LIMITATIONS
 

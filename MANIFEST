@@ -56,6 +56,7 @@ META.yml
 lib/WWW/Ohloh/API/ContributorFact.pm
 lib/WWW/Ohloh/API/ContributorLanguageFact.pm
 lib/WWW/Ohloh/API/Enlistment.pm
+lib/WWW/Ohloh/API/Enlistments.pm
 lib/WWW/Ohloh/API/Repository.pm
 t/15-contributorFact.t
 t/author/90-dependencies.t

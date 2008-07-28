@@ -265,8 +265,7 @@ will return nothing.
 
 Return the account information (including the kudo score if it applies)
 as an XML string.  Note that this is not the exact xml document as returned
-by the Ohloh server: due to the current XML parsing module used
-by W::O::A (to wit: L<XML::Simple>), the ordering of the nodes can differ.
+by the Ohloh server.
 
 =head1 OVERLOADING
 

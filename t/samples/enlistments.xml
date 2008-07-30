@@ -13,8 +13,8 @@
         <id>19724</id>
         <type>GitRepository</type>
         <url>http://babyl.dyndns.org/git/www-ohloh-api.git</url>
-        <username/>
-        <password/>
+        <username>bob</username>
+        <password>frob</password>
         <logged_at>2008-02-04T17:31:43Z</logged_at>
         <commits>8</commits>
         <ohloh_job_status>success</ohloh_job_status>

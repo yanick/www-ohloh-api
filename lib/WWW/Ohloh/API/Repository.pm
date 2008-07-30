@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 use Object::InsideOut;
 use XML::LibXML;
+use URI;
 
 our $VERSION = '0.2.0';
 
@@ -27,7 +28,7 @@ my @api_fields = qw/
 
 my @id_of : Field : Set(_set_id) : Get(id);
 my @type_of : Field : Set(_set_type) : Get(type);
-my @url_of : Field : Set(_set_url) : Get(url);
+my @url_of : Field : Type(URI) : Set(__set_url) : Get(url);
 my @module_name_of : Field : Set(_set_module_name) : Get(module_name);
 my @username_of : Field : Set(_set_username) : Get(username);
 my @password_of : Field : Set(_set_password) : Get(password);
@@ -48,6 +49,11 @@ sub _init : Init {
 
         $self->$m( $dom->findvalue("$f/text()") );
     }
+}
+
+sub _set_url {
+    my ( $self, $url ) = @_;
+    $self->__url( URI->new($url) );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

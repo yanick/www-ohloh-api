@@ -20,11 +20,11 @@ like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx,
 is $account->request_url =>
   'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
   'request url';
-is $account->id           => 12933,                  'id';
-is $account->name         => 'Yanick',               'name';
-is $account->created_at   => '2007-12-30T18:39:18Z', 'created at';
-is $account->updated_at   => '2008-01-03T14:53:18Z', 'updated at';
-is $account->homepage_url => '',                     "homepage url";
+is $account->id                   => 12933,                  'id';
+is $account->name                 => 'Yanick',               'name';
+is $account->created_at->datetime => '2007-12-30T13:39:18',  'created at';
+is $account->updated_at           => '2008-01-03T14:53:18Z', 'updated at';
+is $account->homepage_url         => '',                     "homepage url";
 is $account->avatar_url =>
   'http://www.gravatar.com/avatar.php?gravatar_id=a15c336550dd22cbdff9743a54b56b3b',
   "avatar url";

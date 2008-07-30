@@ -7,6 +7,8 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
+use Time::Piece;
+use Date::Parse;
 
 our $VERSION = '0.2.0';
 
@@ -18,7 +20,8 @@ my @xml_of : Field : Arg(xml);
 
 my @id_of : Field : Set(_set_id) : Get(id);
 my @name_of : Field : Set(_set_name) : Get(name);
-my @creation_date_of : Field : Set(_set_created_at) : Get(created_at);
+my @creation_date_of : Field : Set(_set_created_at) : Get(created_at) :
+  Type(Time::Piece);
 my @update_date_of : Field : Set(_set_updated_at) : Get(updated_at);
 my @homepage_url_of : Field : Set(_set_homepage_url) : Get(homepage_url);
 my @avatar_url_of : Field : Set(_set_avatar_url) : Get(avatar_url);
@@ -42,7 +45,9 @@ sub _init : Init {
 
     $self->_set_id( $dom->findvalue('id/text()') );
     $self->_set_name( $dom->findvalue('name/text()') );
-    $self->_set_created_at( $dom->findvalue('created_at/text()') );
+    $self->_set_created_at(
+        Time::Piece->new( str2time( $dom->findvalue('created_at/text()') ) )
+    );
     $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
     $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
     $self->_set_avatar_url( $dom->findvalue('avatar_url/text()') );

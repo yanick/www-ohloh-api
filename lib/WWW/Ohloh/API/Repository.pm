@@ -27,7 +27,7 @@ my @api_fields = qw/
   /;
 
 #<<<
-my @id_of               : Field i
+my @id_of               : Field 
                         : Set(_set_id) 
                         : Get(id)
                         ;

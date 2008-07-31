@@ -1,5 +1,7 @@
 Revision history for WWW-Ohloh-API
 
+    * Repository object's url is now a URI object
+
 2.00 - Sun Jul 27 18:29:27 2008
 
     * Brought in Yuval Kogman's fix to have Enlistments confirm to the

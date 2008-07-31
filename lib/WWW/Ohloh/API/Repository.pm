@@ -4,14 +4,15 @@ use strict;
 use warnings;
 
 use Carp;
-use Object::InsideOut;
 use XML::LibXML;
+use URI;
+
+use Object::InsideOut qw/
+  WWW::Ohloh::API::Role::Fetchable
+  WWW::Ohloh::API::Role::LoadXML
+  /;
 
 our $VERSION = '0.2.0';
-
-my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
-my @request_url_of : Field : Arg(request_url) : Get( request_url );
-my @xml_of : Field : Arg(xml);
 
 my @api_fields = qw/
   id
@@ -25,29 +26,57 @@ my @api_fields = qw/
   ohloh_job_status
   /;
 
-my @id_of : Field : Set(_set_id) : Get(id);
-my @type_of : Field : Set(_set_type) : Get(type);
-my @url_of : Field : Set(_set_url) : Get(url);
-my @module_name_of : Field : Set(_set_module_name) : Get(module_name);
-my @username_of : Field : Set(_set_username) : Get(username);
-my @password_of : Field : Set(_set_password) : Get(password);
-my @logged_at_of : Field : Set(_set_logged_at) : Get(logged_at);
-my @commits_of : Field : Set(_set_commits) : Get(commits);
-my @ohloh_job_status_of : Field : Set(_set_ohloh_job_status) :
-  Get(ohloh_job_status);
-
+#<<<
+my @id_of               : Field 
+                        : Set(_set_id) 
+                        : Get(id)
+                        ;
+my @type_of             : Field 
+                        : Set(_set_type) 
+                        : Get(type);
+my @url_of              : Field 
+                        : Type(URI) 
+                        : Get(url)
+                        ;
+my @module_name_of      : Field 
+                        : Set(_set_module_name) 
+                        : Get(module_name);
+my @username_of         : Field 
+                        : Set(_set_username) 
+                        : Get(username);
+my @password_of         : Field 
+                        : Set(_set_password) 
+                        : Get(password)
+                        ;
+my @logged_at_of        : Field 
+                        : Set(_set_logged_at) 
+                        : Get(logged_at)
+                        ;
+my @commits_of          : Field 
+                        : Set(_set_commits) 
+                        : Get(commits)
+                        ;
+my @ohloh_job_status_of : Field 
+                        : Set(_set_ohloh_job_status) 
+                        : Get(ohloh_job_status);
+#>>>
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _init : Init {
-    my $self = shift;
-
-    my $dom = $xml_of[$$self] or return;
+sub load_xml {
+    my ( $self, $dom ) = @_;
 
     for my $f (@api_fields) {
         my $m = "_set_$f";
 
         $self->$m( $dom->findvalue("$f/text()") );
     }
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub _set_url {
+    my ( $self, $url ) = @_;
+    $url_of[$$self] = URI->new($url);
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,9 +139,12 @@ C<GitRepository>.
 
 =head3 url
 
-    my $url = $repository->url;
+Return the repository's public url as a L<URI> object. If you 
+just want the url, don't be scared by that: URI objects are
+stringified into what you expect. E.g.:
 
-Return the repository's public url.
+    my $url = $repository->url;
+    print $url;  # will print a good ol' "http://..." string
 
 =head3 module_name
 
@@ -162,6 +194,10 @@ by the Ohloh server.
 
 L<WWW::Ohloh::API>, L<WWW::Ohloh::API::KudoScore>,
 L<WWW::Ohloh::API::ContributorFact>.
+
+=item *
+
+L<URI>.
 
 =item *
 

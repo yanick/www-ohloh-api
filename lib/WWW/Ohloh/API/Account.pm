@@ -9,6 +9,8 @@ use Object::InsideOut qw/
   WWW::Ohloh::API::Role::LoadXML /;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
+use Time::Piece;
+use Date::Parse;
 
 use Params::Validate qw/ validate validate_with /;
 
@@ -28,6 +30,7 @@ my @name_of             : Field
 my @creation_date_of    : Field 
                         : Set(_set_created_at) 
                         : Get(created_at)
+                        : Type(Time::Piece)
                         ;
 my @update_date_of      : Field 
                         : Set(_set_updated_at) 
@@ -97,7 +100,9 @@ sub load_xml {
 
     $self->_set_id( $dom->findvalue('id/text()') );
     $self->_set_name( $dom->findvalue('name/text()') );
-    $self->_set_created_at( $dom->findvalue('created_at/text()') );
+    $self->_set_created_at(
+        Time::Piece->new( str2time( $dom->findvalue('created_at/text()') ) )
+    );
     $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
     $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
     $self->_set_avatar_url( $dom->findvalue('avatar_url/text()') );

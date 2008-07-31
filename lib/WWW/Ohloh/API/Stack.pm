@@ -124,6 +124,19 @@ sub set_account : Private( WWW::Ohloh::API::Account ) {
 'end of WWW::Ohloh::API::Stack';
 __END__
 
+=begin test
+
+use lib 't';
+use FakeOhloh;
+
+my $ohloh = Fake::Ohloh->new;
+
+$ohloh->stash( 'yadah', 'stack.xml' );
+
+my $thingy = $ohloh->get_account_stack( 123 );
+
+=end test
+
 =head1 NAME
 
 WWW::Ohloh::API::Stack - a collection of projects used by a person 
@@ -148,7 +161,11 @@ by a person.
 
 =head1 METHODS 
 
+=for test ignore
+
 =head2 API Data Accessors
+
+=for test
 
 =head2 id
 
@@ -172,6 +189,9 @@ L<WWW::Ohloh::API::StackEntry>).
 
 Returns the id of the account owning the stack.
 
+=for test
+    $ohloh->stash( 'account', 'account.xml' );
+
 =head2 account
 
     $account = $stack->account( $retrieve );
@@ -183,8 +203,11 @@ If the account information was not present at the object's
 creation time, it will be queried from the ohloh server,
 unless I<$retrieve> is defined and set to false.
 
+=for test ignore
 
 =head2 Other Methods
+
+=for test
 
 =head3 as_xml
 

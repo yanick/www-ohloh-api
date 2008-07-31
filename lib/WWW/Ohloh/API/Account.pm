@@ -10,6 +10,8 @@ use Object::InsideOut qw/
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
+use Params::Validate qw/ validate validate_with /;
+
 our $VERSION = '0.2.0';
 
 use overload '""' => sub { $_[0]->name };
@@ -67,6 +69,26 @@ my @kudo_of             : Field
 my @kudos_of : Field : Arg(kudos);
 
 my @stack : Field;
+
+sub element_name { return 'account' }
+
+sub generate_query_url : Chained(bottom up) {
+    my ( $self, @args ) = @_;
+
+    my %param = validate_with(
+        params      => \@args,
+        spec        => { id => 1 },
+        allow_extra => 1
+    );
+    my $id = $param{id};
+    delete $param{id};
+
+    if ( index( $id, '@' ) > -1 ) {
+        $id = md5_hex($id);
+    }
+
+    return ( "accounts/$id.xml", %param );
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

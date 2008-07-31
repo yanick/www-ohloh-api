@@ -59,9 +59,7 @@ sub as_xml {
 
     $w->startTag('repository');
 
-    for my $attr (@api_fields) {
-        $w->dataElement( $attr => $self->$attr );
-    }
+    $w->dataElement( $_->$self->$_ ) for @api_fields;
 
     $w->endTag;
 

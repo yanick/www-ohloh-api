@@ -8,6 +8,8 @@ use Object::InsideOut;
 use XML::LibXML;
 use Readonly;
 use Scalar::Util qw/ weaken /;
+use Date::Parse;
+use Time::Piece;
 
 use WWW::Ohloh::API::StackEntry;
 
@@ -39,10 +41,14 @@ sub _init : Init {
 
     my $dom = $xml_of[$$self] or return;
 
-    for my $f (qw/ id updated_at project_count account_id /) {
+    for my $f (qw/ id project_count account_id /) {
         my $method = "_set_$f";
         $self->$method( $dom->findvalue("$f/text()") );
     }
+
+    $self->_set_updated_at(
+        Time::Piece->new( str2time( $dom->findvalue("updated_at/text()") ) )
+    );
 
     if ( my ($account_xml) = $dom->findnodes('account[1]') ) {
         $account_of[$$self] = WWW::Ohloh::API::Account->new(
@@ -167,28 +173,36 @@ by a person.
 
 =for test
 
-=head2 id
+=head3 id
 
 Returns the unique id for the stack.
 
 =for test
     is $result[0] => 21420, 'id()';
 
-=head2 updated_at
+=head3 updated_at
 
 Returns the most recent time at which any projects were added to
-or removed from this stack.
+or removed from this stack as a L<Time::Piece> object.
 
-=head2 project_count
+=for test
+    isa_ok $result[0], 'Time::Piece';
+    is $result[0], 'Mon Mar 17 13:09:16 2008', 'updated_at()';
+
+=head3 project_count
 
 Returns the number of projects in the stack.
 
-=head2 stack_entries
+=head3 stack_entries
 
-Returns an array of the entries contained by the stack (see
-L<WWW::Ohloh::API::StackEntry>).
+Returns a list of the entries contained by the stack as
+L<WWW::Ohloh::API::StackEntry> objects.
 
-=head2 account_id
+=for test
+    isa_ok $_, 'WWW::Ohloh::API::StackEntry' for @result;
+    is @result => 35, '35 stack entries';
+
+=head3 account_id
 
 Returns the id of the account owning the stack.
 
@@ -196,7 +210,7 @@ Returns the id of the account owning the stack.
     $ohloh->stash( 'account', 'account.xml' );
     my $retrieve = 1;
 
-=head2 account( I<$retrieve> )
+=head3 account( I<$retrieve> )
 
 Returns the account associated 
 to the stack as a L<WWW::Ohloh::API::Account> object.
@@ -218,9 +232,14 @@ unless I<$retrieve> is defined and set to false.
 
 =head3 as_xml
 
-Return the stack as an XML string.  
+Returns the stack as an XML string.  
 Note that this is not the same xml document as returned
 by the Ohloh server. 
+
+=for test
+    use XML::LibXML;
+    ok( XML::LibXML->new->parse_string( $result[0] ) ), 'as_xml';
+    ok 0;
 
 =head1 SEE ALSO
 

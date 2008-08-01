@@ -26,7 +26,7 @@ my @api_fields = qw/
   account
   /;
 
-__PACKAGE__->create_field( '%' . $_, ":Set(_set_$_)", ":Get($_)" )
+__PACKAGE__->create_field( '@' . $_, ":Set(_set_$_)", ":Get($_)" )
   for qw/ id updated_at project_count account_id /;
 
 my @stack_entries_of : Field;
@@ -171,6 +171,9 @@ by a person.
 
 Returns the unique id for the stack.
 
+=for test
+    is $result[0] => 21420, 'id()';
+
 =head2 updated_at
 
 Returns the most recent time at which any projects were added to
@@ -191,10 +194,9 @@ Returns the id of the account owning the stack.
 
 =for test
     $ohloh->stash( 'account', 'account.xml' );
+    my $retrieve = 1;
 
-=head2 account
-
-    $account = $stack->account( $retrieve );
+=head2 account( I<$retrieve> )
 
 Returns the account associated 
 to the stack as a L<WWW::Ohloh::API::Account> object.
@@ -202,6 +204,11 @@ to the stack as a L<WWW::Ohloh::API::Account> object.
 If the account information was not present at the object's
 creation time, it will be queried from the ohloh server,
 unless I<$retrieve> is defined and set to false.
+
+=for test
+    isa_ok $result[0], 'WWW::Ohloh::API::Account';
+    # querying it again shouldn't cause a fetch
+    is $thingy->account => $result[0], 'querying again';
 
 =for test ignore
 

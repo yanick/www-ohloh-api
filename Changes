@@ -1,6 +1,7 @@
 Revision history for WWW-Ohloh-API
 
     * Repository object's url is now a URI object
+    * tests using Test::Exception skipped if T::E is not installed
 
 2.00 - Sun Jul 27 18:29:27 2008
 

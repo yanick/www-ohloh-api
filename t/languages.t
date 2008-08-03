@@ -3,8 +3,14 @@ use warnings;
 
 use lib 't';
 
-use Test::More tests => 4;    # last test to print
-use Test::Exception;
+BEGIN {
+    use Test::More;
+
+    eval "use Test::Exception; 1"
+      or plan skip_all => 'tests require Test::Exception';
+}
+
+plan tests => 4;
 
 use FakeOhloh;
 use Validators;

@@ -82,3 +82,4 @@ lib/WWW/Ohloh/API/Message/Tag.pm
 t/samples/messages.xml
 lib/WWW/Ohloh/API/Role/Fetchable.pm
 lib/WWW/Ohloh/API/Role/LoadXML.pm
+t/test-pod-snippets.t

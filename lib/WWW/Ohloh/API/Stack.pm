@@ -134,6 +134,7 @@ __END__
 
 use lib 't';
 use FakeOhloh;
+use WWW::Ohloh::API::Stack;
 
 my $ohloh = Fake::Ohloh->new;
 
@@ -238,8 +239,7 @@ by the Ohloh server.
 
 =for test
     use XML::LibXML;
-    ok( XML::LibXML->new->parse_string( $result[0] ) ), 'as_xml';
-    ok 0;
+    ok( XML::LibXML->new->parse_string( $result[0] ), 'as_xml' );
 
 =head1 SEE ALSO
 

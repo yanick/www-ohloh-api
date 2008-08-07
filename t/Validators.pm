@@ -14,7 +14,7 @@ sub validate_stack {
     isa_ok $stack, 'WWW::Ohloh::API::Stack';
 
     like $stack->id,            qr/^\d+$/;
-    like $stack->updated_at,    qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+    isa_ok $stack->updated_at,  'Time::Piece';
     like $stack->project_count, qr/^\d+$/;
     like $stack->account_id,    qr/^\d+$/;
 

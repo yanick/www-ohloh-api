@@ -1,9 +1,16 @@
 Revision history for WWW-Ohloh-API
 
+
+0.3.0 - Sun Aug 10 21:52:58 EDT 2008
     * Repository object's url is now a URI object
     * tests using Test::Exception skipped if T::E is not installed
+    * new tests using Test::Pod::Snippets
+    * In W:O:A:Stack, update_time is now a Time::Piece
+    * In W:O:A:Account, creation_time is now a Time::Piece
+    * In W:O:A:Repository, url is now a URI object, thanks
+        to Yuval Kogman.
 
-2.00 - Sun Jul 27 18:29:27 2008
+0.2.0 - Sun Jul 27 18:29:27 2008
 
     * Brought in Yuval Kogman's fix to have Enlistments confirm to the
         collection interface.

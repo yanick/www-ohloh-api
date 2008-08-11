@@ -9,7 +9,7 @@ use XML::LibXML;
 
 use WWW::Ohloh::API::Message::Tag;
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
 my @ohloh_of : Field : Arg(ohloh);
@@ -180,7 +180,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/message
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.2.0
+This document describes WWW::Ohloh::API version 0.3.0
 
 =head1 BUGS AND LIMITATIONS
 

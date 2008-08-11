@@ -10,7 +10,7 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Kudo;
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @account_id_of : Field : Arg(id) : Get(_id);
@@ -167,7 +167,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.2.0
+This document describes WWW::Ohloh::API version 0.3.0
 
 =head1 BUGS AND LIMITATIONS
 

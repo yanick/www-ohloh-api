@@ -9,7 +9,7 @@ use Carp;
 use Params::Validate qw/ validate_with validate /;
 use URI;
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 #<<<
 my @request_url_of  : Field 

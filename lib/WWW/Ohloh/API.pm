@@ -27,7 +27,7 @@ use WWW::Ohloh::API::Stack;
 
 use Digest::MD5 qw/ md5_hex /;
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
 
@@ -527,7 +527,7 @@ How to obtain an Ohloh API key: http://www.ohloh.net/api_keys/new
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.2.0
+This document describes WWW::Ohloh::API version 0.3.0
 
 =head1 BUGS AND LIMITATIONS
 

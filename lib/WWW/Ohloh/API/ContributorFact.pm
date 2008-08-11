@@ -7,7 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
@@ -238,7 +238,7 @@ http://www.ohloh.net/api/reference/contributor_fact
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API::ContributorFact version 0.2.0
+This document describes WWW::Ohloh::API::ContributorFact version 0.3.0
 
 =head1 BUGS AND LIMITATIONS
 

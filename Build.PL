@@ -22,6 +22,8 @@ my $builder = Module::Build->new(
         'Params::Validate'    => 0,
         'List::MoreUtils'     => 0,
         URI                   => 0,
+        'Date::Parse'         => 0,
+        'Time::Piece'         => 0,
     },
     recommends => {
         'Test::Pod::Snippets' => '0.04.01',

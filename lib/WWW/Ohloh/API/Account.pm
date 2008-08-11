@@ -14,7 +14,7 @@ use Date::Parse;
 
 use Params::Validate qw/ validate validate_with /;
 
-our $VERSION = '0.3_1';
+our $VERSION = '0.3.1';
 
 use overload '""' => sub { $_[0]->name };
 
@@ -321,7 +321,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3_1
+This document describes WWW::Ohloh::API version 0.3.1
 
 =head1 BUGS AND LIMITATIONS
 

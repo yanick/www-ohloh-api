@@ -12,7 +12,7 @@ use Object::InsideOut qw/
   WWW::Ohloh::API::Role::LoadXML
   /;
 
-our $VERSION = '0.3_1';
+our $VERSION = '0.3.1';
 
 my @api_fields = qw/
   id

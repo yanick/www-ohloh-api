@@ -13,7 +13,7 @@ use Time::Piece;
 
 use WWW::Ohloh::API::StackEntry;
 
-our $VERSION = '0.3_1';
+our $VERSION = '0.3.1';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
@@ -261,7 +261,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/stack
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3_1
+This document describes WWW::Ohloh::API version 0.3.1
 
 =head1 BUGS AND LIMITATIONS
 

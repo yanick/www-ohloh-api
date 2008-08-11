@@ -1,11 +1,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;    # last test to print
-
-use Test::Pod::Snippets;
+use Test::More;
 
 use WWW::Ohloh::API::Stack;
+
+eval { require Test::Pod::Snippets; }
+  or plan skip_all => 'test requires Test::Pod::Snippets';
+
+plan tests => 1;
 
 my $tps = Test::Pod::Snippets->new(
     verbatim  => 0,

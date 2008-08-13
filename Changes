@@ -1,5 +1,7 @@
 Revision history for WWW-Ohloh-API
 
+work
+    * Adding repository and bugtracker info to META.yml
 
 0.3.0 - Sun Aug 10 21:52:58 EDT 2008
     * Repository object's url is now a URI object

@@ -30,6 +30,13 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup     => ['WWW-Ohloh-API-*'],
     create_makefile_pl => 'passthrough',
+    meta_merge => {
+        resources => {
+            repository => 'http://babyl.dyndns.org/git/www-ohloh-api.git',
+            bugtracker =>
+            'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Ohloh-Api',
+        },
+    },
 );
 
 $builder->create_build_script();

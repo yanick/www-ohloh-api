@@ -14,6 +14,8 @@ use Date::Parse;
 
 use Params::Validate qw/ validate validate_with /;
 
+use Digest::MD5 qw/ md5_hex /;
+
 our $VERSION = '0.3.1';
 
 use overload '""' => sub { $_[0]->name };
@@ -35,6 +37,7 @@ my @creation_date_of    : Field
 my @update_date_of      : Field 
                         : Set(_set_updated_at) 
                         : Get(updated_at)
+                        : Type(Time::Piece)
                         ;
 my @homepage_url_of     : Field 
                         : Set(_set_homepage_url) 
@@ -90,7 +93,7 @@ sub generate_query_url : Chained(bottom up) {
         $id = md5_hex($id);
     }
 
-    return ( "accounts/$id.xml", %param );
+    return ( "accounts/$id.xml", ohloh => $param{ohloh} );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +106,9 @@ sub load_xml {
     $self->_set_created_at(
         Time::Piece->new( str2time( $dom->findvalue('created_at/text()') ) )
     );
-    $self->_set_updated_at( $dom->findvalue('updated_at/text()') );
+    $self->_set_updated_at(
+        Time::Piece->new( str2time( $dom->findvalue('updated_at/text()') ) )
+    );
     $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
     $self->_set_avatar_url( $dom->findvalue('avatar_url/text()') );
     $self->_set_posts_count( $dom->findvalue('posts_count/text()') );
@@ -159,7 +164,7 @@ sub stack {
     $retrieve = 1 unless defined $retrieve;
 
     if ( $retrieve and not $stack[$$self] ) {
-        $stack[$$self] = $self->ohloh->get_account_stack( $self->id );
+        $stack[$$self] = $self->ohloh->fetch_account_stack( $self->id );
         $stack[$$self]->set_account($self);
     }
 
@@ -208,7 +213,7 @@ WWW::Ohloh::API::Account - an Ohloh account
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $account $ohloh->get_account( id => 12933 );
+    my $account $ohloh->fetch_account( 12933 );
 
     print $account->name;
 
@@ -233,11 +238,12 @@ Return the public name of the account.
 
 =head3 created_at
 
-Return the time at which the account was created.
+Return the time at which the account was created as a L<Time::Piece> object .
 
 =head3 updated_at
 
-Return the last time at which the account was modified.
+Return the last time at which the account was modified as a L<Time::Piece>
+object.
 
 =head3 homepage_url
 
@@ -304,6 +310,10 @@ the name associated with the account. E.g.,
 =head1 SEE ALSO
 
 =over
+
+=item *
+
+L<Time::Piece>
 
 =item * 
 

@@ -78,7 +78,7 @@ sub recipient_type {
 sub sender {
     my $self = shift;
 
-    return $self->_ohloh->get_account( id => $self->sender_account_id );
+    return $self->_ohloh->fetch_account( $self->sender_account_id );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +87,7 @@ sub receiver {
     my $self = shift;
 
     if ( my $id = $self->receiver_account_id ) {
-        return $self->_ohloh->get_account( id => $id );
+        return $self->_ohloh->fetch_account( id => $id );
     }
 
     return;
@@ -122,7 +122,7 @@ WWW::Ohloh::API::Kudo - an Ohloh kudo
     use WWW::Ohloh::API;
 
     my $ohloh    = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $account  = $ohloh->get_account( id => 12933 );
+    my $account  = $ohloh->fetch_account( 12933 );
     my @received = $account->received_kudos;
 
     # or, from $ohloh directly

@@ -112,7 +112,7 @@ sub account {
 
     my $id = $self->account_id or return;
 
-    return $account_of[$$self] = $self->_ohloh->get_account( id => $id );
+    return $account_of[$$self] = $self->_ohloh->fetch_account($id);
 }
 
 'end of WWW::Ohloh::API::ContributorFact';

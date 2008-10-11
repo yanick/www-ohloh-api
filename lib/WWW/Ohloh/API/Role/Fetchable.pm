@@ -44,7 +44,6 @@ sub fetch {
     );
 
     my $ohloh = $param{ohloh};
-    delete $param{ohloh};
 
     my ($url) = $class->generate_query_url(%param);
 
@@ -58,11 +57,17 @@ sub fetch {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub generate_query_url : Chained(bottom up) {
-    my ( $self, $url, @args ) = @_;
+    my ( $self, $url, %args ) = @_;
 
-    croak "$args[0] not a valid argument" if @args;
+    my $ohloh = $args{ohloh};
+    delete $args{ohloh};
+    $args{api_key} ||= $ohloh->get_api_key;
+    $args{v}       ||= $ohloh->get_api_version;
 
-    return ($url);
+    no warnings qw/ uninitialized /;
+
+    return $WWW::Ohloh::API::OHLOH_URL . $url . '?' . join '&',
+      map { $_ . '=' . $args{$_} } reverse sort keys %args;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -23,7 +23,6 @@ use WWW::Ohloh::API::ContributorLanguageFact;
 use WWW::Ohloh::API::Enlistments;
 use WWW::Ohloh::API::Factoid;
 use WWW::Ohloh::API::SizeFact;
-use WWW::Ohloh::API::Stack;
 
 use Digest::MD5 qw/ md5_hex /;
 
@@ -34,7 +33,8 @@ Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
 our $useragent_signature = "WWW-Ohloh-API/$VERSION";
 
 my @api_key_of : Field : Std(api_key) : Arg(api_key);
-my @api_version_of : Field : Default(1);    # for now, there's only v1
+my @api_version_of : Field : Default(1) : Std(api_version)
+  ;    # for now, there's only v1
 
 my @user_agent_of : Field;
 
@@ -54,10 +54,17 @@ sub fetch_messages {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub get_account_stack {
+sub fetch_account_stack {
     my $self = shift;
 
     my $id = shift;
+
+    require WWW::Ohloh::API::Stack;
+
+    return WWW::Ohloh::API::Stack->fetch(
+        ohloh => $self,
+        id    => $id
+    );
 
     $id = md5_hex($id) if -1 < index $id, '@';    # it's an email
 
@@ -79,6 +86,8 @@ sub get_project_stacks {
     my $project = shift;
 
     my ( $url, $xml ) = $self->_query_server("projects/$project/stacks.xml");
+
+    require WWW::Ohloh::API::Stack;
 
     return map {
         WWW::Ohloh::API::Stack->new(
@@ -112,23 +121,14 @@ sub get_size_facts {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub get_account {
-    my $self = shift;
+sub fetch_account {
+    my ( $self, $id ) = @_;
 
-    my ( $type, $id ) = @_;
+    require WWW::Ohloh::API::Account;
 
-    $type eq 'id'
-      or $type eq 'email'
-      or croak "first argument must be 'id' or 'email'";
-
-    $id = md5_hex($id) if $type eq 'email';
-
-    my ( $url, $xml ) = $self->_query_server("accounts/$id.xml");
-
-    return WWW::Ohloh::API::Account->new(
-        ohloh       => $self,
-        request_url => $url,
-        xml         => $xml->findnodes('account[1]'),
+    return WWW::Ohloh::API::Account->fetch(
+        ohloh => $self,
+        id    => $id,
     );
 }
 
@@ -322,14 +322,16 @@ sub _query_server {
     my $url   = shift;
     my %param = $_[0] ? %{ $_[0] } : ();
 
-    $param{api_key} = $self->get_api_key
-      or croak "api key not configured";
+    if ( $url !~ /^http/ ) {
+        $param{api_key} = $self->get_api_key
+          or croak "api key not configured";
 
-    $param{v} = $api_version_of[$$self];
+        $param{v} = $api_version_of[$$self];
 
-    $url = $OHLOH_URL . $url;
+        $url = $OHLOH_URL . $url;
 
-    $url .= '?' . join '&', map { "$_=$param{$_}" } keys %param;
+        $url .= '?' . join '&', map { "$_=$param{$_}" } keys %param;
+    }
 
     warn "querying ohloh server with $url" if $debugging[$$self];
 
@@ -366,7 +368,7 @@ WWW::Ohloh::API - Ohloh API implementation
     use WWW::Ohloh::API;
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $account $ohloh->get_account( id => 12933 );
+    my $account = $ohloh->fetch_account( 12933 );
 
     print $account->name;
 
@@ -385,7 +387,7 @@ or set via the L<set_api_key> method.
 
     my $ohloh = WWW::Ohloh::API->new( api_key => $your_key );
 
-=head2 get_account( [ id | email ] => $account_id )
+=head2 fetch_account( $account_id )
 
 Return the account associated with the $account_id as a 
 L<WWW::Ohloh::API::Account>
@@ -393,8 +395,8 @@ object. If no such account exists, an error is thrown.
 The $accound_id can either be specified as the Ohloh id number, 
 or the email address associated with the account.
 
-    my $account = $ohloh->get_account( id => 12933 );
-    my $other_accound = $ohloh->get_account( email => 'foo@bar.com' );
+    my $account = $ohloh->get_account( 12933 );
+    my $other_accound = $ohloh->get_account( 'foo@bar.com' );
 
 
 =head2 get_project( $id )
@@ -488,13 +490,13 @@ to the latest analysis done on the project.
 
 =head2 get_project_stacks( $project_id ) 
 
-Return the list of stacks containing the project as 
+Returns the list of stacks containing the project as 
 L<WWW::Ohloh::API::Stack>
 objects.
 
-=head2 get_account_stack( $account_id )
+=head2 fetch_account_stack( $account_id )
 
-Return the stack associated with the account as an 
+Returns the stack associated with the account as an 
 L<WWW::Ohloh::API::Stack> object.
 
 =head2 fetch_messages( [ account | project ] => I<$id> )

@@ -6,11 +6,10 @@ use Test::More;    # last test to print
 
 use WWW::Ohloh::API;
 
-unless ( $ENV{TEST_OHLOH_ACCOUNT} =~ /(id|email):(.+)/ ) {
-    plan skip_all =>
-      "set TEST_OHLOH_ACCOUNT to 'id:accountid' or 'email:addie' "
-      . "to enable these tests";
-}
+plan skip_all =>
+  "set TEST_OHLOH_ACCOUNT to a valid ohloh account id or email address "
+  . "to enable these tests"
+  unless $ENV{TEST_OHLOH_ACCOUNT};
 
 plan skip_all => <<'END_MSG', 1 unless $ENV{OHLOH_KEY};
 set the environment variable OHLOH_KEY to your api key to enable these tests
@@ -18,11 +17,9 @@ END_MSG
 
 plan 'no_plan';
 
-my ( $type, $id ) = ( $1, $2 );
-
 my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
-my $account = $ohloh->get_account( $type => $id );
+my $account = $ohloh->fetch_account( $ENV{TEST_OHLOH_ACCOUNT} );
 
 ok $account, "account exists";
 
@@ -35,8 +32,7 @@ like $account->request_url =>
   'request url';
 like $account->id   => qr/ ^ \d+ $ /x, 'id';
 like $account->name => qr/ ^ .+ $ /x,  'name';
-like $account->created_at => $time_regex, 'created at';
-like $account->updated_at =>, $time_regex, 'updated at';
+isa_ok $account->$_ => 'Time::Piece' for qw/ created_at updated_at /;
 like $account->homepage_url => $href_regex, "homepage url";
 like $account->avatar_url =>
   qr#^(http://www.gravatar.com/avatar.php\?gravatar_id=[0-9A-Fa-f]+)?$#,

@@ -4,8 +4,7 @@ package    # mask from CPAN?
 use strict;
 use warnings;
 
-use Object::InsideOut;
-use base qw/ WWW::Ohloh::API /;
+use Object::InsideOut qw/ WWW::Ohloh::API /;
 use Carp;
 
 use XML::LibXML;

@@ -59,7 +59,7 @@ like $kudos->as_xml, qr# ^ <(kudos)> .* </\1> $ #x, 'kudos->as_xml';
 # via an Account
 
 $ohloh->stash( undef => 'account.xml' );
-my $account = $ohloh->get_account( id => 10 );
+my $account = $ohloh->fetch_account( id => 10 );
 
 $kudos = $account->kudos;
 
@@ -70,6 +70,4 @@ is scalar( $account->sent_kudos ) => 25, 'sent_kudos()';
 
 $ohloh->stash( undef => 'kudos.xml' );
 is scalar( $account->received_kudos ) => 10, 'kudos()';
-
-
 

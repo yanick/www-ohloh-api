@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;                      # last test to print
+use Test::More tests => 1;    # last test to print
 
 use WWW::Ohloh::API;
 use Exception::Class;
@@ -14,3 +14,5 @@ set the environment variable OHLOH_KEY to your api key to enable these tests
 END_REASON
 
 }
+
+pass;

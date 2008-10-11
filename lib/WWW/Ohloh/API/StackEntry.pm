@@ -100,7 +100,7 @@ WWW::Ohloh::API::StackEntry - A project entry in a stack
     my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
 
     # from an account
-    my @entries = $ohloh->get_account_stack( $account_id )->stack_entries;
+    my @entries = $ohloh->fetch_account_stack( $account_id )->stack_entries;
 
     # from a project
     my @stacks = $ohloh->get_project_stacks( $project_id );

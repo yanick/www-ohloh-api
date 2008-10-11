@@ -1,8 +1,8 @@
 Summary: change all get_* methods in API to fetch_*
-Status: New
+Status: fixed
 CreatedBy: Yanick Champoux <yanick@babyl.dyndns.org>
 AssignedTo: 
 Inserted: 2008-10-11T20:34:28
-Updated: 2008-10-11T20:34:38
+Updated: 2008-10-11T22:13:39
 
 

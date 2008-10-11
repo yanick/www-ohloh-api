@@ -13,7 +13,7 @@ plan tests => 18;
 
 my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
-my $languages = $ohloh->get_languages( sort => 'code' );
+my $languages = $ohloh->fetch_languages( sort => 'code' );
 
 ok $languages->isa('WWW::Ohloh::API::Languages'),
   'get_languages returns W:O:A:Languages';

@@ -12,7 +12,7 @@ $ohloh->stash(
     'http://www.ohloh.net/projects/123/analyses/10/activity_facts.xml',
     'activityFact.xml', );
 
-my $facts = $ohloh->get_activity_facts(10);
+my $facts = $ohloh->fetch_activity_facts(10);
 
 my @f = $facts->all;
 

@@ -12,7 +12,7 @@ $ohloh->stash( 'http://www.ohloh.net/projects/1234.xml', 'project.xml' );
 $ohloh->stash( 'http://www.ohloh.net/projects/1234/contributors.xml',
     'contributors.xml' );
 
-my $project = $ohloh->get_project('foo');
+my $project = $ohloh->fetch_project('foo');
 
 my @contributors = $project->contributors;
 

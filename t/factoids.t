@@ -9,7 +9,7 @@ my $ohloh = Fake::Ohloh->new;
 
 $ohloh->stash( 'http://www.ohloh.net/projects/1234.xml', 'factoids.xml' );
 
-my @factoids = $ohloh->get_factoids(9);
+my @factoids = $ohloh->fetch_factoids(9);
 
 is scalar(@factoids) => 4, 'get_factoids';
 

@@ -15,11 +15,11 @@ unless ( $ENV{TEST_OHLOH_PROJECT} ) {
 
 plan 'no_plan';
 
-my $ohloh = WWW::Ohloh::API->new( debug => 1, api_key => $ENV{OHLOH_KEY} );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
 diag "using project $ENV{TEST_OHLOH_PROJECT}";
 
-my @factoids = $ohloh->get_factoids( $ENV{TEST_OHLOH_PROJECT} );
+my @factoids = $ohloh->fetch_factoids( $ENV{TEST_OHLOH_PROJECT} );
 
 ok 1, "got factoids";
 

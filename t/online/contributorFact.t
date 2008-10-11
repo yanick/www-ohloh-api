@@ -15,11 +15,11 @@ unless ( $ENV{TEST_OHLOH_PROJECT} ) {
 
 plan 'no_plan';
 
-my $ohloh = WWW::Ohloh::API->new( debug => 1, api_key => $ENV{OHLOH_KEY} );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
 diag "using project $ENV{TEST_OHLOH_PROJECT}";
 
-my $project = $ohloh->get_project( $ENV{TEST_OHLOH_PROJECT} );
+my $project = $ohloh->fetch_project( $ENV{TEST_OHLOH_PROJECT} );
 
 my @contributors = $project->contributors;
 

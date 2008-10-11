@@ -17,7 +17,7 @@ plan tests => 1;
 
 my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
-my $af = $ohloh->get_activity_facts( $ENV{TEST_OHLOH_PROJECT} );
+my $af = $ohloh->fetch_activity_facts( $ENV{TEST_OHLOH_PROJECT} );
 
 my $facts = $af->latest;
 

@@ -17,9 +17,9 @@ END_MSG
 
 plan 'no_plan';
 
-my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY}, debug => 1 );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY}, );
 
-my @sizeFacts = $ohloh->get_size_facts( $ENV{TEST_OHLOH_PROJECT} );
+my @sizeFacts = $ohloh->fetch_size_facts( $ENV{TEST_OHLOH_PROJECT} );
 
 ok @sizeFacts > 1;
 

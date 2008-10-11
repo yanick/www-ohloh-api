@@ -12,7 +12,7 @@ my $ohloh = Fake::Ohloh->new;
 $ohloh->stash( 'project',  'project.xml' );
 $ohloh->stash( 'factoids', 'factoids.xml' );
 
-my $p = $ohloh->get_project(10716);
+my $p = $ohloh->fetch_project(10716);
 
 like $p->as_xml => qr#<project>.*</project>#s, 'as_xml';
 

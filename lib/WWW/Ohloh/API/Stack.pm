@@ -11,6 +11,7 @@ use Readonly;
 use Scalar::Util qw/ weaken /;
 use Date::Parse;
 use Time::Piece;
+use Digest::MD5 qw/ md5_hex /;
 
 use WWW::Ohloh::API::StackEntry;
 

@@ -10,7 +10,7 @@ my $ohloh = Fake::Ohloh->new;
 
 $ohloh->stash( 'yadah', 'stacks_project.xml' );
 
-my @stacks = $ohloh->get_project_stacks(1234);
+my @stacks = $ohloh->fetch_project_stacks(1234);
 
 is scalar(@stacks), 4;
 

@@ -12,7 +12,7 @@ END_MSG
 
 plan tests => 1;
 
-my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY}, debug => 1 );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY}, );
 
 my $messages = WWW::Ohloh::API::Messages->new(
     ohloh   => $ohloh,

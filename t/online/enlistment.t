@@ -14,11 +14,11 @@ my $p_id = $ENV{TEST_OHLOH_PROJECT}
 
 plan 'no_plan';
 
-my $ohloh = WWW::Ohloh::API->new( debug => 1, api_key => $ENV{OHLOH_KEY} );
+my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
 
 diag "using project $p_id";
 
-my @enlistments = $ohloh->get_enlistments( project_id => $p_id )->all
+my @enlistments = $ohloh->fetch_enlistments( project_id => $p_id )->all
   or diag "no enlistments found";
 
 validate_enlistment($_) for @enlistments;

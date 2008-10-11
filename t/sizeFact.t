@@ -9,7 +9,7 @@ my $ohloh = Fake::Ohloh->new;
 
 $ohloh->stash( 'http://www.ohloh.net/projects/1234.xml', 'size_facts.xml' );
 
-my @facts = $ohloh->get_size_facts(1234);
+my @facts = $ohloh->fetch_size_facts(1234);
 
 is scalar(@facts) => 73;
 

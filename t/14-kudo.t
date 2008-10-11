@@ -14,7 +14,7 @@ $ohloh->stash( 'http://www.ohloh.net/accounts/1234/kudos.xml', 'kudos.xml', );
 $ohloh->stash( 'http://www.ohloh.net/accounts/1234/kudos/sent.xml',
     'kudos_sent.xml', );
 
-my $kudos = $ohloh->get_kudos( id => 1234 );
+my $kudos = $ohloh->fetch_kudos( id => 1234 );
 
 ok $kudos->isa('WWW::Ohloh::API::Kudos');
 

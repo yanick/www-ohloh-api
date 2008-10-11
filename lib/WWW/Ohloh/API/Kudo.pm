@@ -87,7 +87,7 @@ sub receiver {
     my $self = shift;
 
     if ( my $id = $self->receiver_account_id ) {
-        return $self->_ohloh->fetch_account( id => $id );
+        return $self->_ohloh->fetch_account($id);
     }
 
     return;

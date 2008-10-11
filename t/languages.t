@@ -31,7 +31,7 @@ is( WWW::Ohloh::API::Languages->new( ohloh => $ohloh, max => 123 )->max =>
     'max argument'
 );
 
-my $langs = $ohloh->get_languages;
+my $langs = $ohloh->fetch_languages;
 
 is $langs->total_entries, 32, 'total_entries()';
 

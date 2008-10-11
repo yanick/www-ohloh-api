@@ -196,7 +196,7 @@ sub received_kudos {
 sub kudos {
     my $self = shift;
 
-    return $kudos_of[$$self] ||= $self->ohloh->get_kudos( id => $self->id );
+    return $kudos_of[$$self] ||= $self->ohloh->fetch_kudos( $self->id );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

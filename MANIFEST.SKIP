@@ -13,3 +13,9 @@ tags
 .*\.bak
 perversionrc
 xt/.perlcritic-history
+.cil
+.releaserc
+atom.pl
+distrelease.yml
+issues
+\.swo$

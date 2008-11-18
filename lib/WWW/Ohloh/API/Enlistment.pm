@@ -9,7 +9,7 @@ use XML::LibXML;
 
 use WWW::Ohloh::API::Repository;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );

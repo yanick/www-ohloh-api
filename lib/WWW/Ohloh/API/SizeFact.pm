@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
@@ -188,7 +188,7 @@ http://www.ohloh.net/api/reference/size_fact
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3.1
+This document describes WWW::Ohloh::API version 1.0_0
 
 =head1 BUGS AND LIMITATIONS
 

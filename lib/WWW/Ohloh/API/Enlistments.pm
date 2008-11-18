@@ -11,7 +11,7 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Enlistment;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @ALLOWED_SORTING;
 Readonly @ALLOWED_SORTING => qw/ module_name type url /;
@@ -139,7 +139,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/enlistment
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3.1
+This document describes WWW::Ohloh::API version 1.0_0
 
 =head1 BUGS AND LIMITATIONS
 

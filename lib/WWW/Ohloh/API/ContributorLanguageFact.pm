@@ -7,7 +7,7 @@ use Carp;
 use Object::InsideOut;
 use XML::LibXML;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );

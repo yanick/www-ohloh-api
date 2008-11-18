@@ -8,7 +8,7 @@ use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @api_fields = qw/
   created_at
@@ -195,7 +195,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/kudo
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3.1
+This document describes WWW::Ohloh::API version 1.0_0
 
 =head1 BUGS AND LIMITATIONS
 

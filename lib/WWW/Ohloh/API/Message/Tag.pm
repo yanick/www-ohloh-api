@@ -13,7 +13,7 @@ use XML::LibXML;
 
 use List::MoreUtils qw/ any /;
 
-our $VERSION = '0.3.1';
+our $VERSION = '1.0_0';
 
 my @type_of : Field : Set(set_type) : Get(type);
 my @uri_of : Field : Set(set_uri) : Get(uri);
@@ -146,7 +146,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/message
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 0.3.1
+This document describes WWW::Ohloh::API version 1.0_0
 
 =head1 BUGS AND LIMITATIONS
 

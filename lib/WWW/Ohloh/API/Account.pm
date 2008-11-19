@@ -104,11 +104,11 @@ sub load_xml {
     $self->_set_id( $dom->findvalue('id/text()') );
     $self->_set_name( $dom->findvalue('name/text()') );
     $self->_set_created_at(
-        Time::Piece->new( str2time( $dom->findvalue('created_at/text()') ) )
-    );
+        scalar Time::Piece::gmtime(
+            str2time( $dom->findvalue('created_at/text()') ) ) );
     $self->_set_updated_at(
-        Time::Piece->new( str2time( $dom->findvalue('updated_at/text()') ) )
-    );
+        scalar Time::Piece::gmtime(
+            str2time( $dom->findvalue('updated_at/text()') ) ) );
     $self->_set_homepage_url( $dom->findvalue('homepage_url/text()') );
     $self->_set_avatar_url( $dom->findvalue('avatar_url/text()') );
     $self->_set_posts_count( $dom->findvalue('posts_count/text()') );

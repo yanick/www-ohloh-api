@@ -53,8 +53,8 @@ sub load_xml {
     }
 
     $self->_set_updated_at(
-        Time::Piece->new( str2time( $dom->findvalue("updated_at/text()") ) )
-    );
+        scalar Time::Piece::gmtime(
+            str2time( $dom->findvalue("updated_at/text()") ) ) );
 
     if ( my ($account_xml) = $dom->findnodes('account[1]') ) {
         $account_of[$$self] = WWW::Ohloh::API::Account->new(
@@ -212,7 +212,7 @@ or removed from this stack as a L<Time::Piece> object.
 
 =for test
     isa_ok $result[0], 'Time::Piece';
-    is $result[0], 'Mon Mar 17 13:09:16 2008', 'updated_at()';
+    is $result[0], 'Mon Mar 17 17:09:16 2008', 'updated_at()';
 
 =head3 project_count
 

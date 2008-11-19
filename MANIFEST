@@ -83,7 +83,6 @@ t/samples/messages.xml
 lib/WWW/Ohloh/API/Role/Fetchable.pm
 lib/WWW/Ohloh/API/Role/LoadXML.pm
 t/test-pod-snippets.t
-t/05-language.t
 t/online/messages.t
 t/online/messages_project.t
 xt/perl-critic-progressive.t

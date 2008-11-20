@@ -17,7 +17,7 @@ use WWW::Ohloh::API::StackEntry;
 
 use Params::Validate qw/ validate_with /;
 
-our $VERSION = '1.0_0';
+our $VERSION = '1.0_1';
 
 my @ohloh_of : Field : Arg(ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
@@ -285,7 +285,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/stack
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 1.0_0
+This document describes WWW::Ohloh::API version 1.0_1
 
 =head1 BUGS AND LIMITATIONS
 

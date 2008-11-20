@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 use Object::InsideOut;
 
-our $VERSION = '1.0_0';
+our $VERSION = '1.0_1';
 
 my @request_url_of : Field : Arg(request_url) : Get( request_url );
 my @xml_of : Field : Arg(xml);
@@ -184,7 +184,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/account
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 1.0_0
+This document describes WWW::Ohloh::API version 1.0_1
 
 =head1 BUGS AND LIMITATIONS
 

@@ -11,7 +11,7 @@ use Readonly;
 use List::MoreUtils qw/ any /;
 use WWW::Ohloh::API::Message;
 
-our $VERSION = '1.0_0';
+our $VERSION = '1.0_1';
 
 my @account_of : Field : Arg(name => 'account') : Get(account);
 
@@ -170,7 +170,7 @@ Ohloh Account API reference: http://www.ohloh.net/api/reference/language
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 1.0_0
+This document describes WWW::Ohloh::API version 1.0_1
 
 =head1 BUGS AND LIMITATIONS
 

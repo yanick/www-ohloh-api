@@ -1,6 +1,6 @@
 Revision history for WWW-Ohloh-API
 
-wip
+1.0_1 - Wed Nov 19 2008
     * Changed the Time::Piece objects to be local to GMT
 
 1.0_0 - Tue Nov 18 2008

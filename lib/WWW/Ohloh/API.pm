@@ -26,7 +26,7 @@ use WWW::Ohloh::API::SizeFact;
 
 use Digest::MD5 qw/ md5_hex /;
 
-our $VERSION = '1.0_0';
+our $VERSION = '1.0_1';
 
 Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
 
@@ -538,7 +538,7 @@ How to obtain an Ohloh API key: http://www.ohloh.net/api_keys/new
 
 =head1 VERSION
 
-This document describes WWW::Ohloh::API version 1.0_0
+This document describes WWW::Ohloh::API version 1.0_1
 
 =head1 BUGS AND LIMITATIONS
 

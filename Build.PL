@@ -1,3 +1,4 @@
+use 5.006; #warnings.pm;
 use strict;
 use warnings;
 use Module::Build;
@@ -8,8 +9,7 @@ my $builder = Module::Build->new(
     dist_author       => 'Yanick Champoux <yanick@cpan.org>',
     dist_version_from => 'lib/WWW/Ohloh/API.pm',
     requires          => {
-        perl                  => '5.8.0',
-        'Test::More'          => 0,
+        perl                  => '5.008', #need one-dot form for perls earlier than 5.6
         'version'             => 0,
         'LWP::UserAgent'      => 0,
         'Readonly'            => 0,
@@ -21,9 +21,15 @@ my $builder = Module::Build->new(
         'HTML::HeadParser'    => 0,
         'Params::Validate'    => 0,
         'List::MoreUtils'     => 0,
-        URI                   => 0,
         'Date::Parse'         => 0,
         'Time::Piece'         => 0,
+    },
+    build_requires => {
+        'Test::More'          => 0,
+        'Module::Build'       => 0,
+    },
+    configure_requires => {
+        'Module::Build'       => 0, #0.30 for creating dist
     },
     recommends => {
         'Test::Pod::Snippets' => '0.04.01',
@@ -36,6 +42,10 @@ my $builder = Module::Build->new(
             bugtracker =>
             'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Ohloh-Api',
         },
+        keywords => [
+            'Ohloh',
+            'API',
+        ],
     },
 );
 

@@ -43,8 +43,10 @@ my $builder = Module::Build->new(
             'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Ohloh-Api',
         },
         keywords => [
+	    'www',
             'Ohloh',
             'API',
+	    'web service',
         ],
     },
 );

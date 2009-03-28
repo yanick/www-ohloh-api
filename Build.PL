@@ -38,7 +38,7 @@ my $builder = Module::Build->new(
     create_makefile_pl => 'passthrough',
     meta_merge => {
         resources => {
-            repository => 'http://babyl.dyndns.org/git/www-ohloh-api.git',
+            repository => 'git://github.com/yanick/www-ohloh-api.git',
             bugtracker =>
             'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-Ohloh-Api',
         },

@@ -94,8 +94,8 @@ sub sent {
         for my $n ( $xml->findnodes('kudo') ) {
             push @kudos,
               WWW::Ohloh::API::Kudo->new(
-                ohloh => $ohloh_of[$$self],
-                xml   => $n,
+                ohloh   => $ohloh_of[$$self],
+                xml_src => $n,
               );
         }
         $sent_kudos_of[$$self] = \@kudos;

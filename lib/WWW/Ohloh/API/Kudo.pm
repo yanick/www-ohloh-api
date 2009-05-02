@@ -1,69 +1,78 @@
 package WWW::Ohloh::API::Kudo;
 
-use strict;
-use warnings;
+use MooseX::SemiAffordanceAccessor;
+use Moose;
 
 use Carp;
-use Object::InsideOut;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
+use WWW::Ohloh::API::Attr::XMLExtract;
 
 our $VERSION = '1.0_1';
 
-my @api_fields = qw/
+has request_url => ( is => 'ro', );
+
+has xml_src => (
+    is  => 'ro',
+    isa => 'XML::LibXML::Node',
+);
+
+has ohloh => ( is => 'ro' );
+
+our @api_fields = qw/
   created_at
-  sender_account_id
   sender_account_name
-  receiver_account_name
+  sender_account_id
   receiver_account_id
-  project_id
+  receiver_account_name
   project_name
-  contributor_id
-  contributor_name
+  project_id
   /;
 
-my @created_at_of : Field : Set(_set_created_at) : Get(created_at);
-my @sender_account_id_of : Field : Set(_set_sender_account_id) :
-  Get(sender_account_id);
-my @sender_account_name_of : Field : Set(_set_sender_account_name) :
-  Get(sender_account_name);
-my @receiver_account_name_of : Field : Set(_set_receiver_account_name) :
-  Get(receiver_account_name);
-my @receiver_account_id_of : Field : Set(_set_receiver_account_id) :
-  Get(receiver_account_id);
-my @project_id_of : Field : Set(_set_project_id) : Get(project_id);
-my @project_name_of : Field : Set(_set_project_name) : Get(project_name);
-my @contributor_id_of : Field : Set(_set_contributor_id) :
-  Get(contributor_id);
-my @contributor_name_of : Field : Set(_set_contributor_name) :
-  Get(contributor_name);
+has created_at => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
-my @request_url_of : Field : Arg(request_url) : Get( request_url );
-my @xml_of : Field : Arg(xml);
-my @ohloh_of : Field : Arg(ohloh) : Get(_ohloh);
+has sender_account_id => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+has sender_account_name => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
-sub _init : Init {
-    my $self = shift;
+has receiver_account_id => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
-    my $dom = $xml_of[$$self] or return;
+has receiver_account_name => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
-    $self->_set_created_at( $dom->findvalue("created_at/text()") );
-    $self->_set_sender_account_id(
-        $dom->findvalue("sender_account_id/text()") );
-    $self->_set_sender_account_name(
-        $dom->findvalue("sender_account_name/text()") );
-    $self->_set_receiver_account_name(
-        $dom->findvalue("receiver_account_name/text()") );
-    $self->_set_receiver_account_id(
-        $dom->findvalue("receiver_account_id/text()") );
-    $self->_set_project_id( $dom->findvalue("project_id/text()") );
-    $self->_set_project_name( $dom->findvalue("project_name/text()") );
-    $self->_set_contributor_id( $dom->findvalue("contributor_id/text()") );
-    $self->_set_contributor_name(
-        $dom->findvalue("contributor_name/text()") );
-}
+has project_id => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
+
+has project_name => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
+
+has contributor_id => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
+
+has contributor_name => (
+    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+    is     => 'ro',
+);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -78,7 +87,7 @@ sub recipient_type {
 sub sender {
     my $self = shift;
 
-    return $self->_ohloh->fetch_account( $self->sender_account_id );
+    return $self->ohloh->fetch_account( $self->sender_account_id );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +96,7 @@ sub receiver {
     my $self = shift;
 
     if ( my $id = $self->receiver_account_id ) {
-        return $self->_ohloh->fetch_account($id);
+        return $self->ohloh->fetch_account($id);
     }
 
     return;

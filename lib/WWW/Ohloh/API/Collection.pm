@@ -1,45 +1,46 @@
 package WWW::Ohloh::API::Collection;
 
-use strict;
-use warnings;
+use Moose;
 
-use Object::InsideOut;
 use Carp;
 
 our $VERSION = '1.0_1';
 
 use overload '<>' => \&next;
 
-my @cache_of : Field;
-my @total_entries_of : Field : Default(-1);
-my @page_of : Field;
-my @max_entries_of : Field : Arg(max) : Get(max) : Default(undef);
-my @element_of : Field : Arg(element) : Get(element);
-my @sort_order_of : Field : Arg(sort);
-my @query_of : Field : Arg(query);
-my @ohloh_of : Field : Arg( name => 'ohloh', mandatory => 1);
-my @read_so_far : Field : Get(get_read_so_far) : Set(set_read_so_far) :
-  Default(0);
-my @all_read : Field;
+has cache => (
+    isa => 'ArrayRef',
+    is => 'ro',
+    default => sub { [] },
+);
 
-sub _init : Init {
-    my $self = shift;
+has total_entries => (
+    isa => 'Int',
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
 
-    $cache_of[$$self] = [];    # initialize to empty array
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub total_entries {
-    my $self = shift;
-
-    # if not initialized, get a first bunch of entries
-    if ( $total_entries_of[$$self] == -1 ) {
         $self->_gather_more;
-    }
 
-    return $total_entries_of[$$self];
-}
+        return $self->total_entries;
+    },
+);
+
+has page => (
+    isa => 'Int',
+    is => 'ro',
+);
+
+has max => ( isa => 'Int', is => 'ro', );
+
+has element => ( is => 'ro' );
+
+has sort_order => ( is => 'ro' );
+
+has read_so_far => ( is => 'ro' );
+
+has all_read => ( is => 'ro', default => 0 );
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -68,6 +69,24 @@ sub next {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+before 'shift_cache' => sub {
+    my $self = shift;
+
+    $self->_gather_more unless $self->nbr_in_cache;
+};
+
+after 'shift_cache' => sub {
+    my $self = shift;
+
+    return unless $self->all_read;
+
+    $self->clear_state;
+};
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 sub _gather_more {
     my $self = shift;
 
@@ -79,48 +98,60 @@ sub _gather_more {
 
     my $class = $self->element;
     my @new_batch =
-      map { $class->new( ohloh => $ohloh_of[$$self], xml => $_, ) }
+      map { $class->new( ohloh => $ohloh_of[$$self], xml_src => $_, ) }
       $xml->findnodes( $self->element_name );
 
-    if ( defined( $self->max )
+    if ( defined( $self->max ) )
         and $self->get_read_so_far + @new_batch > $self->max ) {
         @new_batch =
           @new_batch[ 0 .. $self->max - $self->get_read_so_far - 1 ];
         $all_read[$$self] = 1;
     }
 
-    $read_so_far[$$self] += @new_batch;
-
-    if ( @new_batch == 0 ) {
-        $all_read[$$self] = 1;
+    if ( my $read = @new_batch ) {
+        $self->add_to_read_so_far( $read );
+    }
+    else {
+        $self->set_all_read(1);
     }
 
     # get total elements + where we are  (but don't trust it)
 
-    $total_entries_of[$$self] =
-      $xml->findvalue('/response/items_available/text()');
+    $self->set_total_entries(
+        $xml->findvalue('/response/items_available/text()') );
 
     my $first_item = $xml->findvalue('/response/first_item_position/text()');
 
-    push @{ $cache_of[$$self] }, @new_batch;
+    $self->push_cache( @new_batch );
 
-    $all_read[$$self] = 1 if $self->total_entries == $self->get_read_so_far;
+    $self->set_all_read(1) if $self->total_entries == $self->read_so_far;
 
     return;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+sub clear_state {
+    my $self = shift;
+
+    $self->clear_page;
+    $self->clear_cache;
+    $self->clear_all_read;
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 sub all {
     my $self = shift;
 
-    $self->_gather_more until ( $all_read[$$self] );
+    my @bunch;
 
-    my @bunch = @{ $cache_of[$$self] };
-    $cache_of[$$self] = [];
+    while( my $x = $self->next ) {
+        push @bunch, $x;
+    }
 
-    $page_of[$$self]  = 0;
-    $all_read[$$self] = 0;
+    $self->clear_state;
 
     return @bunch;
 }

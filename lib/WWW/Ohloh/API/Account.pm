@@ -1,12 +1,16 @@
 package WWW::Ohloh::API::Account;
 
-use strict;
-use warnings;
+use Moose;
+
+use WWW::Ohloh::API::Role::Attr::XMLExtract;
+
+with qw/ 
+    WWW::Ohloh::API::Role::Fetchable
+/;
+
+use WWW::Ohloh::API::Types qw/ Date /;
 
 use Carp;
-use Object::InsideOut qw/
-  WWW::Ohloh::API::Role::Fetchable
-  WWW::Ohloh::API::Role::LoadXML /;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
 use Time::Piece;
@@ -20,53 +24,113 @@ our $VERSION = '1.0_1';
 
 use overload '""' => sub { $_[0]->name };
 
+has $_ => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_'.$_,
+) for qw/ id name /;
+
+has $_ => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_'.$_,
+    isa => 'Date',
+    coerce => 1,
+) for qw/ created_at updated_at /;
+
+has homepage_url => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_homepage_url',
+    isa => 'Str',
+);
+
+has avatar_url => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_avatar_url',
+    isa => 'Str',
+);
+
+has posts_count => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    isa => 'Int',
+    is => 'ro',
+    predicate => 'has_posts_count',
+);
+
+has location => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    isa => 'Str',
+    is => 'ro',
+    predicate => 'has_location',
+);
+
+has $_ => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_' . $_,
+) for qw/ latitude longitude /;
+
+has country_code => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    isa => 'Str',
+    is => 'ro',
+    predicate => 'has_country_code',
+);
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub element_name { return 'account' }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub generate_query_url {
+    my $self = shift;
+
+    croak q{attribute 'id' required to generate the query url} 
+        unless $self->has_id;
+
+    my $id = $self->id;
+
+    if ( index( $id, '@' ) > -1 ) {
+        $id = md5_hex($id);
+    }
+
+    $self->request_url->path( 'accounts/' . $id . '.xml' );
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub as_xml {
+    my $self = shift;
+    my $xml;
+    my $w = XML::Writer->new( OUTPUT => \$xml );
+
+    $w->startTag('account');
+
+    $w->dataElement( $_ => $self->$_ ) for qw/
+      id name created_at updated_at homepage_url
+      avatar_url posts_count
+      location
+      country_code
+      latitude
+      longitude
+      /;
+
+#    $xml .= $self->kudo->as_xml if $self->kudo;
+
+    $w->endTag;
+
+    return $xml;
+}
+
+
+1;
+
+__END__
 #<<<
-my @id_of               : Field 
-                        : Set(_set_id) 
-                        : Get(id)
-                        ;
-my @name_of             : Field 
-                        : Set(_set_name) 
-                        : Get(name)
-                        ;
-my @creation_date_of    : Field 
-                        : Set(_set_created_at) 
-                        : Get(created_at)
-                        : Type(Time::Piece)
-                        ;
-my @update_date_of      : Field 
-                        : Set(_set_updated_at) 
-                        : Get(updated_at)
-                        : Type(Time::Piece)
-                        ;
-my @homepage_url_of     : Field 
-                        : Set(_set_homepage_url) 
-                        : Get(homepage_url)
-                        ;
-my @avatar_url_of       : Field 
-                        : Set(_set_avatar_url) 
-                        : Get(avatar_url)
-                        ;
-my @posts_count_of      : Field 
-                        : Set(_set_posts_count) 
-                        : Get(posts_count)
-                        ;
-my @location_of         : Field 
-                        : Set(_set_location) 
-                        : Get(location)
-                        ;
-my @latitude_of         : Field 
-                        : Set(_set_latitude) 
-                        : Get(latitude)
-                        ;
-my @longitude_of        : Field 
-                        : Set(_set_longitude) 
-                        : Get(longitude)
-                        ;
-my @country_code_of     : Field 
-                        : Set(_set_country_code) 
-                        : Get(country_code)
-                        ;
 my @kudo_of             : Field 
                         : Set(_set_kudo) 
                         : Get(kudo_score)
@@ -76,25 +140,6 @@ my @kudos_of : Field : Arg(kudos);
 
 my @stack : Field;
 
-sub element_name { return 'account' }
-
-sub generate_query_url : Chained(bottom up) {
-    my ( $self, @args ) = @_;
-
-    my %param = validate_with(
-        params      => \@args,
-        spec        => { id => 1 },
-        allow_extra => 1
-    );
-    my $id = $param{id};
-    delete $param{id};
-
-    if ( index( $id, '@' ) > -1 ) {
-        $id = md5_hex($id);
-    }
-
-    return ( "accounts/$id.xml", ohloh => $param{ohloh} );
-}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -120,31 +165,6 @@ sub load_xml {
     if ( my ($node) = $dom->findnodes('kudo_score[1]') ) {
         $kudo_of[$$self] = WWW::Ohloh::API::KudoScore->new( xml => $node );
     }
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub as_xml {
-    my $self = shift;
-    my $xml;
-    my $w = XML::Writer->new( OUTPUT => \$xml );
-
-    $w->startTag('account');
-
-    $w->dataElement( $_ => $self->$_ ) for qw/
-      id name created_at updated_at homepage_url
-      avatar_url posts_count
-      location
-      country_code
-      latitude
-      longitude
-      /;
-
-    $xml .= $self->kudo->as_xml if $self->kudo;
-
-    $w->endTag;
-
-    return $xml;
 }
 
 sub kudoScore {

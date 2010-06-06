@@ -1,10 +1,10 @@
-package WWW::Ohloh::API::Attr::XMLExtract;
+package WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 use Moose::Role;
 
-has 'xml_src' => ( isa => 'Str', );
+has 'xml_src' => ( isa => 'Str', is => 'ro' );
 
-has xpath => ( isa => 'Str', );
+has xpath => ( isa => 'Str', is => 'ro' );
 
 has '+lazy' => ( default => 1 );
 
@@ -16,8 +16,11 @@ before '_process_options' => sub {
 
     my $src   = $options->{xml_src} ||= 'xml_src';
     my $xpath = $options->{xpath}   ||= $name;
+    my $predicate = 'has_' . $src;
 
     $options->{default} = sub {
+        # return unless $_[0]->$predicate;
+
         return $_[0]->$src->findvalue($xpath);
     };
 

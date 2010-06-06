@@ -5,13 +5,13 @@ use Test::More qw/ no_plan /;    # last test to print
 
 require 't/FakeOhloh.pm';
 
-my $ohloh = Fake::Ohloh->new( api_key => 'myapikey' );
+my $ohloh = WWW::Ohloh::API::Fake->new( api_key => 'myapikey' );
 
 $ohloh->stash( 'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
     'account.xml' );
 
 my $account = $ohloh->fetch_account(12933);
-
+$DB::single = 1;
 is $account => 'Yanick', 'overloading';
 
 like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx,

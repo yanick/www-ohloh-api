@@ -1,74 +1,79 @@
 package WWW::Ohloh::API::Role::Fetchable;
 
-use strict;
-use warnings;
-
-use Object::InsideOut;
+use Moose::Role;
+use Moose::Util::TypeConstraints;
 
 use Carp;
 use Params::Validate qw/ validate_with validate /;
 use URI;
+use URI::QueryParam;
 
 our $VERSION = '1.0_1';
 
-#<<<
-my @request_url_of  : Field 
-                    : Arg(Name => 'request_url', Preproc => \&WWW::Ohloh::API::Role::Fetchable::process_url) 
-                    : Get(request_url) 
-                    : Type(URI);
-my @ohloh_of        : Field 
-                    : Arg(ohloh) 
-                    : Set(set_ohloh) 
-                    : Get(ohloh);
-#>>>
-sub process_url {
-    my $value = $_[4];
+subtype 'My::Types::URI' => as class_type( 'URI' );
 
-    return URI->new($value);
-}
+coerce 'My::Types::URI' =>
+    from 'Str' => via { URI->new( $_ ) };
+
+has request_url => (
+    coerce => 1,
+    isa => 'My::Types::URI',
+    is => 'ro',
+    writer => '_set_request_url',
+    lazy => 1,
+    default => sub {
+        $_[0]->generate_query_url;
+        $_[0]->request_url;
+    },
+);
+
+has xml_src => (
+    is => 'ro',
+    writer => '_set_xml_src',
+    predicate => 'has_xml_src',
+    lazy => 1,
+    default => sub {
+        $_[0]->fetch;
+        $_[0]->xml_src;
+    },
+);
+
+has ohloh => (
+    is => 'ro',
+);
+
+requires qw/ rest_url element_name  /;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub fetch {
-    my ( $class, @args ) = @_;
+    my ( $self, @args ) = @_;
 
-    if ( ref $class ) {
-        push @args, ohloh => $class->ohloh;
-        $class = ref $class;
-    }
+    $DB::single = 1;
 
-    my %param = validate_with(
-        params      => \@args,
-        spec        => { ohloh => 1 },
-        allow_extra => 1,
-    );
+    my ( undef, $xml ) = $self->ohloh->_query_server($self->request_url);
 
-    my $ohloh = $param{ohloh};
+    my ($node) = $xml->findnodes( '//result/child::*' );
 
-    my ($url) = $class->generate_query_url(%param);
-
-    my ( undef, $xml ) = $ohloh->_query_server($url);
-
-    my ($node) = $xml->findnodes( $class->element_name );
-
-    return $class->new( ohloh => $ohloh, xml => $node, request_url => $url );
+    $self->_set_xml_src( $node );
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub generate_query_url : Chained(bottom up) {
-    my ( $self, $url, %args ) = @_;
+before generate_query_url => sub {
+    my ( $self ) = @_;
 
-    my $ohloh = $args{ohloh};
-    delete $args{ohloh};
-    $args{api_key} ||= $ohloh->get_api_key;
-    $args{v}       ||= $ohloh->get_api_version;
+    my $uri = URI->new( $WWW::Ohloh::API::OHLOH_URL );
 
-    no warnings qw/ uninitialized /;
+    my $params = $uri->query_form_hash;
 
-    return $WWW::Ohloh::API::OHLOH_URL . $url . '?' . join '&',
-      map { $_ . '=' . $args{$_} } reverse sort keys %args;
-}
+    $params->{api_key} ||= $self->ohloh->api_key;
+    $params->{v}       ||= $self->ohloh->api_version;
+
+    $uri->query_form_hash( $params );
+
+    $self->_set_request_url( $uri );
+};
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

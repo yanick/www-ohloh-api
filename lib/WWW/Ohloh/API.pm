@@ -1,343 +1,71 @@
 package WWW::Ohloh::API;
 
-use warnings;
-use strict;
+use MooseX::SemiAffordanceAccessor;
+
 use Carp;
 
-use Object::InsideOut;
+use Moose;
 
 use LWP::UserAgent;
 use Readonly;
 use XML::LibXML;
 use Params::Validate qw(:all);
 
-use WWW::Ohloh::API::Account;
-use WWW::Ohloh::API::Analysis;
-use WWW::Ohloh::API::Project;
-use WWW::Ohloh::API::Projects;
-use WWW::Ohloh::API::Languages;
-use WWW::Ohloh::API::ActivityFact;
-use WWW::Ohloh::API::ActivityFacts;
-use WWW::Ohloh::API::Kudos;
-use WWW::Ohloh::API::ContributorLanguageFact;
-use WWW::Ohloh::API::Enlistments;
-use WWW::Ohloh::API::Factoid;
-use WWW::Ohloh::API::SizeFact;
 
 use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '1.0_1';
 
-Readonly our $OHLOH_URL => 'http://www.ohloh.net/';
+Readonly our $OHLOH_HOST => 'www.ohloh.net';
 
 our $useragent_signature = "WWW-Ohloh-API/$VERSION";
 
-my @api_key_of : Field : Std(api_key) : Arg(api_key);
-my @api_version_of : Field : Default(1) : Std(api_version)
-  ;    # for now, there's only v1
-
-my @user_agent_of : Field;
-
-my @debugging : Field : Arg(debug) : Default(0) : Std(debug);
-
-my @parser_of : Field;
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_messages {
-    my $self = shift;
-
-    require WWW::Ohloh::API::Messages;
-
-    return WWW::Ohloh::API::Messages->new( ohloh => $self, @_ );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_account_stack {
-    my $self = shift;
-
-    my $id = shift;
-
-    require WWW::Ohloh::API::Stack;
-
-    return WWW::Ohloh::API::Stack->fetch(
-        ohloh => $self,
-        id    => $id
-    );
-
-    $id = md5_hex($id) if -1 < index $id, '@';    # it's an email
-
-    my ( $url, $xml ) =
-      $self->_query_server("accounts/$id/stacks/default.xml");
-
-    return WWW::Ohloh::API::Stack->new(
-        ohloh       => $self,
-        request_url => $url,
-        xml         => $xml->findnodes('stack[1]'),
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_project_stacks {
-    my $self = shift;
-
-    my $project = shift;
-
-    my ( $url, $xml ) = $self->_query_server("projects/$project/stacks.xml");
-
-    require WWW::Ohloh::API::Stack;
-
-    return map {
-        WWW::Ohloh::API::Stack->new(
-            ohloh       => $self,
-            request_url => $url,
-            xml         => $_,
-          )
-    } $xml->findnodes('//result/stack');
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_size_facts {
-    my $self = shift;
-
-    my ( $project_id, $analysis_id ) =
-      validate_pos( @_, 1, { default => 'latest' }, );
-
-    my ( $url, $xml ) = $self->_query_server(
-        "projects/$project_id/analyses/$analysis_id/size_facts.xml");
-
-    return map {
-        WWW::Ohloh::API::SizeFact->new(
-            ohloh       => $self,
-            request_url => $url,
-            xml         => $_
-          )
-    } $xml->findnodes('//size_fact');
-
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_account {
-    my ( $self, $id ) = @_;
-
-    require WWW::Ohloh::API::Account;
-
-    return WWW::Ohloh::API::Account->fetch(
-        ohloh => $self,
-        id    => $id,
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_enlistments {
-    my $self = shift;
-    my %arg  = @_;
-
-    return WWW::Ohloh::API::Enlistments->new(
-        ohloh      => $self,
-        project_id => $arg{project_id},
-        ( sort => $arg{sort} ) x !!$arg{sort},
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_factoids {
-    my $self = shift;
-
-    my $project_id = shift;
-
-    my ( $url, $xml ) =
-      $self->_query_server("projects/$project_id/factoids.xml");
-
-    return map {
-        WWW::Ohloh::API::Factoid->new(
-            ohloh       => $self,
-            request_url => $url,
-            xml         => $_
-          )
-    } $xml->findnodes('//factoid');
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_contributor_language_facts {
-    my $self = shift;
-
-    my %param = validate(
-        @_,
-        {   project_id     => 1,
-            contributor_id => 1,
-        } );
-
-    my ( $url, $xml ) = $self->_query_server(
-        "projects/$param{project_id}/contributors/$param{contributor_id}.xml"
-    );
-
-    return map {
-        WWW::Ohloh::API::ContributorLanguageFact->new(
-            ohloh       => $self,
-            request_url => $url,
-            xml         => $_
-          )
-    } $xml->findnodes('//contributor_language_fact');
-
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_kudos {
-    my $self = shift;
-    my ($id) = @_;
-
-    $id = md5_hex($id) if -1 < index $id, '@';
-
-    return WWW::Ohloh::API::Kudos->new(
-        ohloh => $self,
-        id    => $id,
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_project {
-    my $self = shift;
-    my $id   = shift;
-
-    my ( $url, $xml ) = $self->_query_server("projects/$id.xml");
-
-    return WWW::Ohloh::API::Project->new(
-        ohloh       => $self,
-        request_url => $url,
-        xml         => $xml->findnodes('project[1]'),
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_projects {
-    my $self = shift;
-    my %arg = validate( @_, { query => 0, sort => 0, max => 0 } );
-
-    return WWW::Ohloh::API::Projects->new(
-        ohloh => $self,
-        query => $arg{query},
-        sort  => $arg{sort},
-        max   => $arg{max},
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_analysis {
-    my $self    = shift;
-    my $project = shift;
-
-    $_[0] ||= 'latest';
-
-    my ( $url, $xml ) =
-      $self->_query_server("projects/$project/analyses/$_[0].xml");
-
-    my $analysis = WWW::Ohloh::API::Analysis->new(
-        request_url => $url,
-        xml         => $xml->findnodes('analysis[1]'),
-    );
-
-    unless ( $analysis->project_id == $project ) {
-        croak "analysis $_[0] doesn't apply to project $project";
-    }
-
-    return $analysis;
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_languages {
-    my $self = shift;
-    my %arg  = @_;
-
-    return WWW::Ohloh::API::Languages->new(
-        ohloh => $self,
-        ( sort => $arg{sort} ) x !!$arg{sort},
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_language {
-    my $self = shift;
-    my $id   = shift;
-
-    my ( $url, $xml ) = $self->_query_server("languages/$id.xml");
-
-    return WWW::Ohloh::API::Language->new(
-        request_url => $url,
-        xml         => $xml->findnodes('language[1]'),
-    );
-
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub fetch_activity_facts {
-    my $self = shift;
-    my ( $project, $analysis ) =
-      validate_pos( @_, 1, { default => 'latest' }, );
-
-    return WWW::Ohloh::API::ActivityFacts->new(
-        ohloh    => $self,
-        project  => $project,
-        analysis => $analysis,
-    );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub _ua {
-    my $self = shift;
-    my $ua;
-    unless ( $ua = $user_agent_of[$$self] ) {
-        $ua = $user_agent_of[$$self] = LWP::UserAgent->new;
+has api_key => (
+    is => 'rw',
+);
+
+has api_version => (
+    is => 'rw',
+    default => 1,
+);
+
+has user_agent => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        my $ua = LWP::UserAgent->new;
         $ua->agent($useragent_signature);
+        return $ua;
     }
-    return $ua;
-}
+);
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+has xml_parser => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        return XML::LibXML->new;
+    }
+);
 
-sub _parser {
-    my $self = shift;
-    return $parser_of[$$self] ||= XML::LibXML->new;
-}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub _query_server {
     my $self  = shift;
     my $url   = shift;
-    my %param = $_[0] ? %{ $_[0] } : ();
 
-    if ( $url !~ /^http/ ) {
-        $param{api_key} = $self->get_api_key
-          or croak "api key not configured";
-
-        $param{v} = $api_version_of[$$self];
-
-        $url = $OHLOH_URL . $url;
-
-        $url .= '?' . join '&', map { "$_=$param{$_}" } keys %param;
+    unless ( ref $url eq 'URI' ) {
+        $url = URI->new( $url );
     }
 
-    warn "querying ohloh server with $url" if $debugging[$$self];
+    $url->host( $OHLOH_HOST );
+    $url->schema('http');
+    $url->query_param( v => $self->api_version );
+    $url->query_param( api_key -> $self->api_key );
 
     # TODO: beef up here for failures
     my $request = HTTP::Request->new( GET => $url );
-    my $response = $self->_ua->request($request);
+    my $response = $self->user_agent->request($request);
 
     unless ( $response->is_success ) {
         croak "http query to Ohloh server failed: " . $response->status_line;

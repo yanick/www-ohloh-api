@@ -1,24 +1,25 @@
-package    # mask from CPAN?
-  Fake::Ohloh;
+package WWW::Ohloh::API::Fake;
 
-use strict;
-use warnings;
+use Moose;
 
-use Object::InsideOut qw/ WWW::Ohloh::API /;
+extends 'WWW::Ohloh::API';
+
 use Carp;
 
 use XML::LibXML;
 use WWW::Ohloh::API;
 
-my @results_of : Field;
-my @parser_of : Field;
+use MooseX::AttributeHelpers;
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub parser {
-    my $self = shift;
-    return $parser_of[$$self] ||= XML::LibXML->new;
-}
+has stash => (
+    metaclass => 'Collection::Array',
+    isa => 'ArrayRef[Any]',
+    default => sub { [] },
+    provides => {
+        push => 'push_stash',
+        shift => 'shift_stash',
+    },
+);
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -26,23 +27,25 @@ sub stash {
     my $self = shift;
     my ( $url, $xml ) = @_;
 
+    my $parser = XML::LibXML->new;
+
     my $dom =
       -f 't/samples/' . $xml
-      ? $self->parser->parse_file( 't/samples/' . $xml )
-      : $self->parser->parse_string($xml);
+      ? $parser->parse_file( 't/samples/' . $xml )
+      : $parser->parse_string($xml);
 
-    push @{ $results_of[$$self] }, [ $url, $dom->findnodes('//result[1]') ];
+    $self->push_stash( [ $url, $dom->findnodes('//result[1]') ] );
 
     return $self;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub _query_server {
-    my $self  = shift;
-    my $stash = shift @{ $results_of[$$self] }
-      or croak "no more results stashed";
-    return @$stash;
-}
+override '_query_server' => sub {
+    my $self = shift;
+    $DB::single = 1;
+    return @{ $self->shift_stash || croak "no more results stashed" };
+};
+
 
 'end of FakeOhloh';

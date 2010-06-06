@@ -6,7 +6,7 @@ use Moose;
 use Carp;
 use XML::LibXML;
 use WWW::Ohloh::API::KudoScore;
-use WWW::Ohloh::API::Attr::XMLExtract;
+use WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 our $VERSION = '1.0_1';
 
@@ -15,6 +15,7 @@ has request_url => ( is => 'ro', );
 has xml_src => (
     is  => 'ro',
     isa => 'XML::LibXML::Node',
+    predicate => 'has_xml_src',
 );
 
 has ohloh => ( is => 'ro' );
@@ -27,52 +28,14 @@ our @api_fields = qw/
   receiver_account_name
   project_name
   project_id
-  /;
+  contributor_id
+  contributor_name
+/;
 
-has created_at => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
+has $_ => (
+    traits => ['WWW::Ohloh::API::Role::Attr::XMLExtract'],
     is     => 'ro',
-);
-
-has sender_account_id => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has sender_account_name => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has receiver_account_id => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has receiver_account_name => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has project_id => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has project_name => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has contributor_id => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
-
-has contributor_name => (
-    traits => ['WWW::Ohloh::API::Attr::XMLExtract'],
-    is     => 'ro',
-);
+) for @api_fields;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -1,11 +1,17 @@
 package WWW::Ohloh::API::Stack;
 
-use strict;
-use warnings;
+use MooseX::SemiAffordanceAccessor;
+use Moose;
+
+use WWW::Ohloh::API::Role::Attr::XMLExtract;
+
+with qw/ 
+    WWW::Ohloh::API::Role::Fetchable
+/;
+
+use WWW::Ohloh::API::Types qw/ Date /;
 
 use Carp;
-use Object::InsideOut qw/ WWW::Ohloh::API::Role::Fetchable
-  WWW::Ohloh::API::Role::LoadXML /;
 use XML::LibXML;
 use Readonly;
 use Scalar::Util qw/ weaken /;
@@ -19,24 +25,19 @@ use Params::Validate qw/ validate_with /;
 
 our $VERSION = '1.0_1';
 
-my @ohloh_of : Field : Arg(ohloh);
-my @request_url_of : Field : Arg(request_url) : Get( request_url );
-my @xml_of : Field : Arg(xml);
-
 my @api_fields = qw/
   id
   updated_at
-  project_count
+  project_account
   stack_entries
   account_id
-  account
   /;
 
-__PACKAGE__->create_field( '@' . $_, ":Set(_set_$_)", ":Get($_)" )
-  for qw/ id updated_at project_count account_id /;
-
-my @stack_entries_of : Field;
-my @account_of : Field;
+has $_ => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'ro',
+    predicate => 'has_'.$_,
+) for @api_fields;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -44,111 +45,18 @@ sub element_name { return 'stack'; }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sub load_xml {
-    my ( $self, $dom ) = @_;
-
-    for my $f (qw/ id project_count account_id /) {
-        my $method = "_set_$f";
-        $self->$method( $dom->findvalue("$f/text()") );
-    }
-
-    $self->_set_updated_at(
-        scalar Time::Piece::gmtime(
-            str2time( $dom->findvalue("updated_at/text()") ) ) );
-
-    if ( my ($account_xml) = $dom->findnodes('account[1]') ) {
-        $account_of[$$self] = WWW::Ohloh::API::Account->new(
-            ohloh => $ohloh_of[$$self],
-            xml   => $account_xml,
-        );
-    }
-
-    $stack_entries_of[$$self] = [
-        map WWW::Ohloh::API::StackEntry->new(
-            ohloh => $ohloh_of[$$self],
-            xml   => $_,
-          ) => $dom->findnodes('stack_entries/stack_entry') ];
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub generate_query_url : Chained(bottom up) {
+sub _build_rest_url  {
     my ( $self, @args ) = @_;
 
-    my %param = validate_with(
-        params      => \@args,
-        spec        => { id => 1 },
-        allow_extra => 1
-    );
-    my $id = $param{id};
-    delete $param{id};
+    $self->id or croak "id must be specified to retrieve data";
+
+    my $id = $self->id;
 
     if ( index( $id, '@' ) > -1 ) {
         $id = md5_hex($id);
     }
 
-    return ( "accounts/$id/stacks/default.xml", ohloh => $param{ohloh} );
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub stack_entries {
-    my $self = shift;
-    return @{ $stack_entries_of[$$self] };
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub as_xml {
-    my $self = shift;
-    my $xml;
-    my $w = XML::Writer->new( OUTPUT => \$xml );
-
-    $w->startTag('stack');
-
-    for my $f (qw/ id updated_at project_count account_id /) {
-        $w->dataElement( $f => $self->$f );
-    }
-
-    if ( my $account = $account_of[$$self] ) {
-        $xml .= $account->as_xml;
-    }
-
-    if ( my @entries = @{ $stack_entries_of[$$self] } ) {
-        $w->startTag('stack_entries');
-        $xml .= $_->as_xml for @entries;
-        $w->endTag;
-    }
-
-    $w->endTag;
-
-    return $xml;
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub account {
-    my $self = shift;
-
-    my $retrieve = shift;
-
-    $retrieve = 1 unless defined $retrieve;
-
-    if ($retrieve) {
-        $account_of[$$self] ||=
-          $ohloh_of[$$self]->fetch_account( $self->account_id );
-    }
-
-    return $account_of[$$self];
-
-}
-
-sub set_account : Private( WWW::Ohloh::API::Account ) {
-    my $self = shift;
-
-    weaken( $account_of[$$self] = shift );
-
-    return;
+    $self->rest_url->path( "/accounts/$id/stacks/default.xml" );
 }
 
 'end of WWW::Ohloh::API::Stack';

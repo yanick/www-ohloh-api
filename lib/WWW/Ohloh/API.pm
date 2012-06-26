@@ -4,17 +4,24 @@ package WWW::Ohloh::API;
 use Carp;
 
 use Moose;
+
 use MooseX::SemiAffordanceAccessor;
+
+use Module::Pluggable 
+    require => 1,
+    search_path => [qw/ WWW::Ohloh::API::Object WWW::Ohloh::API::Collection /];
 
 use LWP::UserAgent;
 use Readonly;
 use XML::LibXML;
+use List::Util qw/ first /;
 
 use Digest::MD5 qw/ md5_hex /;
 
-Readonly our $OHLOH_HOST => 'www.ohloh.net';
+our $OHLOH_HOST = 'www.ohloh.net';
+our $OHLOH_URL = "http://$OHLOH_HOST";
 
-our $useragent_signature = "WWW-Ohloh-API/$VERSION";
+our $useragent_signature = join '/', 'WWW-Ohloh-API', ( eval q{$VERSION} || 'dev' );
 
 has api_key => (
     is => 'rw',
@@ -65,6 +72,15 @@ classes.
 
 =cut
 
+sub fetch {
+    my ( $self, $object, @args ) = @_;
+
+    my $class = first { /::$object$/ } $self->plugins 
+        or croak "object or collection '$object' not found";
+
+    return $class->new( agent => $self )->fetch(@args);
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub _query_server {
@@ -76,21 +92,13 @@ sub _query_server {
     }
 
     $url->host( $OHLOH_HOST );
-    $url->schema('http');
+    $url->scheme('http');
     $url->query_param( v => $self->api_version );
-    $url->query_param( api_key -> $self->api_key );
+    $url->query_param( api_key => $self->api_key );
 
-    # TODO: beef up here for failures
-    my $request = HTTP::Request->new( GET => $url );
-    my $response = $self->user_agent->request($request);
+    my $result = $self->_fetch_object($url);
 
-    unless ( $response->is_success ) {
-        croak "http query to Ohloh server failed: " . $response->status_line;
-    }
-
-    my $result = $response->content;
-
-    my $dom = eval { $self->_parser->parse_string($result) }
+    my $dom = eval { $self->xml_parser->parse_string($result) }
       or croak "server didn't feed back valid xml: $@";
 
     if ( $dom->findvalue('/response/status/text()') ne 'success' ) {
@@ -99,6 +107,19 @@ sub _query_server {
     }
 
     return $url, $dom->findnodes('/response/result[1]');
+}
+
+sub _fetch_object {
+    my ( $self, $url ) = @_;
+    # TODO: beef up here for failures
+    my $request = HTTP::Request->new( GET => $url );
+    my $response = $self->user_agent->request($request);
+
+    unless ( $response->is_success ) {
+        croak "http query to Ohloh server failed: " . $response->status_line;
+    }
+
+    return $response->content;
 }
 
 1;

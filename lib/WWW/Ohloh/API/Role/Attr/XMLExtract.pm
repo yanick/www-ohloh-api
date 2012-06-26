@@ -6,7 +6,7 @@ has 'xml_src' => ( isa => 'Str', is => 'ro' );
 
 has xpath => ( isa => 'Str', is => 'ro' );
 
-has '+lazy' => ( default => 1 );
+has 'lazy' => ( is => 'ro', default => 1 );
 
 before '_process_options' => sub {
     my ( $class, $name, $options ) = @_;

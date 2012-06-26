@@ -1,21 +1,18 @@
 use strict;
 use warnings;
 
-use Test::More qw/ no_plan /;    # last test to print
+use Test::More qw/ no_plan /;
 
-require 't/FakeOhloh.pm';
+use WWW::Ohloh::API::Test;
 
-my $ohloh = WWW::Ohloh::API::Fake->new( api_key => 'myapikey' );
+my $ohloh = WWW::Ohloh::API::Test->new( api_key => 'myapikey' );
 
-$ohloh->stash( 'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
-    'account.xml' );
+$ohloh->stash_file( 
+    'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey'
+        => 't/samples/account.xml' );
 
-my $account = $ohloh->fetch_account(12933);
-$DB::single = 1;
+my $account = $ohloh->fetch( 'Account' => 12933 );
 is $account => 'Yanick', 'overloading';
-
-like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx,
-  'as_xml()';
 
 is $account->request_url =>
   'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',

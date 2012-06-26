@@ -1,3 +1,5 @@
+<response>
+    <status>success</status>
   <result>
     <account>
       <id>12933</id>
@@ -19,4 +21,5 @@
         <position_delta>-56</position_delta>
       </kudo_score>
     </account>
-  </result>
+</result>
+</response>

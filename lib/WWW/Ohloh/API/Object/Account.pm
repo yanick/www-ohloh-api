@@ -1,18 +1,18 @@
-package WWW::Ohloh::API::Account;
+package WWW::Ohloh::API::Object::Account;
 
 use Moose;
 
+use MooseX::SemiAffordanceAccessor;
 use WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 with qw/ 
     WWW::Ohloh::API::Role::Fetchable
 /;
 
-use WWW::Ohloh::API::Types qw/ Date /;
+use WWW::Ohloh::API::Types qw/ OhlohId /;
 
 use Carp;
 use XML::LibXML;
-use WWW::Ohloh::API::KudoScore;
 use Time::Piece;
 use Date::Parse;
 
@@ -26,69 +26,16 @@ use overload '""' => sub { $_[0]->name };
 
 has $_ => (
     traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'ro',
+    is => 'rw',
     predicate => 'has_'.$_,
 ) for qw/ id name /;
 
-has $_ => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'ro',
-    predicate => 'has_'.$_,
-    isa => 'Date',
-    coerce => 1,
-) for qw/ created_at updated_at /;
+around _build_request_url => sub {
+    my( $inner, $self ) = @_;
 
-has homepage_url => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'ro',
-    predicate => 'has_homepage_url',
-    isa => 'Str',
-);
+    my $uri = $inner->($self);
 
-has avatar_url => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'ro',
-    predicate => 'has_avatar_url',
-    isa => 'Str',
-);
-
-has posts_count => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    isa => 'Int',
-    is => 'ro',
-    predicate => 'has_posts_count',
-);
-
-has location => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    isa => 'Str',
-    is => 'ro',
-    predicate => 'has_location',
-);
-
-has $_ => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'ro',
-    predicate => 'has_' . $_,
-) for qw/ latitude longitude /;
-
-has country_code => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    isa => 'Str',
-    is => 'ro',
-    predicate => 'has_country_code',
-);
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub element_name { return 'account' }
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub generate_query_url {
-    my $self = shift;
-
-    croak q{attribute 'id' required to generate the query url} 
+    die q{attribute 'id' required to generate the query url} 
         unless $self->has_id;
 
     my $id = $self->id;
@@ -97,8 +44,16 @@ sub generate_query_url {
         $id = md5_hex($id);
     }
 
-    $self->request_url->path( 'accounts/' . $id . '.xml' );
-}
+    $uri->path( 'accounts/' . $id . '.xml' );
+
+    return $uri;
+};
+
+before fetch => sub {
+    my ( $self, @args ) = @_;
+
+    $self->set_id( $args[0] );
+};
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

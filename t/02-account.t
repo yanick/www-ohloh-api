@@ -12,8 +12,6 @@ $ohloh->stash( 'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
 
 my $account = $ohloh->get_account( id => 12933 );
 
-is $account => 'Yanick', 'overloading';
-
 like $account->as_xml => qr# ^ \s* <account> .* </account> \s* $ #sx,
   'as_xml()';
 

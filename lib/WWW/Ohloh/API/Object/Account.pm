@@ -10,13 +10,13 @@ with qw/
 /;
 
 use WWW::Ohloh::API::Types qw/ OhlohId /;
+use MooseX::Types::DateTime::W3C qw( DateTimeW3C );
+use MooseX::Types::DateTime::ButMaintained qw/ DateTime /;
 
 use Carp;
 use XML::LibXML;
 use Time::Piece;
 use Date::Parse;
-
-use Params::Validate qw/ validate validate_with /;
 
 use Digest::MD5 qw/ md5_hex /;
 
@@ -29,6 +29,13 @@ has $_ => (
     is => 'rw',
     predicate => 'has_'.$_,
 ) for qw/ id name /;
+
+has created_at => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    isa => DateTime,
+    is => 'rw',
+    coerce => 1,
+);
 
 around _build_request_url => sub {
     my( $inner, $self ) = @_;
@@ -57,30 +64,6 @@ before fetch => sub {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-sub as_xml {
-    my $self = shift;
-    my $xml;
-    my $w = XML::Writer->new( OUTPUT => \$xml );
-
-    $w->startTag('account');
-
-    $w->dataElement( $_ => $self->$_ ) for qw/
-      id name created_at updated_at homepage_url
-      avatar_url posts_count
-      location
-      country_code
-      latitude
-      longitude
-      /;
-
-#    $xml .= $self->kudo->as_xml if $self->kudo;
-
-    $w->endTag;
-
-    return $xml;
-}
-
 
 1;
 

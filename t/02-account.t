@@ -12,14 +12,18 @@ $ohloh->stash_file(
         => 't/samples/account.xml' );
 
 my $account = $ohloh->fetch( 'Account' => 12933 );
-is $account => 'Yanick', 'overloading';
+is ''.$account => 'Yanick', 'overloading';
 
 is $account->request_url =>
   'http://www.ohloh.net/accounts/12933.xml?v=1&api_key=myapikey',
   'request url';
 is $account->id   => 12933,    'id';
 is $account->name => 'Yanick', 'name';
-isa_ok $account->created_at => 'Time::Piece';
+
+diag $account->created_at;
+is $account->created_at->year => '2007';
+isa_ok $account->created_at => 'DateTime';
+is $account->created_at => '2007-12-30T18:39:18Z';
 is $account->updated_at     => 'Thu Jan  3 14:53:18 2008', 'updated at';
 is $account->homepage_url   => '', "homepage url";
 is $account->avatar_url =>

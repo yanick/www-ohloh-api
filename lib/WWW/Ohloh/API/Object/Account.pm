@@ -9,9 +9,7 @@ with qw/
     WWW::Ohloh::API::Role::Fetchable
 /;
 
-use WWW::Ohloh::API::Types qw/ OhlohId /;
-use MooseX::Types::DateTime::W3C qw( DateTimeW3C );
-use MooseX::Types::DateTime::ButMaintained qw/ DateTime /;
+use WWW::Ohloh::API::Types qw/ OhlohId OhlohDate OhlohURI /;
 
 use Carp;
 use XML::LibXML;
@@ -22,46 +20,190 @@ use Digest::MD5 qw/ md5_hex /;
 
 our $VERSION = '1.0_1';
 
-use overload '""' => sub { $_[0]->name };
+use overload '""' => sub { $_[0]->name  };
 
-has $_ => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    is => 'rw',
-    predicate => 'has_'.$_,
-) for qw/ id name /;
+=method id
 
-has created_at => (
+Returns the account's id.
+
+=method name()
+
+Returns the public name of the account.
+
+=cut
+
+has id => (
     traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
-    isa => DateTime,
+    is      => 'rw',
+    isa     => 'Str',
+    lazy     => 1,
+    predicate => 'has_id',
+);
+
+has name => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Str',
+    lazy     => 1,
+    predicate => 'has_name',
+);
+
+
+=method created_at()
+
+Returns the time at which the account was created as a L<DateTime> object .
+
+=method updated_at()
+
+Returns the last time at which the account was modified as a L<DateTime>
+object.
+
+=cut
+
+has [qw/ created_at updated_at /] => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    isa => OhlohDate,
     is => 'rw',
     coerce => 1,
 );
 
+=method homepage_url()
+
+Returns the URL to a member's home page, such as a blog, as an L<Uri> object.
+
+=method avatar_url()
+
+Returns the URL to the profile image displayed on Ohloh pages, as an L<Uri>
+object.
+
+
+=cut
+
+has [ qw/homepage_url avatar_url/ ] => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'rw',
+    isa => OhlohURI,
+    coerce => 1,
+);
+
+=method posts_count()
+
+Returns the number of posts made to the Ohloh forums by this account.
+
+=cut
+
+has posts_count => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'rw',
+    isa => 'Int',
+);
+
+=method location()
+
+Returns a text description of this account holder's claimed location.
+
+=method country_code()
+
+Returns a string representing the account holder's country.
+
+=cut
+
+has [qw/ location country_code /] => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'rw',
+    isa => 'Str',
+);
+
+=method latitude(), longitude()
+
+Returns floating-point values representing the account's latitude and longitude, 
+suitable for use with the Google Maps API.
+
+=cut
+
+has [ qw/ latitude longitude / ] => (
+    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    is => 'rw',
+    isa => 'Num',
+);
+
+
+=method kudo_score()
+
+Returns the L<WWW::Ohloh::API::Object::KudoScore> object associated with the
+account.
+
+=cut
+
+has 'kudo_score' => (
+    is => 'rw',
+    isa => 'WWW::Ohloh::API::Object::KudoScore',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+
+        return WWW::Ohloh::API::Object::KudoScore->new(
+            agent => $self->agent,
+            xml_src => $self->xml_src->findnodes( 'kudo_score' )->[0],
+        );
+    },
+);
+
+has stack => (
+    is => 'rw',
+    isa => 'WWW::Ohloh::API::Object::Stack',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+
+        return WWW::Ohloh::API::Object::Stack->new(
+            agent   => $self->agent,
+            id      => $self->id,
+            account => $self,
+        );
+    },
+);
+
+
 around _build_request_url => sub {
     my( $inner, $self ) = @_;
-
+    
     my $uri = $inner->($self);
 
-    die q{attribute 'id' required to generate the query url} 
-        unless $self->has_id;
+    $self->has_id or $self->has_email 
+        or die "id or email not provided for account, cannot fetch";
 
-    my $id = $self->id;
-
-    if ( index( $id, '@' ) > -1 ) {
-        $id = md5_hex($id);
-    }
+    my $id = $self->has_id ? $self->id : $self->email_md5; 
 
     $uri->path( 'accounts/' . $id . '.xml' );
 
     return $uri;
 };
 
-before fetch => sub {
-    my ( $self, @args ) = @_;
+has email => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy     => 1,
+    default  => '',
+    predicate => 'has_email',
+);
 
-    $self->set_id( $args[0] );
-};
+has email_md5 => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy     => 1,
+    default => sub {
+        md5_hex($_[0]->email);
+    },
+    predicate => 'has_email_md5',
+);
 
+=method fetch( $id_type => $value )
+
+Retrieves the account from Ohloh. The I<$id_type> can be 
+C<id>, C<email> or C<email_md5>.
+
+=cut
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -186,53 +328,10 @@ the C<get_account> method of a L<WWW::Ohloh::API> object.
 
 =head2 API Data Accessors
 
-=head3 id
 
-Return the account's id.
 
-=head3 name
 
-Return the public name of the account.
 
-=head3 created_at
-
-Return the time at which the account was created as a L<Time::Piece> object .
-
-=head3 updated_at
-
-Return the last time at which the account was modified as a L<Time::Piece>
-object.
-
-=head3 homepage_url
-
-Return the URL to a member's home page, such as a blog, or I<undef> if not
-configured.
-
-=head3 avatar_url
-
-Return the URL to the profile image displayed on Ohloh pages, or I<undef> if
-not configured.
-
-=head3 posts_count
-
-Return the number of posts made to the Ohloh forums by this account.
-
-=head3 location
-
-Return a text description of this account holder's claimed location, or
-I<undef> if not
-available. 
-
-=head3 country_code
-
-Return a string representing the account holder's country, or I<undef> is
-unavailable. 
-
-=head3 latitude, longitude
-
-Return floating-point values representing the account's latitude and longitude, 
-suitable for use with the Google Maps API, or I<undef> is they are not
-available.
 
 =head3 kudoScore, kudo_score, kudo
 
@@ -252,12 +351,6 @@ will return nothing.
 
 =head2 Other Methods
 
-=head3 as_xml
-
-Return the account information (including the kudo score if it applies)
-as an XML string.  Note that this is not the exact xml document as returned
-by the Ohloh server.
-
 =head1 OVERLOADING
 
 When the object is called in a string context, it'll be replaced by
@@ -268,10 +361,6 @@ the name associated with the account. E.g.,
 =head1 SEE ALSO
 
 =over
-
-=item *
-
-L<Time::Piece>
 
 =item * 
 

@@ -16,7 +16,8 @@ before '_process_options' => sub {
 
     my $src   = $options->{xml_src} ||= 'xml_src';
     my $xpath = $options->{xpath}   ||= $name;
-    my $predicate = 'has_' . $src;
+
+    $options->{predicate} = 'has_' . $name;
 
     $options->{default} = sub {
         # return unless $_[0]->$predicate;

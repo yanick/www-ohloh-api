@@ -41,6 +41,7 @@ sub fetch {
 
     $DB::single = 1;
 
+
     my ( undef, $xml ) = $self->agent->_query_server($self->request_url);
 
     my ($node) = $xml->findnodes( '//result/child::*' );

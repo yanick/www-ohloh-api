@@ -18,10 +18,16 @@ use List::Util qw/ first /;
 
 use Digest::MD5 qw/ md5_hex /;
 
+with 'MooseX::Role::Loggable';
+
 our $OHLOH_HOST = 'www.ohloh.net';
 our $OHLOH_URL = "http://$OHLOH_HOST";
 
 our $useragent_signature = join '/', 'WWW-Ohloh-API', ( eval q{$VERSION} || 'dev' );
+
+has '+log_to_stdout' => (
+    default => sub { $_[0]->debug },
+);
 
 has api_key => (
     is => 'rw',
@@ -68,7 +74,7 @@ For more details, see the C<fetch()> method of the individual
 C<WWW::Ohloh::API::Object::*> and C<WWW::Ohloh::API::Collection::*>
 classes.
 
-    my $account = $ohloh->fetch( Account => 12933 );
+    my $account = $ohloh->fetch( Account => id => 12933 );
 
 =cut
 
@@ -77,8 +83,8 @@ sub fetch {
 
     my $class = first { /::$object$/ } $self->plugins 
         or croak "object or collection '$object' not found";
-
-    return $class->new( agent => $self )->fetch(@args);
+$DB::single = 1;
+    return $class->new( agent => $self, @args, )->fetch;
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,12 +97,11 @@ sub _query_server {
         $url = URI->new( $url );
     }
 
-    $url->host( $OHLOH_HOST );
-    $url->scheme('http');
-    $url->query_param( v => $self->api_version );
-    $url->query_param( api_key => $self->api_key );
+    $self->log( "fetching " . $url );
 
     my $result = $self->_fetch_object($url);
+
+    $self->log( "result:\n" . $result );
 
     my $dom = eval { $self->xml_parser->parse_string($result) }
       or croak "server didn't feed back valid xml: $@";

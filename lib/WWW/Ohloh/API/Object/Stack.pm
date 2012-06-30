@@ -1,15 +1,15 @@
-package WWW::Ohloh::API::Stack;
+package WWW::Ohloh::API::Object::Stack;
 
-use MooseX::SemiAffordanceAccessor;
 use Moose;
 
+use MooseX::SemiAffordanceAccessor;
 use WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 with qw/ 
     WWW::Ohloh::API::Role::Fetchable
 /;
 
-use WWW::Ohloh::API::Types qw/ Date /;
+use WWW::Ohloh::API::Types qw/ OhlohDate /;
 
 use Carp;
 use XML::LibXML;
@@ -21,9 +21,20 @@ use Digest::MD5 qw/ md5_hex /;
 
 use WWW::Ohloh::API::StackEntry;
 
-use Params::Validate qw/ validate_with /;
+has account => (
+    is      => 'rw',
+    isa     => 'WWW::Ohloh::API::Object::Account',
+    lazy     => 1,
+    default => sub {
+        my $self = shift;
 
-our $VERSION = '1.0_1';
+        return $self->agent->fetch( Account => id => $self->account_id );
+    },
+);
+
+1;
+
+__END__
 
 my @api_fields = qw/
   id

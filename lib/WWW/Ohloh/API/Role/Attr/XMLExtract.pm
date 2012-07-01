@@ -1,6 +1,7 @@
 package WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 use Moose::Role;
+Moose::Util::meta_attribute_alias('XMLExtract');
 
 has 'xml_src' => ( isa => 'Str', is => 'ro' );
 

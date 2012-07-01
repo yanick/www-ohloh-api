@@ -9,13 +9,12 @@ use URI;
 use URI::URL;
 use URI::QueryParam;
 
-our $VERSION = '1.0_1';
-
 has request_url => (
     is => 'rw',
     writer => '_set_request_url',
     lazy => 1,
     builder => '_build_request_url',
+    clearer => 'clear_request_url',
 );
 
 has xml_src => (
@@ -39,14 +38,9 @@ has agent => (
 sub fetch {
     my ( $self, @args ) = @_;
 
-    $DB::single = 1;
+    my $xml = $self->agent->_query_server($self->request_url);
 
-
-    my ( undef, $xml ) = $self->agent->_query_server($self->request_url);
-
-    my ($node) = $xml->findnodes( '//result/child::*' );
-
-    $self->_set_xml_src( $node );
+    $self->_set_xml_src( $xml->findnodes( '//result/child::*' ));
 
     return $self;
 }

@@ -16,7 +16,7 @@ plan skip_all => <<'END_MSG', 1 unless $ENV{OHLOH_KEY};
 set the environment variable OHLOH_KEY to your api key to enable these tests
 END_MSG
 
-my $ohloh = WWW::Ohloh::API->new( api_key => $ENV{OHLOH_KEY} );
+my $ohloh = WWW::Ohloh::API->new( debug => 1, api_key => $ENV{OHLOH_KEY} );
 
 my $account = $ohloh->fetch( Account => email => $ENV{TEST_OHLOH_ACCOUNT} );
 

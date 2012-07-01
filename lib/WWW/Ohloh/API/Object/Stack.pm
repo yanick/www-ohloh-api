@@ -10,6 +10,7 @@ with qw/
 /;
 
 use WWW::Ohloh::API::Types qw/ OhlohDate /;
+use WWW::Ohloh::API::Object::StackEntry;
 
 use Carp;
 use XML::LibXML;
@@ -19,8 +20,6 @@ use Date::Parse;
 use Time::Piece;
 use Digest::MD5 qw/ md5_hex /;
 
-use WWW::Ohloh::API::StackEntry;
-
 has account => (
     is      => 'rw',
     isa     => 'WWW::Ohloh::API::Object::Account',
@@ -28,7 +27,75 @@ has account => (
     default => sub {
         my $self = shift;
 
-        return $self->agent->fetch( Account => id => $self->account_id );
+        return WWW::Ohloh::API::Object::Account->new(
+            agent => $self->agent,
+            xml_src => $self->xml_src->findnodes( 'account' ),
+        );
+    },
+);
+
+has id => (
+    traits =>  [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Int',
+);
+
+has title => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy     => 1,
+    default => sub {
+        $_[0]->xml_src->findvalue('title') || 'default';
+    },
+);
+
+has account_id => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Int',
+    lazy     => 1,
+);
+
+has description => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Str',
+);
+
+has updated_at => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => OhlohDate,
+    coerce => 1,
+);
+
+has project_count => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Int',
+);
+
+has entries => (
+    traits => ['Array'], 
+    is => 'ro',
+    isa => 'ArrayRef',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+
+        return [
+            map {
+                WWW::Ohloh::API::Object::StackEntry->new(
+                    agent   => $self->agent,
+                    xml_src => $_
+                )
+            }
+            $self->xml_src->findnodes('//stack_entries/stack_entry' ) 
+        ];
+    },
+    handles => {
+        all_entries => 'elements',
+        entry => 'get',
     },
 );
 

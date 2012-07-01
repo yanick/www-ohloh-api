@@ -1,15 +1,34 @@
-package WWW::Ohloh::API::StackEntry;
+package WWW::Ohloh::API::Object::StackEntry;
 
 use strict;
 use warnings;
 
+use Moose;
+
+use WWW::Ohloh::API::Role::Attr::XMLExtract;
+use WWW::Ohloh::API::Types qw/ OhlohDate /;
+
+with 'WWW::Ohloh::API::Role::Fetchable';
+
 use Carp;
-use Object::InsideOut;
-use XML::LibXML;
-use Readonly;
 use List::MoreUtils qw/ any /;
 
-our $VERSION = '1.0_1';
+has [ qw/ id stack_id project_id / ] => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => 'Int',
+);
+
+has created_at => (
+    traits => [ 'XMLExtract' ],
+    is      => 'rw',
+    isa     => OhlohDate,
+    coerce => 1,
+);
+
+
+1;
+__END__
 
 my @ohloh_of : Field : Arg(ohloh);
 my @request_url_of : Field : Arg(request_url) : Get( request_url );

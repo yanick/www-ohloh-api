@@ -39,7 +39,7 @@ sub stash_string {
 override '_fetch_object' => sub {
     my $self = shift;
     my $url = shift;
-    return $self->stash->{$url} or die "url '$url' wasn't stashed";
+    return $self->stash->{$url} || die "url '$url' wasn't stashed\n";
 };
 
 

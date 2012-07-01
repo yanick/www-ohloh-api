@@ -83,7 +83,7 @@ sub fetch {
 
     my $class = first { /::$object$/ } $self->plugins 
         or croak "object or collection '$object' not found";
-$DB::single = 1;
+
     return $class->new( agent => $self, @args, )->fetch;
 }
 
@@ -111,7 +111,7 @@ sub _query_server {
           $dom->findvalue('/response/status/text()');
     }
 
-    return $url, $dom->findnodes('/response/result[1]');
+    return $dom;
 }
 
 sub _fetch_object {

@@ -1,6 +1,17 @@
 package WWW::Ohloh::API;
 # ABSTRACT: Ohloh API implementation
 
+=head1 SYNOPSIS
+
+    use WWW::Ohloh::API;
+
+    my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
+    my $account = $ohloh->fetch( 'Account' => 12933 );
+
+    print $account->name;
+
+=cut
+
 use Carp;
 
 use Moose;
@@ -57,13 +68,13 @@ has xml_parser => (
 );
 
 
-=method new( api_key => $api_key )
+=method new( api_key => $api_key, debug => $debug )
 
-Creates a new C<WWW::Ohloh::API> object. To be able to retrieve information
-from the Ohloh server, an api key must be either passed to the constructor 
-or set via the L<set_api_key> method.
-
-    my $ohloh = WWW::Ohloh::API->new( api_key => $your_key );
+Creates a new C<WWW::Ohloh::API> object. The C<api_key> argument 
+is mandatory (see L<http://www.ohloh.com/accounts/me/api_keys/new> for how to get one).
+If the optional C<debug> argument is true, debugging information will be 
+logged on stdout as the object retrieves information from the Ohloh
+server.
 
 =method fetch( $object_type => @args, \%request_params )
 
@@ -131,14 +142,6 @@ sub _fetch_object {
 
 __END__
 
-=head1 SYNOPSIS
-
-    use WWW::Ohloh::API;
-
-    my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-    my $account = $ohloh->fetch( 'Account' => 12933 );
-
-    print $account->name;
 
 =head1 DESCRIPTION
 

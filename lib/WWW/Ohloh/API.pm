@@ -81,9 +81,10 @@ server.
 Fetches the object or collection object determined by the C<@args>. 
 For collections, an optional set of request parameters can be passed as well.
 
-For more details, see the C<fetch()> method of the individual
-C<WWW::Ohloh::API::Object::*> and C<WWW::Ohloh::API::Collection::*>
-classes.
+For more details on which C<@args> are required for the different
+objects, see the C<new()> method of their 
+C<WWW::Ohloh::API::Object::*> or C<WWW::Ohloh::API::Collection::*>
+class.
 
     my $account = $ohloh->fetch( Account => id => 12933 );
 

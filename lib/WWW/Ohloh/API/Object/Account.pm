@@ -24,12 +24,44 @@ with qw/
 
 use WWW::Ohloh::API::Types qw/ OhlohId OhlohDate OhlohURI /;
 
-use Carp;
-use Date::Parse;
-
 use Digest::MD5 qw/ md5_hex /;
 
 use overload '""' => sub { $_[0]->name  };
+
+around _build_request_url => sub {
+    my( $inner, $self ) = @_;
+    
+    my $uri = $inner->($self);
+
+    $self->has_id or $self->has_email or $self->has_email_md5
+        or die "id or email not provided for account, cannot fetch";
+
+    my $id = $self->has_id ? $self->id : $self->email_md5; 
+
+    $uri->path( 'accounts/' . $id . '.xml' );
+
+    return $uri;
+};
+
+=method new( @args )
+
+Creates a new C<WWW::Ohloh::API::Object::Account> object. To be fetchable, one
+of the three parameters I<id>, I<email> or I<email_md5> has to be passed.
+
+=head2 Arguments
+
+=over
+
+=item id
+
+=item email
+
+=item email_md5
+
+The md5 hash of the email associated with the account.
+
+=back
+
 
 =method id
 
@@ -180,20 +212,6 @@ has stack => (
     },
 );
 
-around _build_request_url => sub {
-    my( $inner, $self ) = @_;
-    
-    my $uri = $inner->($self);
-
-    $self->has_id or $self->has_email 
-        or die "id or email not provided for account, cannot fetch";
-
-    my $id = $self->has_id ? $self->id : $self->email_md5; 
-
-    $uri->path( 'accounts/' . $id . '.xml' );
-
-    return $uri;
-};
 
 has email => (
     is      => 'rw',
@@ -213,12 +231,7 @@ has email_md5 => (
     predicate => 'has_email_md5',
 );
 
-=method fetch( $id_type => $value )
 
-Retrieves the account from Ohloh. The I<$id_type> can be 
-C<id>, C<email> or C<email_md5>.
-
-=cut
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

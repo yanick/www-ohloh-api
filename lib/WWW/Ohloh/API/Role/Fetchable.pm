@@ -2,9 +2,9 @@ package WWW::Ohloh::API::Role::Fetchable;
 
 use Moose::Role;
 use Moose::Util::TypeConstraints;
+use WWW::Ohloh::API::Role::Attr::XMLExtract;
 
 use Carp;
-use Params::Validate qw/ validate_with validate /;
 use URI;
 use URI::URL;
 use URI::QueryParam;

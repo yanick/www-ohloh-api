@@ -16,11 +16,8 @@ package WWW::Ohloh::API::Object::Account;
 use Moose;
 
 use MooseX::SemiAffordanceAccessor;
-use WWW::Ohloh::API::Role::Attr::XMLExtract;
 
-with qw/ 
-    WWW::Ohloh::API::Role::Fetchable
-/;
+with 'WWW::Ohloh::API::Role::Fetchable';
 
 use WWW::Ohloh::API::Types qw/ OhlohId OhlohDate OhlohURI /;
 
@@ -74,18 +71,16 @@ Returns the public name of the account.
 =cut
 
 has id => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is      => 'rw',
     isa     => 'Str',
-    lazy     => 1,
     predicate => 'has_id',
 );
 
 has name => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is      => 'rw',
     isa     => 'Str',
-    lazy     => 1,
     predicate => 'has_name',
 );
 
@@ -102,7 +97,7 @@ object.
 =cut
 
 has [qw/ created_at updated_at /] => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     isa => OhlohDate,
     is => 'rw',
     coerce => 1,
@@ -121,7 +116,7 @@ object.
 =cut
 
 has [ qw/homepage_url avatar_url/ ] => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is => 'rw',
     isa => OhlohURI,
     coerce => 1,
@@ -134,7 +129,7 @@ Returns the number of posts made to the Ohloh forums by this account.
 =cut
 
 has posts_count => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is => 'rw',
     isa => 'Int',
 );
@@ -150,7 +145,7 @@ Returns a string representing the account holder's country.
 =cut
 
 has [qw/ location country_code /] => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is => 'rw',
     isa => 'Str',
 );
@@ -163,7 +158,7 @@ suitable for use with the Google Maps API.
 =cut
 
 has [ qw/ latitude longitude / ] => (
-    traits => [ 'WWW::Ohloh::API::Role::Attr::XMLExtract' ],
+    traits => [ 'XMLExtract' ],
     is => 'rw',
     isa => 'Num',
 );
@@ -212,7 +207,6 @@ has stack => (
     },
 );
 
-
 has email => (
     is      => 'rw',
     isa     => 'Str',
@@ -230,10 +224,6 @@ has email_md5 => (
     },
     predicate => 'has_email_md5',
 );
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1;
 

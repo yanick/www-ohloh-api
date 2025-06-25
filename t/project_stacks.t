@@ -3,8 +3,8 @@ use warnings;
 
 use Test::More tests => 1880;
 
-require 't/FakeOhloh.pm';
-require 't/Validators.pm';
+use lib 't'; use FakeOhloh;
+use Validators;
 
 my $ohloh = Fake::Ohloh->new;
 

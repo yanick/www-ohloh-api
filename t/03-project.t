@@ -5,7 +5,7 @@ use Test::More tests => 31;    # last test to print
 use WWW::Ohloh::API;
 use XML::LibXML;
 
-require 't/FakeOhloh.pm';
+use lib 't'; use FakeOhloh;
 
 my $ohloh = Fake::Ohloh->new;
 

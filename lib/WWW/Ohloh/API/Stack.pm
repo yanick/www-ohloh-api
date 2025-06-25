@@ -247,7 +247,7 @@ unless I<$retrieve> is defined and set to false.
 =for test
     isa_ok $result[0], 'WWW::Ohloh::API::Account';
     # querying it again shouldn't cause a fetch
-    is $thingy->account => $result[0], 'querying again';
+    is $thingy->account."" => $result[0], 'querying again';
 
 =for test ignore
 

@@ -100,8 +100,6 @@ sub _gather_more {
     $total_entries_of[$$self] =
       $xml->findvalue('/response/items_available/text()');
 
-    my $first_item = $xml->findvalue('/response/first_item_position/text()');
-
     push @{ $cache_of[$$self] }, @new_batch;
 
     $all_read[$$self] = 1 if $self->total_entries == $self->get_read_so_far;

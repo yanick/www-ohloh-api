@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More tests => 11;
 
-require 't/FakeOhloh.pm';
+use lib 't'; use FakeOhloh;
 
 my $ohloh = Fake::Ohloh->new;
 

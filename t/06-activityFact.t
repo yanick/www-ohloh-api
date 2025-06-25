@@ -4,7 +4,7 @@ use warnings;
 use Test::More tests => 14;    # last test to print
 
 use List::MoreUtils qw/ all /;
-require 't/FakeOhloh.pm';
+use lib 't'; use FakeOhloh;
 
 my $ohloh = Fake::Ohloh->new;
 

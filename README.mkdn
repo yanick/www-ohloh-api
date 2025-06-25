@@ -1,0 +1,219 @@
+# NAME
+
+WWW::Ohloh::API - Ohloh API implementation (DEPRECATED)
+
+# VERSION
+
+version 1.0.2
+
+# SYNOPSIS
+
+```perl
+use WWW::Ohloh::API;
+
+my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
+my $account = $ohloh->fetch_account( 12933 );
+
+print $account->name;
+```
+
+# DESCRIPTION
+
+**Deprecated**: Ohloh itself is long gone. So it goes.
+
+This module is a Perl interface to the Ohloh API as defined at
+http://www.ohloh.net/api/getting\_started. 
+
+# NAME
+
+WWW::Ohloh::API - Ohloh API implementation
+
+# METHODS 
+
+## new( \[ api\_key => $api\_key \] )
+
+Create a new WWW::Ohloh::API object. To be able to retrieve information
+from the Ohloh server, an api key must be either passed to the constructor 
+or set via the [set\_api\_key](https://metacpan.org/pod/set_api_key) method.
+
+```perl
+my $ohloh = WWW::Ohloh::API->new( api_key => $your_key );
+```
+
+## fetch\_account( $account\_id )
+
+Return the account associated with the $account\_id as a 
+[WWW::Ohloh::API::Account](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AAccount)
+object. If no such account exists, an error is thrown.
+The $accound\_id can either be specified as the Ohloh id number, 
+or the email address associated with the account.
+
+```perl
+my $account = $ohloh->fetch_account( 12933 );
+my $other_accound = $ohloh->fetch_account( 'foo@bar.com' );
+```
+
+## fetch\_project( $id )
+
+Return the project having the Ohloh id _$id_ as a
+[WWW::Ohloh::API::Project](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AProject).  If no such project exists, 
+an error is thrown.
+
+```perl
+my $project = $ohloh->fetch_project( 1234) ;
+print $project->name;
+```
+
+## fetch\_projects( query => $query, sort => $sorting\_order, max => $nbr )
+
+Return a set of projects as a [WWW::Ohloh::API::Projects](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AProjects) object. 
+
+### Parameters
+
+- query
+
+    If provided, only the projects matching the query string are returned.
+    A project matches the query string is any of its name, description
+    or tags does.
+
+- sort
+
+    If provided, the projects will be returned according to the specified 
+    sorting order.  Valid values are 
+    'created\_at', 'description', 'id', 'name', 'stack\_count',
+    'updated\_at', 'created\_at\_reverse',
+    'description\_reverse', 'id\_reverse', 'name\_reverse',
+    'stack\_count\_reverse' or 'updated\_at\_reverse'.  If no sorting order
+    is explicitly given, 'id' is the default.
+
+- max
+
+    If given, the project set will returns at most _$nbr_ projects.
+
+    ```perl
+    # get top ten stacked projects
+    my @top = $ohloh->fetch_projects( max => 10, sort => 'stack_count' )->all;
+    ```
+
+## fetch\_languages( sort => $order )
+
+Return the languages known to Ohloh a set of [WWW::Ohloh::API::Language](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3ALanguage)
+objects. 
+
+An optional _sort_ parameter can be passed to the method. The valid
+_$order_s it accepts are
+`total`, `code`, `projects`, `comment_ratio`, 
+`contributors`, `commits` and `name`. If _sort_ is not explicitly called,
+projects are returned in alphabetical order of `name`s.
+
+## fetch\_activity\_facts( $project\_id, $analysis )
+
+Return a set of activity facts computed out of the project associated
+with the _$project\_id_ as a [WWW::Ohloh::API::ActivityFacts](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AActivityFacts) object. 
+
+The optional argument _$analysis_ can be either an Ohloh analysis id 
+(which must be an analysis associated to the project) or the keyword
+'latest'. By default the latest analysis will be queried.
+
+## fetch\_contributor\_language\_facts( project\_id => $p\_id,  contributor\_id => $c\_id )
+
+```perl
+my @facts = $ohloh->fetch_contributor_language_facts(
+    project_id     => 1234,
+    contributor_id => 5678
+);
+```
+
+Return the list of contributor language facts associated to the 
+contributor _$c\_id_ for the project _$p\_id_.
+
+## fetch\_enlistments( project\_id => $id )
+
+Returns the list of enlistements pertaining to the
+given project as an [WWW::Ohloh::API::Enlistment](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AEnlistment) object.
+
+```perl
+my $enlistments = $ohloh->fetch_enlistments( project_id => 1234 );
+
+while ( my $enlistment = $enlistments->next ) {
+    # do stuff with $enlistment...
+}
+```
+
+## fetch\_size\_facts( $project\_id, $analysis\_id )
+
+Return the list of [WWW::Ohloh::API::SizeFact](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3ASizeFact) objects pertaining to the
+given project and analysis. If _$analysis\_id_ is not provided, it defaults
+to the latest analysis done on the project.
+
+## fetch\_project\_stacks( $project\_id ) 
+
+Returns the list of stacks containing the project as 
+[WWW::Ohloh::API::Stack](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AStack)
+objects.
+
+## fetch\_account\_stack( $account\_id )
+
+Returns the stack associated with the account as an 
+[WWW::Ohloh::API::Stack](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AStack) object.
+
+## fetch\_kudos( $account\_id )
+
+Returns the kudos associated with the given account 
+(the id can be either the numerical id or the account's
+email address) as a list of [WWW::Ohloh::API::Kudo](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AKudo) objects.
+
+```perl
+my @kudos = $ohloh->fetch_kudos( 12345 );
+```
+
+## fetch\_messages( \[ account | project \] => _$id_ )
+
+Returns the messages associated to the given account or project
+as a [WWW::Ohloh::API::Messages](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AMessages) object.
+
+# SEE ALSO
+
+- [WWW::Ohloh::API::Project](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AProject), 
+[WWW::Ohloh::API::Projects](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AProjects), 
+[WWW::Ohloh::API::Account](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AAccount), 
+[WWW::Ohloh::API::KudoScore](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3AKudoScore),
+[WWW::Ohloh::API::Languages](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3ALanguages),
+[WWW::Ohloh::API::Language](https://metacpan.org/pod/WWW%3A%3AOhloh%3A%3AAPI%3A%3ALanguage).
+- Ohloh API reference: http://www.ohloh.net/api/getting\_started
+- How to obtain an Ohloh API key: http://www.ohloh.net/api\_keys/new
+
+# VERSION
+
+This document describes WWW::Ohloh::API version 1.0\_1
+
+# BUGS AND LIMITATIONS
+
+WWW::Ohloh::API is very extremely alpha quality. It'll improve,
+but till then: _Caveat emptor_.
+
+Please report any bugs or feature requests to
+`bug-www-ohloh-api@rt.cpan.org`, or through the web interface at
+[http://rt.cpan.org](http://rt.cpan.org).
+
+# AUTHOR
+
+Yanick Champoux  `<yanick@cpan.org>` [![endorse](http://api.coderwall.com/yanick/endorsecount.png)](http://coderwall.com/yanick)
+
+# LICENCE AND COPYRIGHT
+
+Copyright (c) 2008, Yanick Champoux `<yanick@cpan.org>`. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See [perlartistic](https://metacpan.org/pod/perlartistic).
+
+# AUTHOR
+
+Yanick Champoux <yanick@cpan.org> [![endorse](http://api.coderwall.com/yanick/endorsecount.png)](http://coderwall.com/yanick)
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

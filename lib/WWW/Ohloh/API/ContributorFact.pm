@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::ContributorFact;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -119,9 +120,17 @@ sub account {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
-WWW::Ohloh::API::ContributorFact - Ohloh stats about a project's contributor
+WWW::Ohloh::API::ContributorFact
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -139,6 +148,10 @@ a contributor to a project
 as defined at http://www.ohloh.net/api/reference/contributori_fact. 
 To be properly populated, it must be created via
 the C<get_project> method of a L<WWW::Ohloh::API> object.
+
+=head1 NAME
+
+WWW::Ohloh::API::ContributorFact - Ohloh stats about a project's contributor
 
 =head1 METHODS 
 
@@ -163,7 +176,6 @@ the source control server.
 
 Return the Ohloh account id of the contributor, if the
 contribution has been claimed.  If not, return I<undef>.
-
 
 =head3 account_name
 
@@ -252,7 +264,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -264,5 +275,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
 
+Yanick Champoux <yanick@cpan.org>
 
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

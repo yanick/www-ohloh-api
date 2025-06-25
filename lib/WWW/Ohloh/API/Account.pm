@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::Account;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -202,11 +203,20 @@ sub kudos {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 'end of WWW::Ohloh::API::Account';
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
-WWW::Ohloh::API::Account - an Ohloh account
+WWW::Ohloh::API::Account
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -223,6 +233,10 @@ W::O::A::Account contains the information associated with an Ohloh
 account as defined at http://www.ohloh.net/api/reference/account. 
 To be properly populated, it must be created via
 the C<get_account> method of a L<WWW::Ohloh::API> object.
+
+=head1 NAME
+
+WWW::Ohloh::API::Account - an Ohloh account
 
 =head1 METHODS 
 
@@ -345,7 +359,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -357,3 +370,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

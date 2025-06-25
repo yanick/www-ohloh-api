@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::Stack;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -152,7 +153,37 @@ sub set_account : Private( WWW::Ohloh::API::Account ) {
 }
 
 'end of WWW::Ohloh::API::Stack';
+
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+WWW::Ohloh::API::Stack
+
+=head1 VERSION
+
+version 1.0.2
+
+=head1 SYNOPSIS
+
+    use WWW::Ohloh::API;
+
+    my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
+
+    # get the stack of a person
+    my $stack = $ohloh->fetch_account_stack( $account_id );
+
+    # get stacks containing a project
+    my @stacks = $ohloh->get_project_stacks( $project_id );
+
+=head1 DESCRIPTION
+
+W::O::A::Stack represents a collection of projects used
+by a person. 
 
 =begin test
 
@@ -172,46 +203,31 @@ my $thingy = $ohloh->fetch_account_stack( 123 );
 
 WWW::Ohloh::API::Stack - a collection of projects used by a person 
 
-=head1 SYNOPSIS
-
-    use WWW::Ohloh::API;
-
-    my $ohloh = WWW::Ohloh::API->new( api_key => $my_api_key );
-
-    # get the stack of a person
-    my $stack = $ohloh->fetch_account_stack( $account_id );
-
-    # get stacks containing a project
-    my @stacks = $ohloh->get_project_stacks( $project_id );
-
-
-=head1 DESCRIPTION
-
-W::O::A::Stack represents a collection of projects used
-by a person. 
-
 =head1 METHODS 
 
 =for test ignore
 
 =head2 API Data Accessors
 
-=for test
+=begin test
+
+
+
+
+=end test
 
 =head3 id
 
 Returns the unique id for the stack.
 
-=for test
-    is $result[0] => 21420, 'id()';
+=for test is $result[0] => 21420, 'id()';
 
 =head3 updated_at
 
 Returns the most recent time at which any projects were added to
 or removed from this stack as a L<Time::Piece> object.
 
-=for test
-    isa_ok $result[0], 'Time::Piece';
+=for test isa_ok $result[0], 'Time::Piece';
     is $result[0], 'Mon Mar 17 17:09:16 2008', 'updated_at()';
 
 =head3 project_count
@@ -223,16 +239,14 @@ Returns the number of projects in the stack.
 Returns a list of the entries contained by the stack as
 L<WWW::Ohloh::API::StackEntry> objects.
 
-=for test
-    isa_ok $_, 'WWW::Ohloh::API::StackEntry' for @result;
+=for test isa_ok $_, 'WWW::Ohloh::API::StackEntry' for @result;
     is @result => 35, '35 stack entries';
 
 =head3 account_id
 
 Returns the id of the account owning the stack.
 
-=for test
-    $ohloh->stash( 'account', 'account.xml' );
+=for test $ohloh->stash( 'account', 'account.xml' );
     my $retrieve = 1;
 
 =head3 account( I<$retrieve> )
@@ -244,8 +258,7 @@ If the account information was not present at the object's
 creation time, it will be queried from the ohloh server,
 unless I<$retrieve> is defined and set to false.
 
-=for test
-    isa_ok $result[0], 'WWW::Ohloh::API::Account';
+=for test isa_ok $result[0], 'WWW::Ohloh::API::Account';
     # querying it again shouldn't cause a fetch
     is $thingy->account."" => $result[0], 'querying again';
 
@@ -253,7 +266,12 @@ unless I<$retrieve> is defined and set to false.
 
 =head2 Other Methods
 
-=for test
+=begin test
+
+
+
+
+=end test
 
 =head3 as_xml
 
@@ -261,8 +279,7 @@ Returns the stack as an XML string.
 Note that this is not the same xml document as returned
 by the Ohloh server. 
 
-=for test
-    use XML::LibXML;
+=for test use XML::LibXML;
     ok( XML::LibXML->new->parse_string( $result[0] ), 'as_xml' );
 
 =head1 SEE ALSO
@@ -296,7 +313,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -307,5 +323,16 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::Repository;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -99,9 +100,17 @@ sub as_xml {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
-WWW::Ohloh::API::Repository - A code repository 
+WWW::Ohloh::API::Repository
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -112,12 +121,16 @@ WWW::Ohloh::API::Repository - A code repository
         project_id => 12933,
     );
     my @repository = map { $_->repository } @enlistments;
-    
+
 =head1 DESCRIPTION
 
 W::O::A::Repository contains the information associated with 
 a code repository
 as defined at http://www.ohloh.net/api/reference/repository. 
+
+=head1 NAME
+
+WWW::Ohloh::API::Repository - A code repository 
 
 =head1 METHODS 
 
@@ -172,7 +185,7 @@ Return the last time the Ohloh server successfully queried the repository.
 Return the total number of commits downloaded by the Ohloh server.
 
 =head3 ohloh_job_status
-    
+
     my $ok = $repository->ohloh_job_status eq 'success';
 
 Return the result of the last attempt of the Ohloh server to read the
@@ -227,7 +240,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -239,5 +251,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
 
+Yanick Champoux <yanick@cpan.org>
 
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

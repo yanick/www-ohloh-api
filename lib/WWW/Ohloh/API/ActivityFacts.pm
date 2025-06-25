@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::ActivityFacts;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -73,11 +74,20 @@ sub total {
 }
 
 'end of WWW::Ohloh::API::ActivityFacts';
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
-WWW::Ohloh::API::ActivityFacts - an Ohloh project's set of activity facts
+WWW::Ohloh::API::ActivityFacts
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -97,6 +107,10 @@ To be properly populated, it must be retrieved via
 the C<get_activity_facts> method of a L<WWW::Ohloh::API> object,
 or the C<activity_facts()> method of a L<WWW::Ohloh::API::Project>
 object.
+
+=head1 NAME
+
+WWW::Ohloh::API::ActivityFacts - an Ohloh project's set of activity facts
 
 =head1 METHODS 
 
@@ -132,7 +146,6 @@ L<WWW::Ohloh::API::Project>,
 L<WWW::Ohloh::API::Analysis>, 
 L<WWW::Ohloh::API::Account>.
 
-
 =item *
 
 Ohloh API reference: http://www.ohloh.net/api/getting_started
@@ -156,7 +169,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -168,6 +180,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
-
-

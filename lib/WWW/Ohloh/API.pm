@@ -1,4 +1,5 @@
 package WWW::Ohloh::API;
+our $AUTHORITY = 'cpan:YANICK';
 # ABSTRACT: Ohloh API implementation (DEPRECATED)
 
 use warnings;
@@ -361,9 +362,17 @@ sub _query_server {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
-WWW::Ohloh::API - Ohloh API implementation
+WWW::Ohloh::API - Ohloh API implementation (DEPRECATED)
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -380,6 +389,10 @@ B<Deprecated>: Ohloh itself is long gone. So it goes.
 
 This module is a Perl interface to the Ohloh API as defined at
 http://www.ohloh.net/api/getting_started. 
+
+=head1 NAME
+
+WWW::Ohloh::API - Ohloh API implementation
 
 =head1 METHODS 
 
@@ -401,7 +414,6 @@ or the email address associated with the account.
 
     my $account = $ohloh->fetch_account( 12933 );
     my $other_accound = $ohloh->fetch_account( 'foo@bar.com' );
-
 
 =head2 fetch_project( $id )
 
@@ -552,7 +564,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -564,3 +575,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

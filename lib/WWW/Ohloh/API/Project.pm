@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::Project;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -157,11 +158,20 @@ sub factoids {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 'end of WWW::Ohloh::API::Project';
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
-WWW::Ohloh::API::Project - an Ohloh project
+WWW::Ohloh::API::Project
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -178,6 +188,10 @@ W::O::A::Project contains the information associated with an Ohloh
 project as defined at http://www.ohloh.net/api/reference/project. 
 To be properly populated, it must be created via
 the C<fetch_project> method of a L<WWW::Ohloh::API> object.
+
+=head1 NAME
+
+WWW::Ohloh::API::Project - an Ohloh project
 
 =head1 METHODS 
 
@@ -264,7 +278,6 @@ called, the latest one will be used.
     $project->analysis( 789 );  
     $specific = $project->activity_facts;      # equivalent to previous example
 
-
 =head3 factoids
 
     @factoids = $project->factoids;
@@ -283,7 +296,6 @@ by the Ohloh server.
 Factoids will be included in the xml output if
 they have been queried prior to the call to I<as_xml>.
 
-
 =head1 SEE ALSO
 
 =over
@@ -295,7 +307,6 @@ L<WWW::Ohloh::API::KudoScore>,
 L<WWW::Ohloh::API::Factoid>, 
 L<WWW::Ohloh::API::Analysis>, 
 L<WWW::Ohloh::API::Account>.
-
 
 =item *
 
@@ -323,7 +334,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yanick Champoux  C<< <yanick@cpan.org> >>
@@ -335,5 +345,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
+=head1 AUTHOR
 
+Yanick Champoux <yanick@cpan.org>
 
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

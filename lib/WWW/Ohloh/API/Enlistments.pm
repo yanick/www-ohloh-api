@@ -1,4 +1,5 @@
 package WWW::Ohloh::API::Enlistments;
+our $AUTHORITY = 'cpan:YANICK';
 
 use strict;
 use warnings;
@@ -37,11 +38,20 @@ sub is_allowed_sort {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 'end of WWW::Ohloh::API::Enlistments';
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
-WWW::Ohloh::API::Enlistments - a set of Ohloh project enlistments
+WWW::Ohloh::API::Enlistments
+
+=head1 VERSION
+
+version 1.0.2
 
 =head1 SYNOPSIS
 
@@ -67,6 +77,10 @@ same time, you can use the B<all()> method:
 
     my @e = $ohloh->get_enlistments( sort => 'module_name' )->all;
 
+=head1 NAME
+
+WWW::Ohloh::API::Enlistments - a set of Ohloh project enlistments
+
 =head1 METHODS 
 
 =head2 new( %args )
@@ -78,7 +92,7 @@ arguments:
 
 =over
 
-=item  ohloh => I<$ohloh>
+=item ohloh => I<$ohloh>
 
 Mandatory.  Its value is the L<WWW::Ohloh::API> object that will be used
 to query the Ohloh server.
@@ -126,7 +140,6 @@ entries have been added or removed since the last retrieval.
 L<WWW::Ohloh::API>, 
 L<WWW::Ohloh::API::Enlistment>. 
 
-
 =item *
 
 Ohloh API reference: http://www.ohloh.net/api/getting_started
@@ -150,7 +163,6 @@ Please report any bugs or feature requests to
 C<bug-www-ohloh-api@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
-
 =head1 AUTHOR
 
 Yuval Kogman and
@@ -163,5 +175,15 @@ Copyright (c) 2008, Yanick Champoux C<< <yanick@cpan.org> >>. All rights reserve
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
 
-=cut
+=head1 AUTHOR
 
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025, 2008 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

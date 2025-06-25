@@ -1,4 +1,5 @@
 package WWW::Ohloh::API;
+# ABSTRACT: Ohloh API implementation (DEPRECATED)
 
 use warnings;
 use strict;
@@ -374,6 +375,8 @@ WWW::Ohloh::API - Ohloh API implementation
     print $account->name;
 
 =head1 DESCRIPTION
+
+B<Deprecated>: Ohloh itself is long gone. So it goes.
 
 This module is a Perl interface to the Ohloh API as defined at
 http://www.ohloh.net/api/getting_started. 

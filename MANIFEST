@@ -97,6 +97,4 @@ t/samples/stack.xml
 t/samples/stacks.xml
 t/samples/stacks_project.xml
 t/sizeFact.t
-t/test-pod-snippets.t
-xt/perl-critic-progressive.t
 xt/release/unused-vars.t

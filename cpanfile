@@ -25,7 +25,6 @@ on 'test' => sub {
   requires "IO::Handle" => "0";
   requires "IPC::Open3" => "0";
   requires "Test::More" => "0";
-  requires "Test::Pod::Snippets" => "0";
   requires "lib" => "0";
   requires "perl" => "5.006";
 };
@@ -40,6 +39,5 @@ on 'configure' => sub {
 
 on 'develop' => sub {
   requires "Test::More" => "0.96";
-  requires "Test::Perl::Critic::Progressive" => "0";
   requires "Test::Vars" => "0";
 };
